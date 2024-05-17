@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import ReactFlow, { 
     Controls, 
     MiniMap, 
@@ -12,7 +12,9 @@ import ReactFlow, {
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import 'reactflow/dist/style.css';
 import DragNodes from '@/app/_components/DragNodes';
-  
+import EditableNode from '@/app/_components/EditableNode';
+
+
   // Initial state for nodes and edges
   const initialNodes = [
     {
@@ -72,7 +74,13 @@ export default function CreateFlowchart() {
       },
       [reactFlowInstance],
     );
-  
+    
+    const nodeTypes = useMemo(() => ({
+        input: EditableNode,
+        default: EditableNode,
+        output: EditableNode,
+        }), []);
+
     return (
       <div className="dndflow">
         <ReactFlowProvider>
@@ -86,6 +94,7 @@ export default function CreateFlowchart() {
               onInit={setReactFlowInstance}
               onDrop={onDrop}
               onDragOver={onDragOver}
+              nodeTypes={nodeTypes}
               fitView
             >
             <Background />
