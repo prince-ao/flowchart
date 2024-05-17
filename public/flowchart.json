@@ -1,0 +1,42 @@
+[
+    {
+      "id": "1",
+      "courseName": "Course 1",
+      "description": "This is course 1",
+      "fullName": "Full Course Name 1",
+      "nodeType": "input",
+      "position": {"x": 250, "y": 25},
+      "prerequisites": [],
+      "corequisites": []
+    },
+    {
+      "id": "2",
+      "courseName": "Course 2",
+      "description": "This is course 2",
+      "nodeType": "output",
+      "fullName": "Full Course Name 2",
+      "position": {"x": 100, "y": 125},
+      "prerequisites": ["1"],
+      "corequisites": []
+    },
+    {
+      "id": "3",
+      "courseName": "Course 3",
+      "description": "This is course 3",
+      "nodeType": "output",
+      "fullName": "Full Course Name 3",
+      "position": {"x": 250, "y": 250},
+      "prerequisites": ["1"],
+      "corequisites": ["2"]
+    },
+    {
+        "id": "4",
+        "courseName": "Course 4",
+        "description": "This is course 4",
+        "nodeType": "output",
+        "fullName": "Full Course Name 4",
+        "position": {"x": 250, "y": 350},
+        "prerequisites": ["1", "2"],
+        "corequisites": ["3"]
+      } 
+]
