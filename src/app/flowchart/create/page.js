@@ -8,19 +8,21 @@ import ReactFlow, {
     ReactFlowProvider,
     addEdge,
     useNodesState,
-    useEdgesState, } from 'reactflow';
+    useEdgesState,
+    useOnSelectionChange,
+    Panel } from 'reactflow';
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import 'reactflow/dist/style.css';
 import DragNodes from '@/app/_components/DragNodes';
 import EditableNode from '@/app/_components/EditableNode';
-
+import NodeEditorPanel from '@/app/_components/NodeEditorPanel';
 
   // Initial state for nodes and edges
   const initialNodes = [
     {
         id: '1',
         type: 'input',
-        data: { label: 'Test Node' },
+        data: { label: 'Test Node', courseNumber: 'CSC 101', fullName: 'Introduction to Computer Science', description: 'This course introduces students to the field of computer science.' },
         position: { x: 250, y: 5 },
         },
   ];
@@ -34,7 +36,8 @@ export default function CreateFlowchart() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  
+
+
     const onConnect = useCallback(
       (params) => setEdges((eds) => addEdge(params, eds)),
       [],
@@ -97,6 +100,9 @@ export default function CreateFlowchart() {
               nodeTypes={nodeTypes}
               fitView
             >
+                    <Panel position="top-right">
+                      <NodeEditorPanel />
+                      </Panel> 
             <Background />
               <Controls />
             </ReactFlow>
