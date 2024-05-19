@@ -9,7 +9,6 @@ export default function NodeEditorPanel() {
   useOnSelectionChange({
     onChange: ({ nodes}) => {
       setSelectedNodes(nodes.map((node) => node));
-        
     },
   });
 
@@ -32,6 +31,15 @@ export default function NodeEditorPanel() {
                 <p>Description: <input name="description" value={node.data.description} onChange={e => handleInputChange(e, index)} /></p>
             </div>
         ))}
+        {
+        connectedEdges.map((edge) => (
+            <div key={edge.id}>
+                <p>Edge ID: {edge.id}</p>
+                <p>Source: {edge.source}</p>
+                <p>Target: {edge.target}</p>
+            </div>
+        ))
+        }
     </div>
   );
 }

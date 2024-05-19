@@ -24,6 +24,8 @@ import NodeEditorPanel from '@/app/_components/NodeEditorPanel';
         type: 'input',
         data: { label: 'Test Node', courseNumber: 'CSC 101', fullName: 'Introduction to Computer Science', description: 'This course introduces students to the field of computer science.' },
         position: { x: 250, y: 5 },
+        corequisites: [],
+        prerequisites: [],
         },
   ];
   const initialEdges = [];
@@ -38,11 +40,24 @@ export default function CreateFlowchart() {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
 
-    const onConnect = useCallback(
-      (params) => setEdges((eds) => addEdge(params, eds)),
-      [],
-    );
-  
+    const onConnect = useCallback((params) => {
+      // Add the new edge
+      setEdges((eds) => addEdge(params, eds));
+    
+      // Add the source node to the target node's prerequisites list
+      setNodes((ns) => ns.map((n) => {
+        if (n.id === params.target) {
+          return {
+            ...n,
+            data: {
+              ...n.data,
+              prerequisites: [...n.data.prerequisites, params.source],
+            },
+          };
+        }
+        return n;
+      }));
+    }, []);
     const onDragOver = useCallback((event) => {
       event.preventDefault();
       event.dataTransfer.dropEffect = 'move';
@@ -70,7 +85,14 @@ export default function CreateFlowchart() {
           id: getId(),
           type,
           position,
-          data: { label: `${type} node` },
+          data: { 
+            label: `${type} node`, 
+            courseNumber: 'CSC 101', 
+            fullName: 'Introduction to Computer Science', 
+            description: 'This course introduces students to the field of computer science.',
+            corequisites: [],
+            prerequisites: [],
+          },
         };
   
         setNodes((nds) => nds.concat(newNode));

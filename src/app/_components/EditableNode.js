@@ -12,15 +12,11 @@ export default function EditableNode ({ data, isConnectable, updateNodeData }) {
 
     return (
         <div className="class-node">
-            <NodeToolbar isVisible={data.toolbarVisible} position='={data.toolbarPosition}'>What could this be?</NodeToolbar>
+            {/* <NodeToolbar isVisible={data.toolbarVisible} position='={data.toolbarPosition}'>What could this be?</NodeToolbar> */}
             <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
             <div>
-                <label htmlFor="courseNumber">Course Number:</label>
-                <input id="courseNumber" name="courseNumber" onChange={onChange} className="nodrag input input-bordered input-primary h-1/2 w-full max-w-xs text-white text-sm" />
-                <label htmlFor="fullName">Full Name:</label>
-                <input id="fullName" name="fullName" onChange={onChange} className="nodrag input input-bordered input-primary h-1/2 w-full max-w-xs text-white " />
-                <label htmlFor="description">Description:</label>
-                <input id="description" name="description" onChange={onChange} className="textarea small-font textarea-bordered textarea-md w-full max-w-x text-white" />
+                <h1>{data.courseNumber}</h1>
+                <h2>{data.fullName}</h2>
             </div>
             <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
             <Handle type="source" position={Position.Left}  isConnectable={isConnectable} />
