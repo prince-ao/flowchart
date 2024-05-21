@@ -6,30 +6,6 @@
     width: 100%;
   }
   
-  .dndflow aside {
-    border-left: 1px solid #eee;
-    padding: 15px 10px;
-    font-size: 12px;
-    background: #ADD8E6;
-  }
-  
-  .dndflow aside .description {
-    font-size: 14px;
-    font-weight: 500;
-    color: black;
-    margin-bottom: 10px;
-  }
-  
-  .dndflow .dndnode {
-    
-    padding: 4px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: grab;
-  }
-
   
   .dndflow .reactflow-wrapper {
     flex-grow: 1;
@@ -50,24 +26,4 @@
       width: 20%;
       max-width: 250px;
     }
-  }
-
-  .class-node {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    background: white;
-    width: auto;
-  }
-
-  .class-node label {
-    font-size: 12px;
-    font-weight: 500;
-    color: black;
-  }
-
-  .class-node .small-font {
-    font-size: 6px;
-    color: #666;
   }

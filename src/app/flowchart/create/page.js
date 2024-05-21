@@ -9,7 +9,6 @@ import ReactFlow, {
     addEdge,
     useNodesState,
     useEdgesState,
-    useOnSelectionChange,
     Panel } from 'reactflow';
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import 'reactflow/dist/style.css';
@@ -18,29 +17,22 @@ import EditableNode from '@/app/_components/EditableNode';
 import NodeEditorPanel from '@/app/_components/NodeEditorPanel';
 
   // Initial state for nodes and edges
-  const initialNodes = [
-    {
-        id: '1',
-        type: 'input',
-        data: { label: 'Test Node', courseNumber: 'CSC 101', fullName: 'Introduction to Computer Science', description: 'This course introduces students to the field of computer science.' },
-        position: { x: 250, y: 5 },
-        corequisites: [],
-        prerequisites: [],
-        },
-  ];
+  const initialNodes = [];
   const initialEdges = [];
 
   let id = 0;
-  const getId = () => `dndnode_${id++}`;
+  const getId = () => `${id++}`;
 
 export default function CreateFlowchart() {
     const reactFlowWrapper = useRef(null);
+    const connectingNodeId = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
 
     const onConnect = useCallback((params) => {
+      connectingNodeId.current = null;
       // Add the new edge
       setEdges((eds) => addEdge(params, eds));
     
@@ -58,6 +50,7 @@ export default function CreateFlowchart() {
         return n;
       }));
     }, []);
+
     const onDragOver = useCallback((event) => {
       event.preventDefault();
       event.dataTransfer.dropEffect = 'move';
@@ -86,7 +79,7 @@ export default function CreateFlowchart() {
           type,
           position,
           data: { 
-            label: `${type} node`, 
+            label: ` node ${id}`, 
             courseNumber: 'CSC 101', 
             fullName: 'Introduction to Computer Science', 
             description: 'This course introduces students to the field of computer science.',
@@ -122,9 +115,9 @@ export default function CreateFlowchart() {
               nodeTypes={nodeTypes}
               fitView
             >
-                    <Panel position="top-right">
-                      <NodeEditorPanel />
-                      </Panel> 
+           <Panel position="top-right">
+            <NodeEditorPanel />
+            </Panel> 
             <Background />
               <Controls />
             </ReactFlow>
