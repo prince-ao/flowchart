@@ -45,19 +45,35 @@ export default function NodeEditorPanel() {
 
   
 
-  return (
-    <div>
-        {
-        selectedNodes.map((node, index) => (
-            <div key={node.id}>
-                <p>Label: <input name="label" value={node.data.label} onChange={e => handleInputChange(e, index)} /></p>
-                <p>Course Number: <input name="courseNumber" value={node.data.courseNumber} onChange={e => handleInputChange(e, index)} /></p>
-                <p>Full Name: <input name="fullName" value={node.data.fullName} onChange={e => handleInputChange(e, index)} /></p>
-                <p>Description: <input name="description" value={node.data.description} onChange={e => handleInputChange(e, index)} /></p>
-                <p>Prerequisites: {node.data.prerequisites.map((prereq) => <span key={prereq} onClick={() => moveToCorequisites(prereq, index)}>{prereq}</span>)}</p>
-                <p>Corequisite: {node.data.corequisites.map((coreq) => <span key={coreq} onClick={() => moveToPrerequisites(coreq, index)}>{coreq}</span>)}</p>
+    return (
+      <div className="flex flex-col items-center gap-4 rounded-box bg-base-200 max-w-md p-4">
+        {selectedNodes.length === 0 && <p className="text-center w-full">Select a node to edit its properties</p>}
+        {selectedNodes.map((node, index) => (
+          <div key={node.id} className="flex flex-col gap-2 w-full">
+            <label className="font-bold text-xl">Label:</label>
+            <input name="label" value={node.data.label} onChange={e => handleInputChange(e, index)} className="input input-bordered bg-gray-700 text-white" />
+            <label className="font-bold text-xl">Course Number:</label>
+            <input name="courseNumber" value={node.data.courseNumber} onChange={e => handleInputChange(e, index)} className="input input-bordered bg-gray-700 text-white" />
+            <label className="font-bold text-xl">Full Name:</label>
+            <input name="fullName" value={node.data.fullName} onChange={e => handleInputChange(e, index)} className="input input-bordered bg-gray-700 text-white" />
+            <label className="font-bold text-xl">Description:</label>
+            <input name="description" value={node.data.description} onChange={e => handleInputChange(e, index)} className="input input-bordered bg-gray-700 text-white" />
+            <label className="font-bold text-xl">Prerequisites:</label>
+            <div className="flex gap-2 flex-wrap justify-center">
+              {!node.data.prerequisites.length && <span className="text-gray-500">No prerequisites</span>}
+              {node.data.prerequisites.map((prereq) => 
+                <span key={prereq} onClick={() => moveToCorequisites(prereq, index)} className="badge badge-primary cursor-pointer">{prereq}</span>
+              )}
             </div>
+            <label className="font-bold text-xl">Corequisite:</label>
+            <div className="flex gap-2 flex-wrap justify-center">
+              {!node.data.corequisites.length && <span className="text-gray-500">No corequisites</span>}
+              {node.data.corequisites.map((coreq) => 
+                <span key={coreq} onClick={() => moveToPrerequisites(coreq, index)} className="badge badge-primary cursor-pointer">{coreq}</span>
+              )}
+            </div>
+          </div>
         ))}
-    </div>
-  );
+      </div>
+    );
 }

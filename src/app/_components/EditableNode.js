@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, Position} from 'reactflow';
 
 export default function EditableNode ({ data, isConnectable}) {
     // Function to handle changes in the node data
