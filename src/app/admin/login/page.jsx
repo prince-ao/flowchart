@@ -7,7 +7,7 @@ import {
   EyeClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { login } from "@/utils/authentication";
+import { login, loginLocally } from "@/utils/authentication";
 
 export default function AdminLogin() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -45,14 +45,16 @@ export default function AdminLogin() {
     setAuthError(false);
 
     const auth_response = login(authValues);
+    const auth_response_locally = loginLocally(authValues);
 
     clearAuthValues();
     setLoading(false);
 
-    if (auth_response) {
+    if (auth_response || auth_response_locally) {
       router.push("/admin/home");
     } else {
       setAuthError(true);
+      setPasswordVisible(false);
     }
   }
 
