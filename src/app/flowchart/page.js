@@ -1,9 +1,26 @@
+/**
+ * This file defines a Flowchart component for use in a React application.
+ * The component is designed to be used with the reactflow library, which provides
+ * a way to create and manipulate a flowchart-like network of nodes.
+ * 
+ * The Flowchart component fetches data from a JSON file and uses it to create a flowchart.
+ * It also provides a way to customize the color of the nodes based on their type.
+ * 
+ * The component uses the useState and useEffect hooks from React to manage the state of the nodes and edges,
+ * and to fetch the data when the component mounts.
+ * 
+ * The nodeColor function is used to determine the color of a node based on its type.
+ * 
+ * The component is styled using Tailwind CSS.
+ */
+
 "use client"
 import { useEffect, useState } from "react"
 import ReactFlow, { Background, MiniMap, Controls } from "reactflow"
 
 import 'reactflow/dist/style.css';
 
+// Function to determine the color of a node based on its type
 const nodeColor = (node) => {
   switch (node.type) {
     case 'input':
@@ -16,16 +33,17 @@ const nodeColor = (node) => {
 };
 
 export default function Flowchart() {
+  // State for the nodes and edges in the flowchart
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
   /* Fetch the flowchart data from the JSON file 
   and set the nodes and edges state when the component mounts */
-  
   useEffect(() => {
     fetch('flowchart.json')
       .then(res => res.json())
       .then(courses => {
+        // Create nodes from the course data
         const nodes = courses.map(course => ({
           id: course.id,
           type: course.nodeType,
@@ -34,6 +52,7 @@ export default function Flowchart() {
           position: { x: course.position.x, y: course.position.y },
         }));
 
+        // Create edges from the course data
         const edges = courses.flatMap(course => [
           ...course.prerequisites.map(prerequisite => ({
             id: 'e' + prerequisite + '-' + course.id,
@@ -51,6 +70,7 @@ export default function Flowchart() {
           })),
         ]);
 
+        // Set the state for the nodes and edges
         setNodes(nodes);
         setEdges(edges);
       });
