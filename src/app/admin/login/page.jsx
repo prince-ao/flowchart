@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import {
   PersonIcon,
@@ -8,6 +7,7 @@ import {
   EyeClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
+import { login } from "@/utils/authentication";
 
 export default function AdminLogin() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -17,10 +17,6 @@ export default function AdminLogin() {
     password: "",
   });
   const [authError, setAuthError] = useState(false);
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
   const router = useRouter();
 
   function clearAuthValues() {
@@ -47,33 +43,27 @@ export default function AdminLogin() {
   async function handleLogin() {
     setLoading(true);
     setAuthError(false);
-    const emailRegex =
-      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    if (!emailRegex.test(authValues.email)) {
-      setLoading(false);
-      setAuthError(true);
-      clearAuthValues();
-      return;
-    }
-    const { data, error } = await supabase.auth.signInWithPassword(authValues);
+
+    const auth_response = login(authValues);
+
+    clearAuthValues();
     setLoading(false);
-    if (!error) {
-      localStorage.setItem("BCuRm", data.session.access_token); // figure out how to stop cross-side scripting
-      clearAuthValues();
+
+    if (auth_response) {
       router.push("/admin/home");
     } else {
-      clearAuthValues();
       setAuthError(true);
     }
   }
 
-  const handleAuthChange = (event) => {
+  function handleAuthChange(event) {
     const { name, value } = event.target;
     setAuthValues({
       ...authValues,
       [name]: value,
     });
-  };
+  }
+
   return (
     <main className="h-lvh flex justify-center items-center">
       <dialog id="error_modal" className="modal">
