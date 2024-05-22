@@ -1,3 +1,24 @@
+/**
+ * This file defines a DragNodes component
+ * The component is designed to be used with the reactflow library, which provides
+ * a way to create and manipulate a flowchart-like network of nodes.
+ * 
+ * The DragNodes component allows users to drag a "Class Node" into a flowchart.
+ * It also provides a way to save the current state of the nodes in the flowchart to a JSON file.
+ * 
+ * The component uses the useState and useRef hooks from React to manage the name of the file to be saved
+ * and a reference to a download link, respectively.
+ * 
+ * The component also uses the useNodes hook from reactflow to access the current state of the nodes in the flowchart.
+ * 
+ * The onDragStart function is used to set the data and effect for the drag operation.
+ * 
+ * The saveNodes function is used to create a clean copy of the nodes (with only the necessary data),
+ * convert it to a JSON string, create a data URL with the JSON string, and trigger a download of the data URL.
+ * 
+ * The component is styled using Tailwind CSS.
+ */
+
 import React, { useState, useRef } from 'react';
 import { useNodes } from 'reactflow';
 

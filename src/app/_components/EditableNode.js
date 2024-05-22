@@ -1,3 +1,16 @@
+/**
+ * This file defines an EditableNode component
+ * The component is designed to be used with the reactflow library, which provides
+ * a way to create and manipulate a flowchart-like network of nodes.
+ * 
+ * The EditableNode component displays data about a course, including its number and full name.
+ * It also provides handles on all four sides that can be used to create connections to other nodes.
+ * 
+ * The component uses the useCallback hook from React to create a function that updates the node's data
+ * 
+ * The component is styled using Tailwind CSS.
+ */
+
 import { useCallback } from 'react';
 import { Handle, Position} from 'reactflow';
 
