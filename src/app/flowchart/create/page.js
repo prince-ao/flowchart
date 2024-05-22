@@ -19,7 +19,7 @@
  * 
  * The component is styled using Tailwind CSS.
  */
-
+"use client"
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import ReactFlow, { 
     Controls, 
@@ -127,8 +127,15 @@ export default function CreateFlowchart() {
         output: EditableNode,
     }), []);
 
+    const dndflowStyle = {
+        display: 'flex',
+        flexGrow: 1,
+        height: '100%',
+        width: '100%',
+    };
+
     return (
-        <div className="dndflow">
+        <div className=" flex flex-grow-1 h-100 w-100 md:flex-row flex-col ">
             <ReactFlowProvider>
                 <div className="h-screen w-screen" ref={reactFlowWrapper}>
                     <ReactFlow

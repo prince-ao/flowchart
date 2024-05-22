@@ -51,7 +51,7 @@ export default function DragNodes() {
   };
 
   return (
-    <aside className="p-6 bg-white shadow-lg rounded-lg space-y-4">
+    <aside className="h-screen md:w-1/4 p-6 bg-white shadow-lg rounded-lg space-y-4">
       <h2 className="text-2xl font-bold text-gray-900">Instructions</h2>
       <p className="text-gray-600">You can drag the "Class Node" to the pane on the left to create a new node in the flowchart.</p>
       <h3 className="text-xl font-bold text-gray-900">Key</h3>

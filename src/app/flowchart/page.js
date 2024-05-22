@@ -13,7 +13,6 @@
  * 
  * The component is styled using Tailwind CSS.
  */
-
 "use client"
 import { useEffect, useState } from "react"
 import ReactFlow, { Background, MiniMap, Controls } from "reactflow"
