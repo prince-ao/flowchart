@@ -14,7 +14,10 @@ export default function AdminHome() {
 
   useEffect(() => {
     (async () => {
-      if (!isLoggedIn()) {
+      const loggedIn = await isLoggedIn();
+
+      if (!loggedIn) {
+        console.log("here");
         goToLoginError();
       }
     })();
