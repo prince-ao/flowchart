@@ -64,7 +64,7 @@ export default function DragNodes() {
         Class Node
       </div>
       <input className="mt-2 mb-2 input input-sm" type="text" value={fileName} onChange={(e) => setFileName(e.target.value)} />
-      <button className="btn btn-blue">Save Nodes</button>
+      <button className="btn btn-blue" onClick={saveNodes}>Save Nodes</button>
       <a ref={downloadLink} className="hidden"/>
     </aside>
   );
