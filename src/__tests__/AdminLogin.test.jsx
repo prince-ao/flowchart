@@ -32,7 +32,7 @@ describe("Admin Login", () => {
     });
   });
 
-  it("should go to the admin homepage valid login is provided", async () => {
+  it("should go to the admin homepage when valid login is provided", async () => {
     const pushMock = jest.fn();
     useRouter.mockReturnValue({ push: pushMock });
 
