@@ -17,11 +17,15 @@ export default function AdminHome() {
       const loggedIn = await isLoggedIn();
 
       if (!loggedIn) {
-        console.log("here");
         goToLoginError();
       }
     })();
   }, []);
 
-  return <main className="h-lvh flex justify-center items-center"></main>;
+  return (
+    <main
+      className="h-lvh flex justify-center items-center"
+      role="login-home"
+    ></main>
+  );
 }

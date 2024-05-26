@@ -20,7 +20,7 @@ const authCreds = {
 /**
  * Logs admin in using supabase
  * @param {Admin} authValues - the auth credentials
- * @returns {boolean} true for success, false for failure
+ * @returns {Promise<boolean>} true for success, false for failure
  */
 export async function login(authValues) {
   const emailRegex =

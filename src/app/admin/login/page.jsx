@@ -7,7 +7,7 @@ import {
   EyeClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { login, loginLocally } from "@/utils/authentication";
+import { login, loginLocally } from "../../../utils/authentication";
 
 export default function AdminLogin() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -26,25 +26,26 @@ export default function AdminLogin() {
     });
   }
 
-  useEffect(() => {
-    const errorFromHome = localStorage.getItem("homeAuthFailed");
+  // useEffect(() => {
+  //   const errorFromHome = localStorage.getItem("homeAuthFailed");
+  //   console.log(errorFromHome);
 
-    if (errorFromHome) {
-      document.getElementById("error_modal").showModal();
+  //   if (errorFromHome) {
+  //     document.getElementById("error_modal").showModal();
 
-      setTimeout(() => {
-        document.getElementById("error_modal").close();
-      }, 5 * 1e3);
-    }
+  //     setTimeout(() => {
+  //       document.getElementById("error_modal").close();
+  //     }, 5 * 1e3);
+  //   }
 
-    localStorage.removeItem("homeAuthFailed");
-  }, []);
+  //   localStorage.removeItem("homeAuthFailed");
+  // }, []);
 
   async function handleLogin() {
     setLoading(true);
     setAuthError(false);
 
-    const auth_response = login(authValues);
+    const auth_response = await login(authValues);
     const auth_response_locally = loginLocally(authValues);
 
     clearAuthValues();
