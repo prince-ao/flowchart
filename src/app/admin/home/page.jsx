@@ -1,10 +1,10 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/utils/authentication";
+import { isLoggedIn, logout, withAuth } from "@/utils/authentication";
 
-// change icons from svg to radix
-export default function AdminHome() {
+function AdminHome() {
+  const [isAuth, setIsAuth] = useState(false);
   const router = useRouter();
 
   function goToLoginError() {
@@ -12,20 +12,38 @@ export default function AdminHome() {
     router.push("/admin/login");
   }
 
-  useEffect(() => {
-    (async () => {
-      const loggedIn = await isLoggedIn();
+  function handleLogout() {
+    logout();
+    router.push("/admin/login");
+  }
 
-      if (!loggedIn) {
-        goToLoginError();
-      }
-    })();
+  useEffect(() => {
+    setTimeout(() => {
+      setIsAuth(true);
+    }, 500);
   }, []);
 
   return (
-    <main
-      className="h-lvh flex justify-center items-center"
-      role="login-home"
-    ></main>
+    <main className="h-lvh flex justify-center items-center" role="login-home">
+      {isAuth ? (
+        <button className="btn btn-primary" onClick={handleLogout}>
+          Log out
+        </button>
+      ) : (
+        <div className="absolute h-lvh w-lvw z-20 flex items-center justify-center">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      )}
+    </main>
   );
 }
+
+export default withAuth(
+  AdminHome,
+  () => {},
+  () => {
+    localStorage.setItem("homeAuthFailed", "true");
+  },
+  "/admin/login",
+  ""
+);
