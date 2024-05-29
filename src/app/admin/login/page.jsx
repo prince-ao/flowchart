@@ -7,9 +7,9 @@ import {
   EyeClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { login } from "@/utils/authentication";
+import { login, loginLocally, withAuth } from "../../../utils/authentication";
 
-export default function AdminLogin() {
+function AdminLogin() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [authValues, setAuthValues] = useState({
@@ -28,6 +28,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     const errorFromHome = localStorage.getItem("homeAuthFailed");
+    console.log(errorFromHome);
 
     if (errorFromHome) {
       document.getElementById("error_modal").showModal();
@@ -44,15 +45,17 @@ export default function AdminLogin() {
     setLoading(true);
     setAuthError(false);
 
-    const auth_response = login(authValues);
+    const auth_response = await login(authValues);
+    const auth_response_locally = loginLocally(authValues);
 
     clearAuthValues();
     setLoading(false);
 
-    if (auth_response) {
+    if (auth_response || auth_response_locally) {
       router.push("/admin/home");
     } else {
       setAuthError(true);
+      setPasswordVisible(false);
     }
   }
 
@@ -153,3 +156,11 @@ export default function AdminLogin() {
     </main>
   );
 }
+
+export default withAuth(
+  AdminLogin,
+  () => {},
+  () => {},
+  "",
+  "/admin/home"
+);
