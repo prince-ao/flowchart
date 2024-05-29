@@ -16,9 +16,16 @@ const nodeColor = (node) => {
   }
 };
 
+const DisplayState = {
+  LOADING: 0,
+  SHOW: 1,
+  ERROR: 2,
+};
+
 export default function FlowchartsYear({ params }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
+  const [displayState, setDisplayState] = useState(DisplayState.LOADING);
 
   useEffect(() => {
     (async () => {
@@ -26,6 +33,11 @@ export default function FlowchartsYear({ params }) {
         .from("flowcharts")
         .select("flowchart_json")
         .eq("flowchart_year", params.year);
+
+      if (error || flowcharts.length === 0) {
+        setDisplayState(DisplayState.ERROR);
+        return;
+      }
 
       const courses = flowcharts[0].flowchart_json;
 
@@ -59,6 +71,7 @@ export default function FlowchartsYear({ params }) {
 
       setNodes(nodes);
       setEdges(edges);
+      setDisplayState(DisplayState.SHOW);
     })();
   }, []);
 
@@ -66,8 +79,9 @@ export default function FlowchartsYear({ params }) {
     <main>
       <h1>{params.year}</h1>
       <div className=" h-96">
-        {nodes.length === 0 && edges.length === 0 && <p>Loading...</p>}
-        {nodes.length !== 0 && edges.length !== 0 && (
+        {displayState === DisplayState.LOADING ? (
+          <p>Loading...</p>
+        ) : displayState === DisplayState.SHOW ? (
           <ReactFlow nodes={nodes} edges={edges} fitView>
             <MiniMap
               nodeColor={nodeColor}
@@ -78,6 +92,12 @@ export default function FlowchartsYear({ params }) {
             <Background color="#aaa" gap={16} />
             <Controls />
           </ReactFlow>
+        ) : displayState === DisplayState.ERROR ? (
+          <p className="text-error">
+            Flowchart for course year {params.year} not found.
+          </p>
+        ) : (
+          <></>
         )}
       </div>
     </main>
