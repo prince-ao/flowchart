@@ -21,10 +21,14 @@
 
 import React, { useState, useRef } from "react";
 import { useNodes } from "reactflow";
+import { supabase } from "@/utils/supabase";
 
 export default function DragNodes() {
   const nodes = useNodes();
-  const [fileName, setFileName] = useState("nodes.json");
+  const [fileName, setFileName] = useState("");
+  const [fileNameError, setFileNameError] = useState(false);
+  const [insertError, setInsertError] = useState({ value: false, text: "" });
+  const [insertSuccess, setInsertSuccess] = useState(false);
   const downloadLink = useRef();
 
   const onDragStart = (event, nodeType) => {
@@ -52,6 +56,43 @@ export default function DragNodes() {
     downloadLink.current.click();
   };
 
+  async function saveToSupabase() {
+    setInsertError({ value: false, text: "" });
+    if (!/^\d{4} - \d{4}$/.test(fileName)) {
+      setFileNameError(true);
+      return;
+    }
+
+    setFileNameError(false);
+
+    const cleanNodes = nodes.map((node) => ({
+      id: node.id,
+      courseName: node.data.courseNumber,
+      description: node.data.description,
+      fullName: node.data.fullName,
+      nodeType: node.type,
+      position: node.position,
+      prerequisites: node.data.prerequisites,
+      corequisites: node.data.corequisites,
+    }));
+
+    const flowchart_json = JSON.stringify(cleanNodes);
+
+    const { data, error } = await supabase
+      .from("flowcharts")
+      .insert([{ flowchart_json, flowchart_year: fileName }]);
+
+    setFileName("");
+    if (error) {
+      setInsertError({ value: true, text: error.message });
+    } else {
+      setInsertSuccess(true);
+      setTimeout(() => {
+        setInsertSuccess(false);
+      }, 4 * 1e3);
+    }
+  }
+
   return (
     <aside className="h-screen md:w-1/4 p-6 bg-white shadow-lg rounded-lg space-y-4">
       <h2 className="text-2xl font-bold text-gray-900">Instructions</h2>
@@ -73,13 +114,27 @@ export default function DragNodes() {
       >
         Class Node
       </div>
+      {/* change the input to make it more strict */}
+      {insertError.value && (
+        <p className="text-error">
+          error creating a flowchart: {insertError.text}
+        </p>
+      )}
+      {insertSuccess && <p className="text-success">New flowchart created!</p>}
       <input
-        className="mt-2 mb-2 input input-sm"
+        className={`mt-2 mb-2 input input-sm`}
         type="text"
         value={fileName}
+        placeholder="course year"
         onChange={(e) => setFileName(e.target.value)}
       />
-      <button className="btn btn-blue">Save Nodes</button>
+      <p className={`text-xs !mt-0 ${fileNameError ? "text-error" : ""}`}>
+        must be in the format <br />
+        &#123;start year&#125; - &#123;end year&#125;
+      </p>
+      <button className="btn btn-blue" onClick={saveToSupabase}>
+        Save Nodes
+      </button>
       <a ref={downloadLink} className="hidden" />
     </aside>
   );
