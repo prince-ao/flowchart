@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabase";
 import ReactFlow, { Background, MiniMap, Controls } from "reactflow";
+import { displayYear } from "@/utils/flowchart";
 
 import "reactflow/dist/style.css";
 
@@ -77,7 +78,7 @@ export default function FlowchartsYear({ params }) {
 
   return (
     <main>
-      <h1>{params.year}</h1>
+      <h1>{displayYear(params.year)}</h1>
       <div className=" h-[1100px]">
         {displayState === DisplayState.LOADING ? (
           <p>Loading...</p>
