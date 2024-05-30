@@ -1,4 +1,6 @@
 import { supabase } from "./supabase";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const authCreds = {
   email: process.env.NEXT_PUBLIC_GUARD_EMAIL,
