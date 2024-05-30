@@ -78,7 +78,7 @@ export default function FlowchartsYear({ params }) {
   return (
     <main>
       <h1>{params.year}</h1>
-      <div className=" h-96">
+      <div className=" h-[1100px]">
         {displayState === DisplayState.LOADING ? (
           <p>Loading...</p>
         ) : displayState === DisplayState.SHOW ? (

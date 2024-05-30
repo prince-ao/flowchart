@@ -1,30 +1,32 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
-import Header from "../_components/Header";
+import { useRouter } from "next/navigation";
+import Header from "../../_components/Header";
 
-const _color = "#6E01EF";
 const _size = 20;
 
 export default function FlowchartGuide() {
-  const [courseYear, setCourseYear] = useState("");
+  const [track, setTrack] = useState("");
+  const router = useRouter();
 
-  const videoRef = useRef(null);
+  function handleNextClick() {
+    localStorage.setItem("selected-track", track);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      video.play().catch((error) => {
-        console.error("Error trying to play the video:", error);
-      });
-    }
-  }, []);
+    setTimeout(() => {
+      router.push("/flowchart-guide/select-course-year");
+    }, 400);
+  }
+
   return (
     <main className="">
       <Header />
       <div className="min-h-screen-header flex justify-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
+          <h2 className="mb-8 text-2xl font-bold">
+            Select Computer Science Track
+          </h2>
           <div className="indicator">
             <div>
               {[...Array(3)].map((_, index) => (
@@ -46,26 +48,11 @@ export default function FlowchartGuide() {
               ))}
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
             </div>
-            {/* make the image responsive */}
-            {/* <img
-              src="https://picsum.photos/600/350"
-              alt="instruction for finding a student's flowchart"
-            /> */}
-            <video
-              ref={videoRef}
-              width="600"
-              height="350"
-              autoplay
-              loop
-              muted
-              playsinline
-            >
-              <source src="/videos/finding-course.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            {/* make a video */}
+            <img src="/images/degreeworks-track.png" width="600" height="350" />
           </div>
           <a
-            class="link link-primary"
+            className="link link-primary"
             href="https://degreeworks.cuny.edu/"
             target="_blank"
           >
@@ -73,23 +60,18 @@ export default function FlowchartGuide() {
           </a>
           <select
             className="select select-bordered w-full max-w-xs mt-16"
-            value={courseYear ? courseYear : null}
-            onChange={(e) => setCourseYear(e.target.value)}
+            value={track ? track : "Select Computer Science Track"}
+            onChange={(e) => setTrack(e.target.value)}
           >
-            <option disabled selected>
-              Select Computer Science course year
-            </option>
-            <option>2024-2025</option>
-            <option>2023-2024</option>
-            <option>2022-2023</option>
-            <option>2021-2022</option>
+            <option disabled>Select Computer Science Track</option>
+            <option>Computer Science BS</option>
+            <option>Computer Science - Mathematics BS</option>
+            <option>Computer Science Associates</option>
           </select>
-          {courseYear && (
-            <a href={`/flowcharts/${courseYear}`}>
-              <button className="btn btn-primary mt-4">
-                Go to course year flowchart
-              </button>
-            </a>
+          {track && (
+            <button className="btn btn-primary mt-4" onClick={handleNextClick}>
+              Next
+            </button>
           )}
         </div>
       </div>
