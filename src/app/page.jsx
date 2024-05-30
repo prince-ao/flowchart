@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center text-black ">
@@ -66,9 +67,6 @@ export default function Home() {
                   <li>
                     <a>2021 - 2022 </a>
                   </li>
-                  <li>
-                    <a>FAQ </a>
-                  </li>
                 </ul>
               </details>
             </li>
@@ -114,8 +112,9 @@ export default function Home() {
           {/* <img src="edimage.png" className=" w-25 h-25  xs:w-25 xs:h-10 " /> */}
         </div>
         <div id="item2" class="carousel-item w-full ">
-        <div class="ml-10 sm:mt-40 mt-10 font-bold sm:text-xl ">
-        Map your academic path with ease using our online flowchart tool <div>
+          <div class="ml-10 sm:mt-40 mt-10 font-bold sm:text-xl ">
+            Map your academic path with ease using our online flowchart tool{" "}
+            <div>
               {" "}
               {/* <Link href="/flowchart/create">
               <a className="btn btn-secondary">Create Your Own Flowchart</a> 
@@ -153,44 +152,45 @@ export default function Home() {
         Some Text here
       </div> */}
 
-        <div className="hidden lg:flex  items-center justify-center gap-4 ">
+      <div className="hidden lg:flex  items-center justify-center gap-4 ">
         <div className="w-full flex flex-col items-center ">
-
           <figure className="w-full flex justify-center">
             <img src="flowchart.png" alt="flowchart" className="w-3/4" />
           </figure>
         </div>
         <div className="w-full flex flex-col ">
           <div className="">
-          <p className="text-bold  text-4xl">Flowchart </p>
-            <p  className="text-bold  text-2xl">Plan your path to success</p>
+            <p className="text-bold  text-4xl">Flowchart </p>
+            <p className="text-bold  text-2xl">Plan your path to success</p>
             <Link href="/flowchart/create">
-             <button className="btn btn-secondary mt-5">Create Your Own Flowchart</button>
-          </Link> </div>
+              <button className="btn btn-secondary mt-5">
+                Create Your Own Flowchart
+              </button>
+            </Link>{" "}
+          </div>
         </div>
       </div>
       <div className="hidden lg:flex  items-center justify-center gap-4 ">
         <div className="w-full flex flex-col items-center ">
-   <div className="">
+          <div className="">
             <p className="text-bold  text-4xl">Degree Works</p>
-            <p className="text-bold  text-2xl">Look into your four year degree map</p>
+            <p className="text-bold  text-2xl">
+              Look into your four year degree map
+            </p>
             <Link href="/flowchart/create">
-             <button className="btn btn-secondary mt-5">Create Your Own Flowchart</button>
-          </Link> 
+              <button className="btn btn-secondary mt-5">
+                Create Your Own Flowchart
+              </button>
+            </Link>
           </div>
-      
         </div>
-        <div className="w-full  flex flex-col items-center  ">  
+        <div className="w-full  flex flex-col items-center  ">
           <figure className="w-full flex justify-center">
             <img src="degree.png" alt="flowchart" className="w-3/4" />
           </figure>
-       
         </div>
       </div>
 
-
-
-      
       <div className="w-84 lg:hidden flex flex-col sm:flex-row items-center justify-center gap-4 p-6 ">
         <div className="card shadow-xl w-full sm:w-1/2 flex flex-col items-center p-6 bg-white rounded-lg">
           <h2 className="card-title text-center mb-4">
