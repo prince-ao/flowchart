@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { isLoggedIn } from "@/utils/authentication";
-import { supabase } from "@/utils/supabase";
+import { getVisibleYears } from "@/utils/flowchart";
 
 // change icons from svg to radix
 export default function Flowcharts() {
@@ -12,11 +12,10 @@ export default function Flowcharts() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      let { data: flowcharts, error } = await supabase
-        .from("flowcharts")
-        .select("flowchart_year");
 
-      setFlowcharts(flowcharts.map((flowchart) => flowchart.flowchart_year));
+      const course_years = await getVisibleYears();
+      setFlowcharts(course_years);
+
       setLoading(false);
     })();
   }, []);

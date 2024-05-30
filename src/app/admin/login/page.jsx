@@ -26,6 +26,12 @@ function AdminLogin() {
     });
   }
 
+  // add a feature to hide courses for students
+
+  // allow students to build flowcharts
+
+  // add computer science math and associates
+
   useEffect(() => {
     const errorFromHome = localStorage.getItem("homeAuthFailed");
     console.log(errorFromHome);
