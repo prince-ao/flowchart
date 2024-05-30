@@ -22,13 +22,51 @@ export default function FlowchartGuide() {
   return (
     <main className="">
       <Header />
+      <dialog id="info-modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">
+            How to find computer science track?
+          </h3>
+          <ol className="list-decimal list-inside mt-4">
+            <li>
+              Go to{" "}
+              <a
+                class="link"
+                href="https://degreeworks.cuny.edu/"
+                target="_blank"
+              >
+                degreeworks
+              </a>
+            </li>
+            <li>
+              Look for <span className="font-bold">Major</span> in the first
+              section
+            </li>
+            <li>
+              Your computer science track is to the right of{" "}
+              <span className="font-bold">Major</span>
+            </li>
+          </ol>
+
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
       <div className="min-h-screen-header flex justify-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
           <h2 className="mb-8 text-2xl font-bold">
             Select Computer Science Track
           </h2>
           <div className="indicator">
-            <div>
+            <button
+              onClick={() => document.getElementById("info-modal").showModal()}
+            >
               {[...Array(3)].map((_, index) => (
                 <motion.div
                   key={index}
@@ -47,7 +85,7 @@ export default function FlowchartGuide() {
                 />
               ))}
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
-            </div>
+            </button>
             {/* make a video */}
             <img src="/images/degreeworks-track.png" width="600" height="350" />
           </div>
