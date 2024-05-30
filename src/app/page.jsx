@@ -103,7 +103,9 @@ export default function Home() {
           </ul>
         </div>
         <div className="navbar-end">
-          <a className="btn btn-secondary">Get Started</a>
+          <a href="/flowchart-guide/select-cs-track">
+            <button className="btn btn-secondary">Get Started</button>
+          </a>
         </div>
       </div>
 
@@ -112,8 +114,9 @@ export default function Home() {
           <div class="ml-10 sm:mt-40 mt-10 font-bold sm:text-xl ">
             Unlock Your Potential and Navigate Your Way to Success{" "}
             <div>
-              {" "}
-              <a className="btn btn-secondary">Get Started</a>
+              <a href="/flowchart-guide/select-cs-track">
+                <button className="btn btn-secondary">Get Started</button>
+              </a>
             </div>
           </div>
 

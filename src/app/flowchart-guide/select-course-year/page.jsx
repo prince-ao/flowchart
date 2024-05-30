@@ -1,32 +1,89 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
-import Header from "../_components/Header";
+import Header from "../../_components/Header";
 
 const _color = "#6E01EF";
 const _size = 20;
 
 export default function FlowchartGuide() {
   const [courseYear, setCourseYear] = useState("");
+  const [track, setTrack] = useState("");
+  const router = useRouter();
 
   const videoRef = useRef(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      video.play().catch((error) => {
-        console.error("Error trying to play the video:", error);
-      });
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    const track = localStorage.getItem("selected-track");
+
+    if (!track) {
+      router.replace("/flowchart-guide/select-cs-track");
+    } else {
+      setTrack(track);
+
+      const video = videoRef.current;
+
+      if (video) {
+        video.play().catch((error) => {
+          console.error("Error trying to play the video:", error);
+        });
+      }
+
+      localStorage.removeItem("selected-track");
     }
-  }, []);
+  }, [router]);
   return (
     <main className="">
       <Header />
+      <dialog id="info-modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">How to find your course year?</h3>
+          <ol className="list-decimal list-inside mt-4">
+            <li>
+              Go to{" "}
+              <a
+                class="link"
+                href="https://degreeworks.cuny.edu/"
+                target="_blank"
+              >
+                degreeworks
+              </a>
+            </li>
+            <li>
+              Look for the section with your computer science major (typically
+              the third section)
+            </li>
+            <li>
+              Look for <span className="font-bold">Year</span> in the line
+              underneath that
+            </li>
+            <li>Your course year should be to the right of that</li>
+          </ol>
+
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
       <div className="min-h-screen-header flex justify-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
+          <h2 className="mb-8 text-2xl font-bold text-center">
+            Select Computer Science Course Year
+          </h2>
           <div className="indicator">
-            <div>
+            <button
+              onClick={() => document.getElementById("info-modal").showModal()}
+            >
               {[...Array(3)].map((_, index) => (
                 <motion.div
                   key={index}
@@ -45,8 +102,8 @@ export default function FlowchartGuide() {
                 />
               ))}
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
-            </div>
-            {/* make the image responsive */}
+            </button>
+            {/* make the video responsive */}
             {/* <img
               src="https://picsum.photos/600/350"
               alt="instruction for finding a student's flowchart"
@@ -55,17 +112,17 @@ export default function FlowchartGuide() {
               ref={videoRef}
               width="600"
               height="350"
-              autoplay
+              autoPlay
               loop
               muted
-              playsinline
+              playsInline
             >
               <source src="/videos/finding-course.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
           <a
-            class="link link-primary"
+            className="link link-primary"
             href="https://degreeworks.cuny.edu/"
             target="_blank"
           >
@@ -73,12 +130,12 @@ export default function FlowchartGuide() {
           </a>
           <select
             className="select select-bordered w-full max-w-xs mt-16"
-            value={courseYear ? courseYear : null}
+            value={
+              courseYear ? courseYear : "Select Computer Science Course Year"
+            }
             onChange={(e) => setCourseYear(e.target.value)}
           >
-            <option disabled selected>
-              Select Computer Science course year
-            </option>
+            <option disabled>Select Computer Science Course Year</option>
             <option>2024-2025</option>
             <option>2023-2024</option>
             <option>2022-2023</option>
