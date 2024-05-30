@@ -9,7 +9,9 @@ export async function getVisibleYears() {
     throw new Error(error.message);
   }
 
-  flowcharts = flowcharts.map((flowchart) => flowchart.flowchart_year);
+  let course_years = flowcharts.map((flowchart) =>
+    flowchart.flowchart_year.split("-").join(" - ")
+  );
 
-  return flowcharts;
+  return course_years;
 }

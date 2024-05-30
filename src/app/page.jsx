@@ -1,6 +1,18 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { getVisibleYears } from "@/utils/flowchart";
 import Link from "next/link";
 
 export default function Home() {
+  const [courseYears, setCourseYears] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const courseYears = await getVisibleYears();
+      setCourseYears(courseYears);
+    })();
+  }, []);
   return (
     <main className="flex min-h-screen flex-col items-center text-black ">
       {/* navbar */}
@@ -55,18 +67,20 @@ export default function Home() {
               <a>Home</a>
             </li>
             <li>
+              {/*
+                        <li key={i}>
+                          <a href={`/flowcharts/${year}`}>{year}</a>
+                      </li>*/}
               <details>
                 <summary>Flowchart</summary>
-                <ul className="p-2  text-black">
-                  <li>
-                    <a>2019 - 2020 </a>
-                  </li>
-                  <li>
-                    <a>2021 - 2022 </a>
-                  </li>
-                  <li>
-                    <a>2021 - 2022 </a>
-                  </li>
+                {/* fix the static text size */}
+                <ul className="p-2 text-black w-[180px]">
+                  {courseYears.length > 0 &&
+                    courseYears.map((year, i) => (
+                      <li key={i}>
+                        <a href={`/flowcharts/${year}`}>{year}</a>
+                      </li>
+                    ))}
                 </ul>
               </details>
             </li>
@@ -162,11 +176,11 @@ export default function Home() {
           <div className="">
             <p className="text-bold  text-4xl">Flowchart </p>
             <p className="text-bold  text-2xl">Plan your path to success</p>
-            <Link href="/flowchart/create">
+            {/* <Link href="/flowchart/create">
               <button className="btn btn-secondary mt-5">
                 Create Your Own Flowchart
               </button>
-            </Link>{" "}
+            </Link>{" "} */}
           </div>
         </div>
       </div>
@@ -177,11 +191,11 @@ export default function Home() {
             <p className="text-bold  text-2xl">
               Look into your four year degree map
             </p>
-            <Link href="/flowchart/create">
+            {/* <Link href="/flowchart/create">
               <button className="btn btn-secondary mt-5">
                 Create Your Own Flowchart
               </button>
-            </Link>
+            </Link> */}
           </div>
         </div>
         <div className="w-full  flex flex-col items-center  ">
