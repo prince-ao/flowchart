@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabase";
-import ReactFlow, { Background, MiniMap, Controls } from "reactflow";
+import ReactFlow, { Background, MiniMap, Controls, MarkerType } from "reactflow";
 import { displayYear } from "@/utils/flowchart";
-
 import "reactflow/dist/style.css";
 
 const nodeColor = (node) => {
@@ -13,7 +12,7 @@ const nodeColor = (node) => {
     case "output":
       return "#6865A5";
     default:
-      return "#ff0072";
+      return "#FFF";
   }
 };
 
@@ -27,6 +26,25 @@ export default function FlowchartsYear({ params }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [displayState, setDisplayState] = useState(DisplayState.LOADING);
+  const [tooltip, setTooltip] = useState({display: false, content: "", x: 0, y: 0});
+
+  const handleMouseEnter = (event, node) => {
+    setTooltip({
+      display: true,
+      content: node.data.fullName,
+      x: event.pageX,
+      y: event.pageY
+    });
+  };
+  
+  const handleMouseLeave = () => {
+    setTooltip({
+      display: false,
+      content: "",
+      x: 0,
+      y: 0
+    });
+  };
 
   useEffect(() => {
     (async () => {
@@ -45,10 +63,13 @@ export default function FlowchartsYear({ params }) {
       const nodes = courses.map((course) => ({
         id: course.id,
         type: course.nodeType,
-        data: { label: course.courseName },
+        data: { label: course.courseName, fullName: course.fullName, description: course.description},
         style: {
           backgroundColor: nodeColor({ type: "default" }),
-          color: "white",
+          border: '3px solid #79BDE8',
+          color: "black",
+          borderRadius: '0.375rem',
+          padding: '1rem', // p-4
         },
         position: { x: course.position.x, y: course.position.y },
       }));
@@ -58,17 +79,43 @@ export default function FlowchartsYear({ params }) {
           id: "e" + prerequisite + "-" + course.id,
           source: prerequisite,
           target: course.id,
-          type: "default",
+          type: 'bezier',
+          markerEnd: {
+            type: MarkerType.Arrow,
+            width: 10,
+            height: 10,
+            color: '#79BDE8',
+          },
+          style: {
+            stroke: '#79BDE8',
+            strokeWidth: 3,
+          },
           animated: true,
         })),
         ...course.corequisites.map((corequisite) => ({
           id: "e" + corequisite + "-" + course.id,
           source: corequisite,
           target: course.id,
-          type: "default",
+          type: 'bezier',
+          markerEnd: {
+            width: 10,
+            height: 10,
+            type: MarkerType.Arrow,
+            color: '#ff7f7f' // faded red
+          },
+          markerStart: {
+            width: 10,
+            height: 10,
+            type: MarkerType.Arrow,
+            color: '#ff7f7f' // faded red
+          },
+          style: {
+            stroke: '#ff7f7f', // faded red
+            strokeWidth: 3,
+          },
           animated: true,
         })),
-      ]);
+        ]);
 
       setNodes(nodes);
       setEdges(edges);
@@ -77,13 +124,17 @@ export default function FlowchartsYear({ params }) {
   }, []);
 
   return (
-    <main>
-      <h1>{displayYear(params.year)}</h1>
-      <div className=" h-[1100px]">
+    <main className="p-4 bg-gray-100">
+      <h1 className="text-2xl font-bold mb-4">{params.year}</h1>
+      <div className=" h-[90vh] bg-white p-4 rounded shadow">
+
         {displayState === DisplayState.LOADING ? (
-          <p>Loading...</p>
+          <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
-          <ReactFlow nodes={nodes} edges={edges} fitView>
+          <ReactFlow nodes={nodes} edges={edges}    
+          onNodeMouseEnter={handleMouseEnter}
+          onNodeMouseLeave={handleMouseLeave}
+          fitView>
             <MiniMap
               nodeColor={nodeColor}
               nodeStrokeWidth={3}
@@ -94,13 +145,21 @@ export default function FlowchartsYear({ params }) {
             <Controls />
           </ReactFlow>
         ) : displayState === DisplayState.ERROR ? (
-          <p className="text-error">
+          <p className="text-red-500">
             Flowchart for course year {params.year} not found.
           </p>
         ) : (
           <></>
         )}
       </div>
+      {tooltip.display && (
+        <div 
+          style={{position: 'absolute', top: tooltip.y, left: tooltip.x}}
+          className="bg-blue-500 text-white p-2 rounded-md shadow-lg max-w-xs"
+        >
+          {tooltip.content}
+        </div>
+    )}
     </main>
   );
 }
