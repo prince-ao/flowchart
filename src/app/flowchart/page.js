@@ -57,14 +57,14 @@ export default function Flowchart() {
             id: 'e' + prerequisite + '-' + course.id,
             source: prerequisite,
             target: course.id,
-            type: 'default',
+            type: 'smoothstep',
             animated: true,
           })),
           ...course.corequisites.map(corequisite => ({
             id: 'e' + corequisite + '-' + course.id,
             source: corequisite,
             target: course.id,
-            type: 'default',
+            type: 'smoothstep',
             animated: true,
           })),
         ]);
