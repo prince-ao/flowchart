@@ -1,9 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+import { supabase } from "./supabase";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const authCreds = {
   email: process.env.NEXT_PUBLIC_GUARD_EMAIL,
@@ -20,7 +17,7 @@ const authCreds = {
 /**
  * Logs admin in using supabase
  * @param {Admin} authValues - the auth credentials
- * @returns {boolean} true for success, false for failure
+ * @returns {Promise<boolean>} true for success, false for failure
  */
 export async function login(authValues) {
   const emailRegex =
@@ -74,4 +71,43 @@ export async function isLoggedIn() {
   }
 
   return false;
+}
+
+/**
+ * Logs admin out
+ * @returns {Promise<boolean>} true for success, false for failure
+ */
+export function logout() {
+  localStorage.removeItem("BCuRm");
+}
+
+/**
+ * Wrap component with auth check
+ */
+export function withAuth(
+  Component,
+  isLoggedInFn,
+  isNotLoggedInFn,
+  failureRouting,
+  successRouting
+) {
+  return function AuthenticatedComponent(props) {
+    const router = useRouter();
+    useEffect(() => {
+      (async () => {
+        const isLogged = await isLoggedIn();
+
+        if (!isLogged) {
+          isNotLoggedInFn();
+          console.log("here");
+          if (failureRouting) router.replace(failureRouting);
+        } else {
+          isLoggedInFn();
+          if (successRouting) router.replace(successRouting);
+        }
+      })();
+    }, []);
+
+    return <Component {...props} />;
+  };
 }

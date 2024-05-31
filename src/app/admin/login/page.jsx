@@ -7,9 +7,9 @@ import {
   EyeClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { login, loginLocally } from "@/utils/authentication";
+import { login, loginLocally, withAuth } from "../../../utils/authentication";
 
-export default function AdminLogin() {
+function AdminLogin() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [authValues, setAuthValues] = useState({
@@ -26,8 +26,15 @@ export default function AdminLogin() {
     });
   }
 
+  // add a feature to hide courses for students
+
+  // allow students to build flowcharts
+
+  // add computer science math and associates
+
   useEffect(() => {
     const errorFromHome = localStorage.getItem("homeAuthFailed");
+    console.log(errorFromHome);
 
     if (errorFromHome) {
       document.getElementById("error_modal").showModal();
@@ -44,7 +51,7 @@ export default function AdminLogin() {
     setLoading(true);
     setAuthError(false);
 
-    const auth_response = login(authValues);
+    const auth_response = await login(authValues);
     const auth_response_locally = loginLocally(authValues);
 
     clearAuthValues();
@@ -155,3 +162,11 @@ export default function AdminLogin() {
     </main>
   );
 }
+
+export default withAuth(
+  AdminLogin,
+  () => {},
+  () => {},
+  "",
+  "/admin/home"
+);
