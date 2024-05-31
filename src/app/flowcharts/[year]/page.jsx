@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabase";
 import ReactFlow, { Background, MiniMap, Controls, MarkerType } from "reactflow";
-
+import { displayYear } from "@/utils/flowchart";
 import "reactflow/dist/style.css";
 
 const nodeColor = (node) => {
@@ -127,6 +127,7 @@ export default function FlowchartsYear({ params }) {
     <main className="p-4 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">{params.year}</h1>
       <div className=" h-[90vh] bg-white p-4 rounded shadow">
+
         {displayState === DisplayState.LOADING ? (
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (

@@ -15,3 +15,7 @@ export async function getVisibleYears() {
 
   return course_years;
 }
+
+export function displayYear(year) {
+  return year.split("-").join(" - ");
+}

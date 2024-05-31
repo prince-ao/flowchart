@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getVisibleYears } from "@/utils/flowchart";
-import Link from "next/link";
+import { getVisibleYears, displayYear } from "@/utils/flowchart";
 
 export default function Home() {
   const [courseYears, setCourseYears] = useState([]);
@@ -78,7 +77,7 @@ export default function Home() {
                   {courseYears.length > 0 &&
                     courseYears.map((year, i) => (
                       <li key={i}>
-                        <a href={`/flowcharts/${year}`}>{year}</a>
+                        <a href={`/flowcharts/${year}`}>{displayYear(year)}</a>
                       </li>
                     ))}
                 </ul>
