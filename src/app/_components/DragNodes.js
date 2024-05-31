@@ -62,9 +62,9 @@ export default function DragNodes() {
       setFileNameError(true);
       return;
     }
-
+  
     setFileNameError(false);
-
+  
     const cleanNodes = nodes.map((node) => ({
       id: node.id,
       courseName: node.data.courseNumber,
@@ -75,13 +75,11 @@ export default function DragNodes() {
       prerequisites: node.data.prerequisites,
       corequisites: node.data.corequisites,
     }));
-
-    const flowchart_json = JSON.stringify(cleanNodes);
-
+  
     const { data, error } = await supabase
       .from("flowcharts")
-      .insert([{ flowchart_json, flowchart_year: fileName }]);
-
+      .insert([{ flowchart_json: cleanNodes, flowchart_year: fileName }]);
+  
     setFileName("");
     if (error) {
       setInsertError({ value: true, text: error.message });
