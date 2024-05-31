@@ -30,6 +30,7 @@ import ReactFlow, {
     addEdge,
     useNodesState,
     useEdgesState,
+    MarkerType,
     Panel } from 'reactflow';
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import 'reactflow/dist/style.css';
@@ -59,24 +60,29 @@ export default function CreateFlowchart() {
     // Function to handle connections between nodes
     const onConnect = useCallback((params) => {
         connectingNodeId.current = null;
-
+      
+        // Set the default markerEnd
+        let markerEnd = {
+          type: MarkerType.ArrowClosed,
+        };
+      
         // Add the new edge
-        setEdges((eds) => addEdge(params, eds));
-
+        setEdges((eds) => addEdge({ ...params, markerEnd }, eds));
+      
         // Add the source node to the target node's prerequisites list
         setNodes((ns) => ns.map((n) => {
-            if (n.id === params.target) {
-                return {
-                    ...n,
-                    data: {
-                        ...n.data,
-                        prerequisites: [...n.data.prerequisites, params.source],
-                    },
-                };
-            }
-            return n;
+          if (n.id === params.target) {
+            return {
+              ...n,
+              data: {
+                ...n.data,
+                prerequisites: [...n.data.prerequisites, params.source],
+              },
+            };
+          }
+          return n;
         }));
-    }, []);
+      }, [nodes]);
 
     // Function to handle drag over events
     const onDragOver = useCallback((event) => {
@@ -151,7 +157,7 @@ export default function CreateFlowchart() {
                         fitView
                     >
                         <Panel position="top-right">
-                            <NodeEditorPanel />
+                            <NodeEditorPanel setEdges={setEdges} />
                         </Panel> 
                         <Background />
                         <Controls />

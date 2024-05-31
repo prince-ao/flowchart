@@ -10,9 +10,9 @@
  */
 
 import { useState } from 'react';
-import ReactFlow, { useOnSelectionChange, useEdges, getConnectedEdges } from 'reactflow';
+import ReactFlow, { useOnSelectionChange, useEdges, getConnectedEdges, MarkerType } from 'reactflow';
  
-export default function NodeEditorPanel() {
+export default function NodeEditorPanel({ setEdges }) {
     // State for storing currently selected nodes
     const [selectedNodes, setSelectedNodes] = useState([]);
     // Get all edges in the graph
@@ -46,6 +46,22 @@ export default function NodeEditorPanel() {
         node.data.prerequisites = [...(node.data.prerequisites || []), nodeId];
       }
       setSelectedNodes(list);
+    
+      // Modify the edge
+      setEdges((eds) => eds.map((e) => {
+        if ((e.source === nodeId && e.target === node.id) || (e.source === node.id && e.target === nodeId)) {
+          return {
+            ...e,
+            markerStart: {
+              type: null
+            },
+            markerEnd: {
+              type: MarkerType.Arrow,
+            },
+          };
+        }
+        return e;
+      }));
     };
 
     // Move a node from prerequisites to corequisites
@@ -59,6 +75,22 @@ export default function NodeEditorPanel() {
         node.data.corequisites = [...(node.data.corequisites || []), nodeId];
       }
       setSelectedNodes(list);
+    
+      // Modify the edge
+      setEdges((eds) => eds.map((e) => {
+        if ((e.source === nodeId && e.target === node.id) || (e.source === node.id && e.target === nodeId)) {
+          return {
+            ...e,
+            markerStart: {
+              type: MarkerType.Arrow,
+            },
+            markerEnd: {
+              type: MarkerType.Arrow,
+            },
+          };
+        }
+        return e;
+      }));
     };
 
     // Render the component
