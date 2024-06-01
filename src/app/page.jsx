@@ -15,68 +15,36 @@ export default function Home() {
   }, []);
   return (
     <main className="flex min-h-screen flex-col items-center text-black ">
-      {/* navbar */}
       <Header navigator />
 
-      <div className="w-full xs:w-3/4 carousel  border border-gray-300 rounded-lg  lg:flex">
-        <div id="item1" className=" justify-between carousel-item w-full flex">
-          <div class="ml-10 sm:mt-40 mt-10 font-bold sm:text-xl ">
-            Unlock Your Potential and Navigate Your Way to Success{" "}
-            <div>
-              <a href="/flowchart-guide/select-cs-track">
-                <button className="btn btn-secondary">Get Started</button>
-              </a>
-            </div>
-          </div>
-
+      <div className="hero min-h-[70vh] bg-dotted-pattern bg-size-10">
+        <div className="hero-content flex-col lg:flex-row-reverse justify-around max-w-[100%]">
           <img
-            src="main.png"
-            className=" w-64 sm:w-3/4 h-64 sm:h-96"
-            alt="description"
+            src="/images/flowchart.gif"
+            className="w-1/2 lg:max-w-xl rounded-xl shadow-2xl z-0 border-4 border-primary lg:flex-shrink-0"
           />
-          {/* sm:w-24 sm:h-24 */}
-          {/* <img src="edimage.png" className=" w-25 h-25  xs:w-25 xs:h-10 " /> */}
-        </div>
-        <div id="item2" class="carousel-item w-full ">
-          <div class="ml-10 sm:mt-40 mt-10 font-bold sm:text-xl ">
-            Map your academic path with ease using our online flowchart tool{" "}
-            <div>
-              {" "}
-              {/* <Link href="/flowchart/create">
-              <a className="btn btn-secondary">Create Your Own Flowchart</a> 
-               </Link> */}
-            </div>
+          <div className="lg:flex-shrink flex flex-col lg:w-1/2">
+            <h1 className="text-2xl text-center lg:text-left lg:text-5xl xl:text-6xl font-bold">
+              Plan your college journey from{" "}
+              <span className="relative inline-block">
+                <div className="bg-secondary absolute bottom-1 lg:bottom-0 left-0 -z-10 h-2 lg:h-4 w-full"></div>
+                start to finish
+              </span>
+            </h1>
+            <p className="py-6 text-xs lg:text-lg xl:text-xl bg-white">
+              With our interactive flowchart, you can effortlessly plan and
+              build your entire college journey. Visualize your courses, track
+              your progress, and adjust your schedule with ease. Our tool makes
+              it simple to ensure you meet all your academic requirements while
+              staying on track to achieve your college goals in an easy and
+              visual manner.
+            </p>
+            <button className="btn btn-secondary !btn-lg self-center lg:self-start">
+              Get Started
+            </button>
           </div>
-          <img
-            src="file.png"
-            className=" w-64 sm:w-3/4 h-64 sm:h-96"
-            alt="description"
-          />
-        </div>
-        <div id="item3" class="carousel-item w-full ">
-          TBD
-        </div>
-        <div id="item4" class="carousel-item w-full ">
-          TBD
         </div>
       </div>
-      <div class="flex justify-center w-full py-2 gap-2 mb-10">
-        <a href="#item1" class="btn btn-xs">
-          1
-        </a>
-        <a href="#item2" class="btn btn-xs">
-          2
-        </a>
-        <a href="#item3" class="btn btn-xs">
-          3
-        </a>
-        <a href="#item4" class="btn btn-xs">
-          4
-        </a>
-      </div>
-      {/* <div className="hidden lg:flex  text-2xl mb-20">
-        Some Text here
-      </div> */}
 
       <div className="hidden lg:flex  items-center justify-center gap-4 ">
         <div className="w-full flex flex-col items-center ">
