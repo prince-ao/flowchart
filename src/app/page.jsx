@@ -1,27 +1,17 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { getVisibleYears, displayYear } from "@/utils/flowchart";
 import Header from "./_components/Header";
+import Footer from "./_components/Footer";
 
 export default function Home() {
-  const [courseYears, setCourseYears] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      const courseYears = await getVisibleYears();
-      setCourseYears(courseYears);
-    })();
-  }, []);
   return (
     <main className="flex min-h-screen flex-col items-center text-black ">
       <Header navigator />
 
-      <div className="hero min-h-[70vh] bg-dotted-pattern bg-size-10">
+      <div className="hero min-h-[80vh] bg-dotted-pattern bg-size-10">
         <div className="hero-content flex-col lg:flex-row-reverse justify-around max-w-[100%]">
           <img
             src="/images/flowchart.gif"
-            className="w-1/2 lg:max-w-xl rounded-xl shadow-2xl z-0 border-4 border-primary lg:flex-shrink-0"
+            className="w-1/2 lg:max-w-sm rounded-xl shadow-2xl z-0 border-4 border-primary lg:flex-shrink-0"
           />
           <div className="lg:flex-shrink flex flex-col lg:w-1/2">
             <h1 className="text-2xl text-center lg:text-left lg:text-5xl xl:text-6xl font-bold">
@@ -39,94 +29,76 @@ export default function Home() {
               staying on track to achieve your college goals in an easy and
               visual manner.
             </p>
-            <button className="btn btn-secondary !btn-lg self-center lg:self-start">
+            <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
               Get Started
             </button>
           </div>
         </div>
       </div>
 
-      <div className="hidden lg:flex  items-center justify-center gap-4 ">
-        <div className="w-full flex flex-col items-center ">
-          <figure className="w-full flex justify-center">
-            <img src="flowchart.png" alt="flowchart" className="w-3/4" />
-          </figure>
-        </div>
-        <div className="w-full flex flex-col ">
-          <div className="">
-            <p className="text-bold  text-4xl">Flowchart </p>
-            <p className="text-bold  text-2xl">Plan your path to success</p>
-            {/* <Link href="/flowchart/create">
-              <button className="btn btn-secondary mt-5">
-                Create Your Own Flowchart
-              </button>
-            </Link>{" "} */}
-          </div>
-        </div>
-      </div>
-      <div className="hidden lg:flex  items-center justify-center gap-4 ">
-        <div className="w-full flex flex-col items-center ">
-          <div className="">
-            <p className="text-bold  text-4xl">Degree Works</p>
-            <p className="text-bold  text-2xl">
-              Look into your four year degree map
-            </p>
-            {/* <Link href="/flowchart/create">
-              <button className="btn btn-secondary mt-5">
-                Create Your Own Flowchart
-              </button>
-            </Link> */}
-          </div>
-        </div>
-        <div className="w-full  flex flex-col items-center  ">
-          <figure className="w-full flex justify-center">
-            <img src="degree.png" alt="flowchart" className="w-3/4" />
-          </figure>
+      <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-around w-[100%]">
+        <img src="flowchart.png" alt="flowchart" className="w-7/8 lg:w-1/3" />
+        <div className="w-3/4 lg:w-1/3">
+          <h3 className="text-bold text-2xl lg:text-4xl font-bold">
+            View your course roadmap
+          </h3>
+          <p className="text-bold text-xs lg:text-lg mt-1 lg:mt-4">
+            Easily visualize your entire academic journey with our comprehensive
+            course roadmap feature. Stay on track by mapping out each semester,
+            ensuring you meet all prerequisites and graduation requirements.
+            With an intuitive, interactive design, you can seamlessly plan,
+            adjust, and optimize your course schedule to fit your academic goals
+            and personal preferences.
+          </p>
         </div>
       </div>
 
-      <div className="w-84 lg:hidden flex flex-col sm:flex-row items-center justify-center gap-4 p-6 ">
-        <div className="card shadow-xl w-full sm:w-1/2 flex flex-col items-center p-6 bg-white rounded-lg">
-          <h2 className="card-title text-center mb-4">
-            Create Your Own Flowchart
-          </h2>
-          <figure className="w-full flex justify-center">
-            <img src="flowchart.svg" alt="flowchart" className="mt-5" />
-          </figure>
-          <div className="card-body">
-            <p>Plan your path to success</p>
-          </div>
+      <div className="flex flex-col-reverse lg:flex-row items-center justify-center lg:justify-around w-[100%] mt-24">
+        <div className="w-3/4 lg:w-1/3 mt-6 lg:mt-0">
+          <h3 className="text-bold text-2xl lg:text-4xl font-bold">
+            Interact with your course roadmap
+          </h3>
+          <p className="text-bold text-xs lg:text-lg mt-1 lg:mt-4">
+            Explore your academic journey like never before with our interactive
+            course roadmap. Click on any course to reveal the required
+            prerequisites and discover the steps needed to reach your desired
+            classes. Easily navigate through your entire curriculum, understand
+            the relationships between courses, and make informed decisions about
+            your academic plan. This dynamic interaction ensures you have a
+            clear view of your educational path, helping you stay organized and
+            on track throughout your college career.
+          </p>
         </div>
-        <div className="card shadow-xl w-full sm:w-1/2 flex flex-col items-center p-6 bg-white rounded-lg">
-          <h2 className="card-title text-center mb-10">4 Year Degree Map</h2>
-          <figure className="w-full flex justify-center">
-            <img src="flowchart.svg" alt="flowchart" className="mt-5" />
-          </figure>
-          <div className="card-body">
-            <p>Plan your path to success</p>
-          </div>
+        <img src="degree.png" alt="flowchart" className="w-7/8 lg:w-1/3" />
+      </div>
+
+      <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-around w-[100%] mt-24">
+        <img src="flowchart.png" alt="flowchart" className="w-7/8 lg:w-1/3" />
+        <div className="w-3/4 lg:w-1/3">
+          <h3 className="text-bold text-2xl lg:text-4xl font-bold">
+            Plan your academic journey
+          </h3>
+          <p className="text-bold text-xs lg:text-lg mt-1 lg:mt-4">
+            Take charge of your education with our comprehensive planning tools.
+            Design a personalized academic plan that fits your goals and
+            timeline, ensuring you meet all the necessary requirements for
+            graduation. Visualize your entire college experience from start to
+            finish, balancing coursework, electives, and extracurricular
+            activities. With our intuitive interface, you can easily adjust your
+            schedule, explore different pathways, and stay on track to achieve
+            your academic aspirations. Make informed decisions and navigate your
+            college journey with confidence and ease.
+          </p>
         </div>
       </div>
 
-      {/* footer  */}
-      <footer class=" mt-10 w-full bg-gray-800 py-6">
-        <div class="container mx-auto flex flex-col items-center">
-          <nav class=" flex flex-wrap justify-center">
-            <a href="#" class="text-gray-300 hover:text-white px-4 py-2">
-              Home
-            </a>
-            <a href="#" class="text-gray-300 hover:text-white px-4 py-2">
-              About
-            </a>
-            <a href="#" class="text-gray-300 hover:text-white px-4 py-2">
-              Services
-            </a>
-            <a href="#" class="text-gray-300 hover:text-white px-4 py-2">
-              Contact
-            </a>
-          </nav>
-        </div>
-      </footer>
+      <div className="mt-16">
+        <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
+          Get Started
+        </button>
+      </div>
+
+      <Footer />
     </main>
   );
 }

@@ -37,11 +37,6 @@ export default function Header({ navigator }) {
               ></label>
               <ul className="menu p-4 w-60 min-h-full bg-primary text-white">
                 <li>
-                  <a href="/" className="p-[1rem]">
-                    Home
-                  </a>
-                </li>
-                <li>
                   <a className="p-[1rem]">About</a>
                 </li>
                 <li>
@@ -114,7 +109,7 @@ export default function Header({ navigator }) {
                     </div>
                   </div>
                 </li>
-                <a href="/flowchart-guide/select-cs-track" className="">
+                <a href="/flowchart-guide/select-cs-track" className="mt-6">
                   <button className="btn btn-secondary btn-md">
                     Get Started
                   </button>
@@ -135,9 +130,6 @@ export default function Header({ navigator }) {
           <>
             <div className="navbar-center hidden lg:flex ">
               <ul className="menu menu-horizontal px-1">
-                <li>
-                  <a href="/">Home</a>
-                </li>
                 <li>
                   <a href="#">About</a>
                 </li>

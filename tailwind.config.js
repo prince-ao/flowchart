@@ -17,7 +17,7 @@ module.exports = {
         "screen-header": "calc(100vh - 80px)",
       },
       backgroundImage: {
-        "dotted-pattern": "radial-gradient(circle, black 1px, transparent 1px)",
+        "dotted-pattern": "radial-gradient(circle, gray 1px, transparent 1px)",
       },
       backgroundSize: {
         "size-10": "30px 30px",
