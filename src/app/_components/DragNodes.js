@@ -19,9 +19,9 @@
  * The component is styled using Tailwind CSS.
  */
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
-import { supabase } from "@/utils/supabase";
+import { createNewFlowchart } from "@/utils/flowchart";
 
 export default function DragNodes() {
   const nodes = useNodes();
@@ -62,9 +62,9 @@ export default function DragNodes() {
       setFileNameError(true);
       return;
     }
-  
+
     setFileNameError(false);
-  
+
     const cleanNodes = nodes.map((node) => ({
       id: node.id,
       courseName: node.data.courseNumber,
@@ -75,20 +75,19 @@ export default function DragNodes() {
       prerequisites: node.data.prerequisites,
       corequisites: node.data.corequisites,
     }));
-  
-    const { data, error } = await supabase
-      .from("flowcharts")
-      .insert([{ flowchart_json: cleanNodes, flowchart_year: fileName }]);
-  
-    setFileName("");
-    if (error) {
-      setInsertError({ value: true, text: error.message });
-    } else {
+
+    try {
+      await createNewFlowchart(cleanNodes, fileName);
+
       setInsertSuccess(true);
       setTimeout(() => {
         setInsertSuccess(false);
       }, 4 * 1e3);
+    } catch (e) {
+      setInsertError({ value: true, text: e.message });
     }
+
+    setFileName("");
   }
 
   return (
@@ -111,6 +110,13 @@ export default function DragNodes() {
         draggable
       >
         Class Node
+      </div>
+      <div
+        className="p-2 bg-red-500 text-white cursor-move rounded"
+        onDragStart={(event) => onDragStart(event, "coreq")}
+        draggable
+      >
+        Coreq Node
       </div>
       {/* change the input to make it more strict */}
       {insertError.value && (
