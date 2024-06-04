@@ -49,9 +49,6 @@ import NodeEditorPanel from "@/app/_components/NodeEditorPanel";
 const initialNodes = [];
 const initialEdges = [];
 
-let id = 0;
-const getId = () => `${id++}`;
-
 export default function CreateFlowchart() {
   // References to the reactflow instance and the ID of the node being connected
   const reactFlowWrapper = useRef(null);
@@ -61,6 +58,21 @@ export default function CreateFlowchart() {
   // State for the nodes and edges in the flowchart
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  function idExists(id) {
+    for (const node of nodes) {
+      if (node.id === `${id}`) return true;
+    }
+    return false;
+  }
+
+  function getId() {
+    let randomNumber = Math.floor(Math.random() * 100) + 1;
+    while (idExists(randomNumber)) {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+    }
+    return `${Math.random()}`;
+  }
 
   // State for the reactflow instance
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -119,10 +131,11 @@ export default function CreateFlowchart() {
         y: event.clientY,
       });
 
+      const id = getId();
       let newNode = undefined;
       if (type === "coreq") {
         newNode = {
-          id: getId(),
+          id: id,
           type,
           position,
           data: {
@@ -140,7 +153,7 @@ export default function CreateFlowchart() {
         };
       } else {
         newNode = {
-          id: getId(),
+          id: id,
           type,
           position,
           data: {
