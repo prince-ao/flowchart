@@ -20,7 +20,13 @@
  * The component is styled using Tailwind CSS.
  */
 "use client";
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 import ReactFlow, {
   Controls,
   MiniMap,
@@ -50,6 +56,7 @@ export default function CreateFlowchart() {
   // References to the reactflow instance and the ID of the node being connected
   const reactFlowWrapper = useRef(null);
   const connectingNodeId = useRef(null);
+  const hasRendered = useRef(false);
 
   // State for the nodes and edges in the flowchart
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -90,13 +97,11 @@ export default function CreateFlowchart() {
     [nodes]
   );
 
-  // Function to handle drag over events
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  // Function to handle drop events
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -156,23 +161,40 @@ export default function CreateFlowchart() {
     [reactFlowInstance]
   );
 
-  // Define the types of nodes that can be created
   const nodeTypes = useMemo(
     () => ({
-      input: EditableNode,
-      default: EditableNode,
-      output: EditableNode,
+      single: EditableNode,
       coreq: CoreqNode,
     }),
     []
   );
 
-  const dndflowStyle = {
-    display: "flex",
-    flexGrow: 1,
-    height: "100%",
-    width: "100%",
-  };
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      const cachedNodes = localStorage.getItem("cache_nodes");
+      const cachedEdges = localStorage.getItem("cache_edges");
+
+      console.log("here3");
+      // console.log(cachedNodes, cachedEdges);
+      if (cachedNodes && cachedEdges) {
+        setNodes(JSON.parse(cachedNodes));
+        setEdges(JSON.parse(cachedEdges));
+      }
+    };
+
+    loadFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    if (hasRendered.current) {
+      console.log("here1");
+      localStorage.setItem("cache_nodes", JSON.stringify(nodes));
+      localStorage.setItem("cache_edges", JSON.stringify(edges));
+    } else {
+      console.log("here2");
+      hasRendered.current = true;
+    }
+  }, [nodes, edges]);
 
   return (
     <div className="flex flex-grow-1 h-100 w-100 md:flex-row flex-col ">

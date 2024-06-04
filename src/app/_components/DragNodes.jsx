@@ -21,7 +21,7 @@
 
 import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
-import { createNewFlowchart } from "@/utils/flowchart";
+import { createNewFlowchart, cleanNodes } from "@/utils/flowchart";
 
 export default function DragNodes() {
   const nodes = useNodes();
@@ -65,27 +65,18 @@ export default function DragNodes() {
 
     setFileNameError(false);
 
-    const cleanNodes = nodes.map((node) => ({
-      id: node.id,
-      courseName: node.data.courseNumber,
-      description: node.data.description,
-      fullName: node.data.fullName,
-      nodeType: node.type,
-      position: node.position,
-      prerequisites: node.data.prerequisites,
-      corequisites: node.data.corequisites,
-    }));
+    const clean = cleanNodes(nodes);
 
-    try {
-      await createNewFlowchart(cleanNodes, fileName);
+    // try {
+    //   await createNewFlowchart(cleanNodes, fileName);
 
-      setInsertSuccess(true);
-      setTimeout(() => {
-        setInsertSuccess(false);
-      }, 4 * 1e3);
-    } catch (e) {
-      setInsertError({ value: true, text: e.message });
-    }
+    //   setInsertSuccess(true);
+    //   setTimeout(() => {
+    //     setInsertSuccess(false);
+    //   }, 4 * 1e3);
+    // } catch (e) {
+    //   setInsertError({ value: true, text: e.message });
+    // }
 
     setFileName("");
   }
@@ -106,7 +97,7 @@ export default function DragNodes() {
       </ul>
       <div
         className="p-2 bg-blue-500 text-white cursor-move rounded"
-        onDragStart={(event) => onDragStart(event, "default")}
+        onDragStart={(event) => onDragStart(event, "single")}
         draggable
       >
         Class Node

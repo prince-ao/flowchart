@@ -9,7 +9,7 @@
  * Each prerequisite and corequisite is rendered as a clickable badge that, when clicked, moves the node to the other list.
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactFlow, {
   useOnSelectionChange,
   useEdges,
@@ -107,8 +107,6 @@ export default function NodeEditorPanel({ setEdges }) {
       })
     );
   };
-
-  // Render the component
 
   return (
     <div className="flex flex-col items-center gap-4 rounded-box bg-base-200 max-w-md p-4">
