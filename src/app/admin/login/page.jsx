@@ -7,6 +7,7 @@ import {
   EyeClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
+import Header from "@/app/_components/Header";
 import { login, loginLocally, withAuth } from "../../../utils/authentication";
 
 function AdminLogin() {
@@ -67,8 +68,11 @@ function AdminLogin() {
     });
   }
 
-  return (
-    <main className="h-lvh flex justify-center items-center">
+  return ( 
+    <main className="bg-cover bg-center bg-primary">
+  <Header />
+      <div className="h-lvh flex justify-center items-center">
+       
       <dialog id="error_modal" className="modal">
         <div className="modal-box">
           <form method="dialog">
@@ -87,8 +91,10 @@ function AdminLogin() {
         <></>
       )}
       <div className="card w-96 bg-base-300 shadow-xl">
+        
         <div className="card-body">
-          <h2 className="card-title">Admin Login</h2>
+          <h2 className="card-title mx-auto">
+            Admin Login</h2>
           {authError && (
             <div role="alert" className="alert alert-error">
               <svg
@@ -152,6 +158,7 @@ function AdminLogin() {
             </button>
           </div>
         </div>
+      </div>
       </div>
     </main>
   );

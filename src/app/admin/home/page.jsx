@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import AdminSideBar from "@/app/_components/AdminSideBar";
 import { isLoggedIn, logout, withAuth } from "@/utils/authentication";
 import { supabase } from "@/utils/supabase";
-
+import Header from "@/app/_components/Header";
 function AdminHome() {
   const [isAuth, setIsAuth] = useState(false);
   const [flowChartUploadName, setFlowChartUploadName] = useState('');
@@ -101,6 +101,7 @@ function AdminHome() {
   
   return (
     <main className="h-lvh flex-auto" role="login-home">
+      <Header navigator/>
       <AdminSideBar />
       {isAuth ? (
         <button className="btn btn-primary" onClick={handleLogout}>
