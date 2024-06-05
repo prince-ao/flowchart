@@ -58,7 +58,7 @@ export default function DragNodes() {
 
   async function saveToSupabase() {
     setInsertError({ value: false, text: "" });
-    if (!/^\d{4} - \d{4}$/.test(fileName)) {
+    if (!/^\d{4}-\d{4}$/.test(fileName)) {
       setFileNameError(true);
       return;
     }
@@ -125,7 +125,7 @@ export default function DragNodes() {
       />
       <p className={`text-xs !mt-0 ${fileNameError ? "text-error" : ""}`}>
         must be in the format <br />
-        &#123;start year&#125; - &#123;end year&#125;
+        &#123;start year&#125;-&#123;end year&#125;
       </p>
       <button className="btn btn-blue" onClick={saveToSupabase}>
         Save Nodes

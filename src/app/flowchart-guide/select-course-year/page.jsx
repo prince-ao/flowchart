@@ -3,18 +3,23 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
+import { displayYear, getVisibleYears } from "@/utils/flowchart";
 import Header from "../../_components/Header";
 
 const _color = "#6E01EF";
 const _size = 20;
 
 export default function FlowchartGuide() {
-  const [courseYear, setCourseYear] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [courseYears, setCourseYears] = useState([]);
   const [track, setTrack] = useState("");
+
   const router = useRouter();
 
   const videoRef = useRef(null);
   const hasFetched = useRef(false);
+
+  const defaultMessage = "Select Computer Science Course Year";
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -24,6 +29,15 @@ export default function FlowchartGuide() {
     if (!track) {
       router.replace("/flowchart-guide/select-cs-track");
     } else {
+      (async () => {
+        try {
+          const years = await getVisibleYears();
+          setCourseYears(years);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+
       setTrack(track);
 
       const video = videoRef.current;
@@ -130,19 +144,18 @@ export default function FlowchartGuide() {
           </a>
           <select
             className="select select-bordered w-full max-w-xs mt-16"
-            value={
-              courseYear ? courseYear : "Select Computer Science Course Year"
-            }
-            onChange={(e) => setCourseYear(e.target.value)}
+            value={selectedYear ? selectedYear : defaultMessage}
+            onChange={(e) => setSelectedYear(e.target.value)}
           >
-            <option disabled>Select Computer Science Course Year</option>
-            <option>2024-2025</option>
-            <option>2023-2024</option>
-            <option>2022-2023</option>
-            <option>2021-2022</option>
+            <option disabled>{defaultMessage}</option>
+            {courseYears.map((year, i) => (
+              <option key={i} value={year}>
+                {displayYear(year)}
+              </option>
+            ))}
           </select>
-          {courseYear && (
-            <a href={`/flowcharts/${courseYear}`}>
+          {selectedYear && (
+            <a href={`/flowcharts/${selectedYear}`}>
               <button className="btn btn-primary mt-4">
                 Go to course year flowchart
               </button>
