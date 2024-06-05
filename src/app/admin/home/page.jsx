@@ -13,20 +13,28 @@ function AdminHome() {
   const [courseYears, setCourseYears] = useState([]);
   const [selectedChart, setSelectedChart] = useState(null);
   const [file, setFile] = useState(null);
-  const [flowchartYear, setFlowchartYear] = useState("");
-  const [successUploadMessage, setSuccessUploadMessage] = useState("");
-  const [errorUploadMessage, setErrorUploadMessage] = useState("");
+  const [flowchartYear, setFlowchartYear] = useState('');
+  const [successUploadMessage, setSuccessUploadMessage] = useState('');
+  const [errorUploadMessage, setErrorUploadMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
 
   const getAllFlowcharts = async () => {
+    setIsLoading(true);
     let { data: flowcharts, error } = await supabase
-      .from("flowcharts")
-      .select("flowchart_json");
-
-    if (error) console.log("Error: ", error);
-    else console.log("Total Flowcharts: ", flowcharts.length);
+      .from('flowcharts')
+      .select('flowchart_json');
+  
+    if (error) {
+      console.log('Error: ', error);
+      setIsLoading(false);
+      return;
+    }
+  
+    console.log('Total Flowcharts: ', flowcharts.length);
     setTotalFlowcharts(flowcharts.length);
+    setIsLoading(false);
   };
 
   const getAllFlowchartData = async () => {
@@ -118,7 +126,7 @@ function AdminHome() {
           <div className="stats shadow stats-vertical md:stats-horizontal">
             <div className="stat justify-center text-center">
               <div className="stat-title">Total Flowcharts</div>
-              {totalFlowcharts === 0 ? (
+              {isLoading ? (
                 <div className="stat-value loading loading-spinner loading-sm text-center"></div>
               ) : (
                 <div className="stat-value">{totalFlowcharts}</div>
