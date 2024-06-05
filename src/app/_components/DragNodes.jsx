@@ -19,9 +19,9 @@
  * The component is styled using Tailwind CSS.
  */
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
-import { supabase } from "@/utils/supabase";
+import { createNewFlowchart, cleanNodes } from "@/utils/flowchart";
 
 export default function DragNodes() {
   const nodes = useNodes();
@@ -58,37 +58,27 @@ export default function DragNodes() {
 
   async function saveToSupabase() {
     setInsertError({ value: false, text: "" });
-    if (!/^\d{4} - \d{4}$/.test(fileName)) {
+    if (!/^\d{4}-\d{4}$/.test(fileName)) {
       setFileNameError(true);
       return;
     }
-  
+
     setFileNameError(false);
-  
-    const cleanNodes = nodes.map((node) => ({
-      id: node.id,
-      courseName: node.data.courseNumber,
-      description: node.data.description,
-      fullName: node.data.fullName,
-      nodeType: node.type,
-      position: node.position,
-      prerequisites: node.data.prerequisites,
-      corequisites: node.data.corequisites,
-    }));
-  
-    const { data, error } = await supabase
-      .from("flowcharts")
-      .insert([{ flowchart_json: cleanNodes, flowchart_year: fileName }]);
-  
+
+    const clean = cleanNodes(nodes);
+
+    // try {
+    //   await createNewFlowchart(cleanNodes, fileName);
+
+    //   setInsertSuccess(true);
+    //   setTimeout(() => {
+    //     setInsertSuccess(false);
+    //   }, 4 * 1e3);
+    // } catch (e) {
+    //   setInsertError({ value: true, text: e.message });
+    // }
+
     setFileName("");
-    if (error) {
-      setInsertError({ value: true, text: error.message });
-    } else {
-      setInsertSuccess(true);
-      setTimeout(() => {
-        setInsertSuccess(false);
-      }, 4 * 1e3);
-    }
   }
 
   return (
@@ -107,10 +97,17 @@ export default function DragNodes() {
       </ul>
       <div
         className="p-2 bg-blue-500 text-white cursor-move rounded"
-        onDragStart={(event) => onDragStart(event, "default")}
+        onDragStart={(event) => onDragStart(event, "single")}
         draggable
       >
         Class Node
+      </div>
+      <div
+        className="p-2 bg-red-500 text-white cursor-move rounded"
+        onDragStart={(event) => onDragStart(event, "coreq")}
+        draggable
+      >
+        Coreq Node
       </div>
       {/* change the input to make it more strict */}
       {insertError.value && (
@@ -128,7 +125,7 @@ export default function DragNodes() {
       />
       <p className={`text-xs !mt-0 ${fileNameError ? "text-error" : ""}`}>
         must be in the format <br />
-        &#123;start year&#125; - &#123;end year&#125;
+        &#123;start year&#125;-&#123;end year&#125;
       </p>
       <button className="btn btn-blue" onClick={saveToSupabase}>
         Save Nodes

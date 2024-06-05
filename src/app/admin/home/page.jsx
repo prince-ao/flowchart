@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminSideBar from "@/app/_components/AdminSideBar";
 import { isLoggedIn, logout, withAuth } from "@/utils/authentication";
+import { displayYear, getVisibleYears } from "@/utils/flowchart";
 import { supabase } from "@/utils/supabase";
 
 function AdminHome() {
   const [isAuth, setIsAuth] = useState(false);
-  const [flowChartUploadName, setFlowChartUploadName] = useState('');
+  const [flowChartUploadName, setFlowChartUploadName] = useState("");
   const [totalFlowcharts, setTotalFlowcharts] = useState(0);
-  const [currentFlowcharts, setCurrentFlowcharts] = useState([]);
+  const [courseYears, setCourseYears] = useState([]);
   const [selectedChart, setSelectedChart] = useState(null);
   const [file, setFile] = useState(null);
   const [flowchartYear, setFlowchartYear] = useState('');
@@ -37,58 +38,57 @@ function AdminHome() {
   };
 
   const getAllFlowchartData = async () => {
-    let { data: flowcharts, error } = await supabase
-      .from('flowcharts')
-      .select('*');
-
-    if (error) console.log('Error: ', error);
-    else console.log('Total Flowcharts: ', flowcharts.length);
-    setCurrentFlowcharts(flowcharts);
-  }
+    try {
+      const years = await getVisibleYears();
+      setCourseYears(years);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   async function handleFileUpload() {
     if (!file) {
-      alert('Please select a file.');
+      alert("Please select a file.");
       return;
     }
-  
+
     if (!flowchartYear) {
-      alert('Please enter the flowchart year.');
+      alert("Please enter the flowchart year.");
       return;
     }
-  
+
     const reader = new FileReader();
-    reader.onload = async function() {
+    reader.onload = async function () {
       try {
         const json = JSON.parse(reader.result);
         const { data, error } = await supabase
-          .from('flowcharts')
-          .insert([
-            { flowchart_year: flowchartYear, flowchart_json: json },
-          ]);
-  
+          .from("flowcharts")
+          .insert([{ flowchart_year: flowchartYear, flowchart_json: json }]);
+
         if (error) {
-          console.error('Error: ', error);
-          setErrorUploadMessage('Error uploading flowchart.');
+          console.error("Error: ", error);
+          setErrorUploadMessage("Error uploading flowchart.");
         } else {
-          console.log("Flowchart uploaded successfully: ", JSON.stringify(data));
+          console.log(
+            "Flowchart uploaded successfully: ",
+            JSON.stringify(data)
+          );
           // Refresh the flowcharts
-          setSuccessUploadMessage('Flowchart uploaded successfully.');
+          setSuccessUploadMessage("Flowchart uploaded successfully.");
           getAllFlowchartData();
         }
       } catch (err) {
-        console.error('Invalid JSON file.');
+        console.error("Invalid JSON file.");
       }
     };
     reader.readAsText(file);
   }
-  
+
   useEffect(() => {
     getAllFlowcharts();
     getAllFlowchartData();
   }, []);
 
-  
   function goToLoginError() {
     localStorage.setItem("homeAuthFailed", "true");
     router.push("/admin/login");
@@ -105,8 +105,6 @@ function AdminHome() {
     }, 500);
   }, []);
 
-
-  
   return (
     <main className="h-lvh flex-auto" role="login-home">
       <AdminSideBar />
@@ -119,9 +117,11 @@ function AdminHome() {
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       )}
-      <h1 className="text-4xl font-bold text-center mb-8">Welcome to the Admin Home Page</h1>
+      <h1 className="text-4xl font-bold text-center mb-8">
+        Welcome to the Admin Home Page
+      </h1>
       <div className="grid gap-8 grid-cols-1">
-        <div className = "flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center">
           <h2 className="text-2xl font-bold text-center">Flowchart Data</h2>
           <div className="stats shadow stats-vertical md:stats-horizontal">
             <div className="stat justify-center text-center">
@@ -139,20 +139,24 @@ function AdminHome() {
               <div className="stat-desc">Total number of classes</div>
             </div>
             <div className="stat">
-              <div className="text-xl font-bold text-center">View Flowcharts</div>
-              <select className="select select-primary w-full max-w-xs" onChange={(e) => setSelectedChart(e.target.value)}>
-                <option disabled selected>Pick a Chart</option>
-                {currentFlowcharts.map((flowchart, index) => (
-                  <option 
-                    key={index} 
-                    value={flowchart.flowchart_year}
-                  >
-                    {flowchart.flowchart_year}
+              <div className="text-xl font-bold text-center">
+                View Flowcharts
+              </div>
+              <select
+                className="select select-primary w-full max-w-xs"
+                onChange={(e) => setSelectedChart(e.target.value)}
+              >
+                <option disabled selected>
+                  Pick a Chart
+                </option>
+                {courseYears.map((year, index) => (
+                  <option key={index} value={year}>
+                    {displayYear(year)}
                   </option>
                 ))}
               </select>
-              <button 
-                className="btn btn-ghost" 
+              <button
+                className="btn btn-ghost"
                 onClick={() => {
                   if (selectedChart) {
                     router.push(`/flowcharts/${selectedChart}`);
@@ -162,51 +166,82 @@ function AdminHome() {
                 }}
               >
                 View Chart
-              </button>            
-        </div>
+              </button>
+            </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-center mt-8">Manage Flowcharts</h2>
+          <h2 className="text-2xl font-bold text-center mt-8">
+            Manage Flowcharts
+          </h2>
           <div className="stats shadow stats-vertical md:stats-horizontal">
-          <div className="stat">
-              <div className="text-xl font-bold text-center">Upload Flowchart</div>
-              <input 
-                type="file" 
-                className="file-input file-input-primary w-full mb-4 max-w-xs" 
+            <div className="stat">
+              <div className="text-xl font-bold text-center">
+                Upload Flowchart
+              </div>
+              <input
+                type="file"
+                className="file-input file-input-primary w-full mb-4 max-w-xs"
                 onChange={(e) => setFile(e.target.files[0])}
               />
-              <input 
-                type="text" 
-                className="input input-primary w-full mb-4 max-w-xs" 
-                placeholder="Flowchart Year" 
+              <input
+                type="text"
+                className="input input-primary w-full mb-4 max-w-xs"
+                placeholder="Flowchart Year"
                 onChange={(e) => setFlowchartYear(e.target.value)}
               />
-              <button className="btn btn-primary" onClick={handleFileUpload}>Upload</button>          
-              {successUploadMessage && <div className="text-center text-success">{successUploadMessage}</div>}
-              {errorUploadMessage && <div className="text-center text-error">{errorUploadMessage}</div>}
+              <button className="btn btn-primary" onClick={handleFileUpload}>
+                Upload
+              </button>
+              {successUploadMessage && (
+                <div className="text-center text-success">
+                  {successUploadMessage}
+                </div>
+              )}
+              {errorUploadMessage && (
+                <div className="text-center text-error">
+                  {errorUploadMessage}
+                </div>
+              )}
             </div>
-          <div className="stat">
-              <div className="text-xl font-bold text-center">Create Flowchart</div>
-              <button className="btn btn-primary" onClick={() => {router.push("/flowchart/create")}}>Create</button>
-          </div>
-          <div className="stat">
-              <div className="text-xl font-bold text-center">Edit Flowcharts</div>
-              <select className="select select-primary w-full max-w-xs">
-                <option disabled selected>Edit a Chart (NC) </option>
-                <option>In Progress</option>
-              </select> 
+            <div className="stat">
+              <div className="text-xl font-bold text-center">
+                Create Flowchart
+              </div>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  router.push("/flowchart/create");
+                }}
+              >
+                Create
+              </button>
             </div>
-          <div className="stat">
-              <div className="text-xl font-bold text-center">Delete Flowchart</div>
+            <div className="stat">
+              <div className="text-xl font-bold text-center">
+                Edit Flowcharts
+              </div>
               <select className="select select-primary w-full max-w-xs">
-                <option disabled selected>Delete a Chart</option>
+                <option disabled selected>
+                  Edit a Chart (NC){" "}
+                </option>
                 <option>In Progress</option>
               </select>
+            </div>
+            <div className="stat">
+              <div className="text-xl font-bold text-center">
+                Delete Flowchart
+              </div>
+              <select className="select select-primary w-full max-w-xs">
+                <option disabled selected>
+                  Delete a Chart
+                </option>
+                <option>In Progress</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
   );
 }
 
