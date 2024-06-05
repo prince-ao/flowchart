@@ -20,7 +20,13 @@
  * The component is styled using Tailwind CSS.
  */
 "use client";
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 import ReactFlow, {
   Controls,
   MiniMap,
@@ -36,25 +42,37 @@ import ReactFlow, {
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import DragNodes from "@/app/_components/DragNodes";
-import EditableNode from "@/app/_components/EditableNode";
+import { EditableNode, CoreqNode } from "@/app/_components/nodes";
 import NodeEditorPanel from "@/app/_components/NodeEditorPanel";
-import { withAuth } from "@/utils/authentication";
 
 // Initial state for nodes and edges
 const initialNodes = [];
 const initialEdges = [];
 
-let id = 0;
-const getId = () => `${id++}`;
-
-function CreateFlowchart() {
+export default function CreateFlowchart() {
   // References to the reactflow instance and the ID of the node being connected
   const reactFlowWrapper = useRef(null);
   const connectingNodeId = useRef(null);
+  const hasRendered = useRef(false);
 
   // State for the nodes and edges in the flowchart
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  function idExists(id) {
+    for (const node of nodes) {
+      if (node.id === `${id}`) return true;
+    }
+    return false;
+  }
+
+  function getId() {
+    let randomNumber = Math.floor(Math.random() * 100) + 1;
+    while (idExists(randomNumber)) {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+    }
+    return `${Math.random()}`;
+  }
 
   // State for the reactflow instance
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -91,13 +109,11 @@ function CreateFlowchart() {
     [nodes]
   );
 
-  // Function to handle drag over events
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  // Function to handle drop events
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -115,21 +131,42 @@ function CreateFlowchart() {
         y: event.clientY,
       });
 
-      // Create a new node at the drop position
-      const newNode = {
-        id: getId(),
-        type,
-        position,
-        data: {
-          label: ` node ${id}`,
-          courseNumber: "CSC 101",
-          fullName: "Introduction to Computer Science",
-          description:
-            "This course introduces students to the field of computer science.",
-          corequisites: [],
-          prerequisites: [],
-        },
-      };
+      const id = getId();
+      let newNode = undefined;
+      if (type === "coreq") {
+        newNode = {
+          id: id,
+          type,
+          position,
+          data: {
+            label: ` node ${id}`,
+            courseNumber1: "CSC 101",
+            fullName1: "Introduction to Computer Science",
+
+            courseNumber2: "CSC 101",
+            fullName2: "Introduction to Computer Science",
+
+            description:
+              "This course introduces students to the field of computer science.",
+            prerequisites: [],
+          },
+        };
+      } else {
+        newNode = {
+          id: id,
+          type,
+          position,
+          data: {
+            label: ` node ${id}`,
+            courseNumber: "CSC 101",
+            fullName: "Introduction to Computer Science",
+
+            description:
+              "This course introduces students to the field of computer science.",
+            prerequisites: [],
+          },
+        };
+      }
 
       // Add the new node to the state
       setNodes((nds) => nds.concat(newNode));
@@ -137,25 +174,43 @@ function CreateFlowchart() {
     [reactFlowInstance]
   );
 
-  // Define the types of nodes that can be created
   const nodeTypes = useMemo(
     () => ({
-      input: EditableNode,
-      default: EditableNode,
-      output: EditableNode,
+      single: EditableNode,
+      coreq: CoreqNode,
     }),
     []
   );
 
-  const dndflowStyle = {
-    display: "flex",
-    flexGrow: 1,
-    height: "100%",
-    width: "100%",
-  };
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      const cachedNodes = localStorage.getItem("cache_nodes");
+      const cachedEdges = localStorage.getItem("cache_edges");
+
+      console.log("here3");
+      // console.log(cachedNodes, cachedEdges);
+      if (cachedNodes && cachedEdges) {
+        setNodes(JSON.parse(cachedNodes));
+        setEdges(JSON.parse(cachedEdges));
+      }
+    };
+
+    loadFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    if (hasRendered.current) {
+      console.log("here1");
+      localStorage.setItem("cache_nodes", JSON.stringify(nodes));
+      localStorage.setItem("cache_edges", JSON.stringify(edges));
+    } else {
+      console.log("here2");
+      hasRendered.current = true;
+    }
+  }, [nodes, edges]);
 
   return (
-    <div className=" flex flex-grow-1 h-100 w-100 md:flex-row flex-col ">
+    <div className="flex flex-grow-1 h-100 w-100 md:flex-row flex-col ">
       <ReactFlowProvider>
         <div className="h-screen w-screen" ref={reactFlowWrapper}>
           <ReactFlow
@@ -182,11 +237,3 @@ function CreateFlowchart() {
     </div>
   );
 }
-
-export default withAuth(
-  CreateFlowchart,
-  () => {},
-  () => {},
-  "/admin/login",
-  ""
-);
