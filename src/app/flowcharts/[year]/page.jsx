@@ -27,6 +27,8 @@ export default function FlowchartsYear({ params }) {
   const [edges, setEdges] = useState([]);
   const [displayState, setDisplayState] = useState(DisplayState.LOADING);
   const [tooltip, setTooltip] = useState({display: false, content: "", x: 0, y: 0});
+  const [selected, setSelected] = useState(null);
+  const [selectedNode, setSelectedNode] = useState(null);
 
   const handleMouseEnter = (event, node) => {
     setTooltip({
@@ -63,7 +65,7 @@ export default function FlowchartsYear({ params }) {
       const nodes = courses.map((course) => ({
         id: course.id,
         type: course.nodeType,
-        data: { label: course.courseName, fullName: course.fullName, description: course.description},
+        data: { label: course.courseName, fullName: course.fullName, description: course.description, prerequisite: course.prerequisites, corequisite: course.corequisites},
         style: {
           backgroundColor: nodeColor({ type: "default" }),
           border: '3px solid #79BDE8',
@@ -90,7 +92,7 @@ export default function FlowchartsYear({ params }) {
             stroke: '#79BDE8',
             strokeWidth: 3,
           },
-          animated: true,
+          animated: selectedNode && selectedNode.id === course.id,
         })),
         ...course.corequisites.map((corequisite) => ({
           id: "e" + corequisite + "-" + course.id,
@@ -101,27 +103,26 @@ export default function FlowchartsYear({ params }) {
             width: 10,
             height: 10,
             type: MarkerType.Arrow,
-            color: '#ff7f7f' // faded red
+            color: selectedNode && selectedNode.id === course.id ? 'red' : '#ff7f7f', // faded red
           },
           markerStart: {
             width: 10,
             height: 10,
             type: MarkerType.Arrow,
-            color: '#ff7f7f' // faded red
+            color: selectedNode && selectedNode.id === course.id ? 'red' : '#ff7f7f', // faded red
           },
           style: {
-            stroke: '#ff7f7f', // faded red
+            stroke: selectedNode && selectedNode.id === course.id ? 'red' : '#ff7f7f', // faded red
             strokeWidth: 3,
           },
-          animated: true,
+          animated: selectedNode && selectedNode.id === course.id,
         })),
-        ]);
-
+      ]);
       setNodes(nodes);
       setEdges(edges);
       setDisplayState(DisplayState.SHOW);
     })();
-  }, []);
+  }, [selectedNode]);
 
   return (
     <main className="p-4 bg-gray-100">
@@ -134,13 +135,10 @@ export default function FlowchartsYear({ params }) {
           <ReactFlow nodes={nodes} edges={edges}    
           onNodeMouseEnter={handleMouseEnter}
           onNodeMouseLeave={handleMouseLeave}
+          onNodeDragStart={(event, node) => setSelected(node.id)}
+          onNodeDragStop={() => setSelected(null)}
+          onNodeClick={(event, node) => setSelectedNode(node)}
           fitView>
-            <MiniMap
-              nodeColor={nodeColor}
-              nodeStrokeWidth={3}
-              zoomable
-              pannable
-            />
             <Background color="#aaa" gap={16} />
             <Controls />
           </ReactFlow>
