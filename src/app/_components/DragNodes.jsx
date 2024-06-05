@@ -58,13 +58,13 @@ export default function DragNodes() {
 
   async function saveToSupabase() {
     setInsertError({ value: false, text: "" });
-    if (!/^\d{4} - \d{4}$/.test(fileName)) {
+    if (!/^\d{4}-\d{4}$/.test(fileName)) {
       setFileNameError(true);
       return;
     }
-  
+
     setFileNameError(false);
-  
+
     const cleanNodes = nodes.map((node) => ({
       id: node.id,
       courseName: node.data.courseNumber,
@@ -75,11 +75,11 @@ export default function DragNodes() {
       prerequisites: node.data.prerequisites,
       corequisites: node.data.corequisites,
     }));
-  
+
     const { data, error } = await supabase
       .from("flowcharts")
       .insert([{ flowchart_json: cleanNodes, flowchart_year: fileName }]);
-  
+
     setFileName("");
     if (error) {
       setInsertError({ value: true, text: error.message });
@@ -128,7 +128,7 @@ export default function DragNodes() {
       />
       <p className={`text-xs !mt-0 ${fileNameError ? "text-error" : ""}`}>
         must be in the format <br />
-        &#123;start year&#125; - &#123;end year&#125;
+        &#123;start year&#125;-&#123;end year&#125;
       </p>
       <button className="btn btn-blue" onClick={saveToSupabase}>
         Save Nodes
