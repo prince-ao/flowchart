@@ -1,8 +1,9 @@
 import { supabase } from "./supabase";
 
 export async function getVisibleYears() {
+  console.log(`flowcharts${appendEnv()}`);
   let { data: flowcharts, error } = await supabase
-    .from("flowcharts")
+    .from(`flowcharts${appendEnv()}`)
     .select("flowchart_year");
 
   if (error) {
@@ -16,12 +17,20 @@ export async function getVisibleYears() {
 
 export async function createNewFlowchart(nodes, fileName) {
   const { data, error } = await supabase
-    .from("flowcharts")
+    .from(`flowcharts${appendEnv()}`)
     .insert([{ flowchart_json: nodes, flowchart_year: fileName }]);
 
   if (error) {
     throw new Error(error.message);
   }
+}
+
+function appendEnv() {
+  return process.env.NEXT_PUBLIC_ENV === "dev"
+    ? "_dev"
+    : process.env.NEXT_PUBLIC_ENV === "qa"
+    ? "_qa"
+    : "";
 }
 
 export function cleanNodes(nodes) {
