@@ -5,7 +5,7 @@ import AdminSideBar from "@/app/_components/AdminSideBar";
 import { isLoggedIn, logout, withAuth } from "@/utils/authentication";
 import { displayYear, getVisibleYears } from "@/utils/flowchart";
 import { supabase } from "@/utils/supabase";
-
+import Header from "@/app/_components/Header";
 function AdminHome() {
   const [isAuth, setIsAuth] = useState(false);
   const [flowChartUploadName, setFlowChartUploadName] = useState("");
@@ -106,20 +106,22 @@ function AdminHome() {
   }, []);
 
   return (
-    <main className="h-lvh flex-auto" role="login-home">
-      <AdminSideBar />
+    <main className=" h-lvh flex-auto" role="login-home">
+   <div className="navbar">
+    <div className="navbar-start"> <AdminSideBar/> </div>
+ 
+      <div className="navbar-end">
       {isAuth ? (
-        <button className="btn btn-primary" onClick={handleLogout}>
+      
+        <button className=" btn btn-primary" onClick={handleLogout}>
           Log out
         </button>
       ) : (
         <div className="absolute h-lvh w-lvw z-20 flex items-center justify-center">
           <span className="loading loading-spinner loading-lg"></span>
         </div>
-      )}
-      <h1 className="text-4xl font-bold text-center mb-8">
-        Welcome to the Admin Home Page
-      </h1>
+      )}</div></div>
+      <h1 className="text-4xl font-bold text-center mb-8">Welcome to the Admin Home Page</h1>
       <div className="grid gap-8 grid-cols-1">
         <div className="flex flex-col justify-center items-center">
           <h2 className="text-2xl font-bold text-center">Flowchart Data</h2>

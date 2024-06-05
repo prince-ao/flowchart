@@ -21,7 +21,7 @@ export default function Header({ navigator }) {
   return (
     <>
       <header className="navbar bg-primary h-[80px] text-white sticky top-0 z-50">
-        <div className="navbar-start flex justify-around">
+        <div className="navbar-start flex ">
           <div className="drawer drawer-start lg:hidden">
             <input id="drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
@@ -123,7 +123,7 @@ export default function Header({ navigator }) {
               src="/images/cslogo.png"
               alt="college of staten island computer science department logo"
             />
-            <h1 className="font-bold">flowchart</h1>
+            <h1 className="font-bold">Home</h1>
           </a>
         </div>
         {navigator && (
