@@ -60,7 +60,7 @@ export default function FlowchartGuide() {
       </dialog>
       <div className="min-h-screen-header flex justify-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
-          <h2 className="mb-8 text-2xl font-bold">
+          <h2 className="mb-8 text-lg lg:text-2xl font-bold text-center">
             Select Computer Science Track
           </h2>
           <div className="indicator">
@@ -87,7 +87,10 @@ export default function FlowchartGuide() {
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
             </button>
             {/* make a video */}
-            <img src="/images/degreeworks-track.png" width="600" height="350" />
+            <img
+              src="/images/degreeworks-track.png"
+              className="w-[300px] h-[150px] lg:w-[600px] lg:h-[350px]"
+            />
           </div>
           <a
             className="link link-primary"
@@ -97,7 +100,7 @@ export default function FlowchartGuide() {
             Click here to go to degreeworks
           </a>
           <select
-            className="select select-bordered w-full max-w-xs mt-16"
+            className="select select-bordered w-full max-w-xs mt-10 lg:mt-16"
             value={track ? track : "Select Computer Science Track"}
             onChange={(e) => setTrack(e.target.value)}
           >

@@ -25,6 +25,21 @@ export async function createNewFlowchart(nodes, fileName) {
   }
 }
 
+export async function getFlowchartByYear(year) {
+  if (!year) throw new Error("year is required");
+
+  let { data: flowcharts, error } = await supabase
+    .from(`flowcharts${appendEnv()}`)
+    .select("flowchart_json")
+    .eq("flowchart_year", year);
+
+  if (error || flowcharts.length === 0) {
+    throw new Error(error.message);
+  }
+
+  return flowcharts[0].flowchart_json;
+}
+
 function appendEnv() {
   return process.env.NEXT_PUBLIC_ENV === "dev"
     ? "_dev"
