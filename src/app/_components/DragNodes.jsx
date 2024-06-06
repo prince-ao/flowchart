@@ -19,11 +19,11 @@
  * The component is styled using Tailwind CSS.
  */
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
-import { supabase } from "@/utils/supabase";
+import { createNewFlowchart, cleanNodes } from "@/utils/flowchart";
 
-export default function DragNodes() {
+export default function DragNodes({ clearCache }) {
   const nodes = useNodes();
   const [fileName, setFileName] = useState("");
   const [fileNameError, setFileNameError] = useState(false);
@@ -65,30 +65,21 @@ export default function DragNodes() {
 
     setFileNameError(false);
 
-    const cleanNodes = nodes.map((node) => ({
-      id: node.id,
-      courseName: node.data.courseNumber,
-      description: node.data.description,
-      fullName: node.data.fullName,
-      nodeType: node.type,
-      position: node.position,
-      prerequisites: node.data.prerequisites,
-      corequisites: node.data.corequisites,
-    }));
+    const clean = cleanNodes(nodes);
 
-    const { data, error } = await supabase
-      .from("flowcharts")
-      .insert([{ flowchart_json: cleanNodes, flowchart_year: fileName }]);
+    try {
+      await createNewFlowchart(clean, fileName);
 
-    setFileName("");
-    if (error) {
-      setInsertError({ value: true, text: error.message });
-    } else {
       setInsertSuccess(true);
       setTimeout(() => {
         setInsertSuccess(false);
       }, 4 * 1e3);
+    } catch (e) {
+      setInsertError({ value: true, text: e.message });
     }
+
+    setFileName("");
+    // clearCache();
   }
 
   return (
@@ -107,10 +98,17 @@ export default function DragNodes() {
       </ul>
       <div
         className="p-2 bg-blue-500 text-white cursor-move rounded"
-        onDragStart={(event) => onDragStart(event, "default")}
+        onDragStart={(event) => onDragStart(event, "single")}
         draggable
       >
         Class Node
+      </div>
+      <div
+        className="p-2 bg-red-500 text-white cursor-move rounded"
+        onDragStart={(event) => onDragStart(event, "coreq")}
+        draggable
+      >
+        Coreq Node
       </div>
       {/* change the input to make it more strict */}
       {insertError.value && (

@@ -1,0 +1,110 @@
+import { useCallback } from "react";
+import { Handle, Position } from "reactflow";
+
+export default function CoreqNode({ data }) {
+  const onChange = useCallback((evt) => {
+    console.log(evt.target.value);
+  }, []);
+
+  const TOTAL_WIDTH = 134.168;
+  const TOTAL_WIDTH2 = 362.504;
+  const MARGIN_HEIGHT = 25;
+
+  return (
+    <>
+      <div className="flex bg-primary p-6 rounded gap-4">
+        <div className="bg-secondary rounded flex flex-col items-center p-2 w-40">
+          <h1 className="font-bold text-xl text-center">
+            {data.courseNumber1}
+          </h1>
+          <h2 className="text-center">{data.fullName1}</h2>
+        </div>
+
+        <div className="bg-secondary rounded flex flex-col items-center p-2 w-40">
+          <h1 className="font-bold text-xl text-center">
+            {data.courseNumber2}
+          </h1>
+          <h2 className="text-center">{data.fullName2}</h2>
+        </div>
+      </div>
+      <Handle
+        id="a"
+        type="target"
+        position={Position.Top}
+        style={{
+          background: "#414A4C",
+          width: 10,
+          height: 10,
+          left: TOTAL_WIDTH,
+          top: MARGIN_HEIGHT,
+          zIndex: 30,
+        }}
+      />
+      <Handle
+        id="b"
+        type="source"
+        position={Position.Bottom}
+        style={{
+          background: "#414A4C",
+          width: 10,
+          height: 10,
+          left: TOTAL_WIDTH,
+          bottom: MARGIN_HEIGHT,
+          zIndex: 30,
+        }}
+      />
+
+      <Handle
+        id="c"
+        type="target"
+        position={Position.Top}
+        style={{
+          background: "#414A4C",
+          width: 10,
+          height: 10,
+          left: TOTAL_WIDTH2,
+          top: MARGIN_HEIGHT,
+          zIndex: 30,
+        }}
+      />
+
+      <Handle
+        id="d"
+        type="source"
+        position={Position.Bottom}
+        style={{
+          background: "#414A4C",
+          width: 10,
+          height: 10,
+          left: TOTAL_WIDTH2,
+          bottom: MARGIN_HEIGHT,
+          zIndex: 30,
+        }}
+      />
+
+      <Handle
+        id="e"
+        type="target"
+        position={Position.Top}
+        style={{
+          background: "#414A4C",
+          width: 10,
+          height: 10,
+          zIndex: 30,
+        }}
+      />
+
+      <Handle
+        id="f"
+        type="source"
+        position={Position.Bottom}
+        style={{
+          background: "#414A4C",
+          width: 10,
+          height: 10,
+          zIndex: 30,
+        }}
+      />
+    </>
+  );
+}
