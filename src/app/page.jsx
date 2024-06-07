@@ -24,10 +24,7 @@ export default function Home() {
             <p className="py-6 text-xs lg:text-lg xl:text-xl bg-white">
               With our interactive flowchart, you can effortlessly plan and
               build your entire college journey. Visualize your courses, track
-              your progress, and adjust your schedule with ease. Our tool makes
-              it simple to ensure you meet all your academic requirements while
-              staying on track to achieve your college goals in an easy and
-              visual manner.
+              your progress, and adjust your schedule with ease.
             </p>
             <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
               Get Started
@@ -46,9 +43,6 @@ export default function Home() {
             Easily visualize your entire academic journey with our comprehensive
             course roadmap feature. Stay on track by mapping out each semester,
             ensuring you meet all prerequisites and graduation requirements.
-            With an intuitive, interactive design, you can seamlessly plan,
-            adjust, and optimize your course schedule to fit your academic goals
-            and personal preferences.
           </p>
         </div>
       </div>
@@ -62,11 +56,7 @@ export default function Home() {
             Explore your academic journey like never before with our interactive
             course roadmap. Click on any course to reveal the required
             prerequisites and discover the steps needed to reach your desired
-            classes. Easily navigate through your entire curriculum, understand
-            the relationships between courses, and make informed decisions about
-            your academic plan. This dynamic interaction ensures you have a
-            clear view of your educational path, helping you stay organized and
-            on track throughout your college career.
+            classes.
           </p>
         </div>
         <img src="degree.png" alt="flowchart" className="w-7/8 lg:w-1/3" />
@@ -82,12 +72,7 @@ export default function Home() {
             Take charge of your education with our comprehensive planning tools.
             Design a personalized academic plan that fits your goals and
             timeline, ensuring you meet all the necessary requirements for
-            graduation. Visualize your entire college experience from start to
-            finish, balancing coursework, electives, and extracurricular
-            activities. With our intuitive interface, you can easily adjust your
-            schedule, explore different pathways, and stay on track to achieve
-            your academic aspirations. Make informed decisions and navigate your
-            college journey with confidence and ease.
+            graduation.
           </p>
         </div>
       </div>
