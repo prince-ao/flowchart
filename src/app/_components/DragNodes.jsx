@@ -23,7 +23,7 @@ import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
 import { createNewFlowchart, cleanNodes } from "@/utils/flowchart";
 
-export default function DragNodes() {
+export default function DragNodes({ clearCache }) {
   const nodes = useNodes();
   const [fileName, setFileName] = useState("");
   const [fileNameError, setFileNameError] = useState(false);
@@ -67,18 +67,19 @@ export default function DragNodes() {
 
     const clean = cleanNodes(nodes);
 
-    // try {
-    //   await createNewFlowchart(cleanNodes, fileName);
+    try {
+      await createNewFlowchart(clean, fileName);
 
-    //   setInsertSuccess(true);
-    //   setTimeout(() => {
-    //     setInsertSuccess(false);
-    //   }, 4 * 1e3);
-    // } catch (e) {
-    //   setInsertError({ value: true, text: e.message });
-    // }
+      setInsertSuccess(true);
+      setTimeout(() => {
+        setInsertSuccess(false);
+      }, 4 * 1e3);
+    } catch (e) {
+      setInsertError({ value: true, text: e.message });
+    }
 
     setFileName("");
+    // clearCache();
   }
 
   return (

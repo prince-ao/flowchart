@@ -48,6 +48,7 @@ import NodeEditorPanel from "@/app/_components/NodeEditorPanel";
 // Initial state for nodes and edges
 const initialNodes = [];
 const initialEdges = [];
+const MAX_NODES = 200;
 
 export default function CreateFlowchart() {
   // References to the reactflow instance and the ID of the node being connected
@@ -67,11 +68,11 @@ export default function CreateFlowchart() {
   }
 
   function getId() {
-    let randomNumber = Math.floor(Math.random() * 100) + 1;
+    let randomNumber = Math.floor(Math.random() * MAX_NODES) + 1;
     while (idExists(randomNumber)) {
-      randomNumber = Math.floor(Math.random() * 100) + 1;
+      randomNumber = Math.floor(Math.random() * MAX_NODES) + 1;
     }
-    return `${Math.random()}`;
+    return `${randomNumber}`;
   }
 
   // State for the reactflow instance
@@ -85,10 +86,23 @@ export default function CreateFlowchart() {
       // Set the default markerEnd
       let markerEnd = {
         type: MarkerType.ArrowClosed,
+        width: 10,
+        height: 10,
+        color: "#79BDE8",
+      };
+      let style = {
+        stroke: "#79BDE8",
+        strokeWidth: 3,
+        zIndex: 30,
       };
 
+      let type = "bezier";
+      let animated = true;
+
       // Add the new edge
-      setEdges((eds) => addEdge({ ...params, markerEnd }, eds));
+      setEdges((eds) =>
+        addEdge({ ...params, markerEnd, type, style, animated }, eds)
+      );
 
       // Add the source node to the target node's prerequisites list
       setNodes((ns) =>
@@ -146,8 +160,7 @@ export default function CreateFlowchart() {
             courseNumber2: "CSC 101",
             fullName2: "Introduction to Computer Science",
 
-            description:
-              "This course introduces students to the field of computer science.",
+            description: "",
             prerequisites: [],
           },
         };
@@ -161,8 +174,7 @@ export default function CreateFlowchart() {
             courseNumber: "CSC 101",
             fullName: "Introduction to Computer Science",
 
-            description:
-              "This course introduces students to the field of computer science.",
+            description: "",
             prerequisites: [],
           },
         };
@@ -209,6 +221,11 @@ export default function CreateFlowchart() {
     }
   }, [nodes, edges]);
 
+  function clearCache() {
+    setNodes([]);
+    setEdges([]);
+  }
+
   return (
     <div className="flex flex-grow-1 h-100 w-100 md:flex-row flex-col ">
       <ReactFlowProvider>
@@ -232,7 +249,7 @@ export default function CreateFlowchart() {
             <Controls />
           </ReactFlow>
         </div>
-        <DragNodes />
+        <DragNodes clearCache={clearCache} />
       </ReactFlowProvider>
     </div>
   );
