@@ -1,4 +1,4 @@
-import { getVisibleYears, displayYear } from "@/utils/flowchart";
+import { getVisibleYears, displayYear } from "@/utils/flowchart-api";
 import { useState, useEffect } from "react";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 

@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
-import { displayYear, getVisibleYears } from "@/utils/flowchart";
+import { displayYear, getVisibleYears } from "@/utils/flowchart-api";
 import Header from "../../_components/Header";
 
 const _color = "#6E01EF";

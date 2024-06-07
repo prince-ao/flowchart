@@ -25,6 +25,30 @@ export async function createNewFlowchart(nodes, fileName) {
   }
 }
 
+export async function getFlowchartYearByDegree(degree) {}
+
+export async function getAllFlowcharts() {
+  let { data: flowcharts, error } = await supabase
+    .from(`flowcharts${appendEnv()}`)
+    .select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return flowcharts;
+}
+
+export async function getDegrees() {
+  let { data: degrees, error } = await supabase.from(`degrees`).select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return degrees;
+}
+
 function appendEnv() {
   return process.env.NEXT_PUBLIC_ENV === "dev"
     ? "_dev"
@@ -59,5 +83,8 @@ export function cleanNodes(nodes) {
 }
 
 export function displayYear(year) {
+  if (!year) {
+    return;
+  }
   return year.split("-").join(" - ");
 }

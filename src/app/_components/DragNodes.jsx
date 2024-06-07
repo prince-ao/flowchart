@@ -21,7 +21,7 @@
 
 import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
-import { createNewFlowchart, cleanNodes } from "@/utils/flowchart";
+import { createNewFlowchart, cleanNodes } from "@/utils/flowchart-api";
 
 export default function DragNodes({ clearCache }) {
   const nodes = useNodes();

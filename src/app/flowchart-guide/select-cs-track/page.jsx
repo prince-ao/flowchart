@@ -1,14 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Header from "../../_components/Header";
+import { getDegrees } from "@/utils/flowchart-api";
 
 const _size = 20;
 
 export default function FlowchartGuide() {
   const [track, setTrack] = useState("");
+  const [degrees, setDegrees] = useState([]);
+
   const router = useRouter();
 
   function handleNextClick() {
@@ -18,6 +21,17 @@ export default function FlowchartGuide() {
       router.push("/flowchart-guide/select-course-year");
     }, 400);
   }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const degrees = await getDegrees();
+        setDegrees(degrees);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  }, []);
 
   return (
     <main className="">
@@ -102,9 +116,16 @@ export default function FlowchartGuide() {
             onChange={(e) => setTrack(e.target.value)}
           >
             <option disabled>Select Computer Science Track</option>
-            <option>Computer Science BS</option>
-            <option>Computer Science - Mathematics BS</option>
-            <option>Computer Science Associates</option>
+
+            {degrees.length === 0 ? (
+              <option disabled>none</option>
+            ) : (
+              <>
+                {degrees.map((degree, i) => (
+                  <option key={i}>{degree.name}</option>
+                ))}
+              </>
+            )}
           </select>
           {track && (
             <button className="btn btn-primary mt-4" onClick={handleNextClick}>
