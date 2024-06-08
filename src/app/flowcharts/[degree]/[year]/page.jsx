@@ -7,7 +7,11 @@ import ReactFlow, {
   Controls,
   MarkerType,
 } from "reactflow";
-import { displayYear } from "@/utils/flowchart-api";
+import {
+  displayYear,
+  getDegreeMapByDegreeYear,
+  getFlowchartEnv,
+} from "@/utils/flowchart-api";
 import "reactflow/dist/style.css";
 
 const nodeColor = (node) => {
@@ -40,6 +44,8 @@ export default function FlowchartsYear({ params }) {
   const [selected, setSelected] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
 
+  const flowchartEnv = getFlowchartEnv();
+
   const handleMouseEnter = (event, node) => {
     setTooltip({
       display: true,
@@ -60,86 +66,62 @@ export default function FlowchartsYear({ params }) {
 
   useEffect(() => {
     (async () => {
-      let { data: flowcharts, error } = await supabase
-        .from("flowcharts")
-        .select("flowchart_json")
-        .eq("flowchart_year", params.year);
+      try {
+        const flowcharts = await getDegreeMapByDegreeYear(
+          decodeURIComponent(params.degree),
+          params.year
+        );
 
-      if (error || flowcharts.length === 0) {
+        const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
+        console.log(courses);
+
+        const nodes = courses.map((course) => ({
+          id: course.id,
+          type: course.nodeType,
+          data: {
+            label: course.courseName,
+            fullName: course.fullName,
+            description: course.description,
+            prerequisite: course.prerequisites,
+            corequisite: course.corequisites,
+          },
+          style: {
+            backgroundColor: nodeColor({ type: "default" }),
+            border: "3px solid #79BDE8",
+            color: "black",
+            borderRadius: "0.375rem",
+            padding: "1rem", // p-4
+          },
+          position: { x: course.position.x, y: course.position.y },
+        }));
+
+        const edges = courses.flatMap((course) => [
+          ...course.prerequisites.map((prerequisite) => ({
+            id: "e" + prerequisite + "-" + course.id,
+            source: prerequisite,
+            target: course.id,
+            type: "bezier",
+            markerEnd: {
+              type: MarkerType.Arrow,
+              width: 10,
+              height: 10,
+              color: "#79BDE8",
+            },
+            style: {
+              stroke: "#79BDE8",
+              strokeWidth: 3,
+            },
+            animated: selectedNode && selectedNode.id === course.id,
+          })),
+        ]);
+
+        setNodes(nodes);
+        setEdges(edges);
+        setDisplayState(DisplayState.SHOW);
+      } catch (e) {
+        console.log(e);
         setDisplayState(DisplayState.ERROR);
-        return;
       }
-
-      const courses = flowcharts[0].flowchart_json;
-
-      const nodes = courses.map((course) => ({
-        id: course.id,
-        type: course.nodeType,
-        data: {
-          label: course.courseName,
-          fullName: course.fullName,
-          description: course.description,
-          prerequisite: course.prerequisites,
-          corequisite: course.corequisites,
-        },
-        style: {
-          backgroundColor: nodeColor({ type: "default" }),
-          border: "3px solid #79BDE8",
-          color: "black",
-          borderRadius: "0.375rem",
-          padding: "1rem", // p-4
-        },
-        position: { x: course.position.x, y: course.position.y },
-      }));
-
-      const edges = courses.flatMap((course) => [
-        ...course.prerequisites.map((prerequisite) => ({
-          id: "e" + prerequisite + "-" + course.id,
-          source: prerequisite,
-          target: course.id,
-          type: "bezier",
-          markerEnd: {
-            type: MarkerType.Arrow,
-            width: 10,
-            height: 10,
-            color: "#79BDE8",
-          },
-          style: {
-            stroke: "#79BDE8",
-            strokeWidth: 3,
-          },
-          animated: selectedNode && selectedNode.id === course.id,
-        })),
-        ...course.corequisites.map((corequisite) => ({
-          id: "e" + corequisite + "-" + course.id,
-          source: corequisite,
-          target: course.id,
-          type: "bezier",
-          markerEnd: {
-            width: 10,
-            height: 10,
-            type: MarkerType.Arrow,
-            color:
-              selectedNode && selectedNode.id === course.id ? "red" : "#ff7f7f", // faded red
-          },
-          markerStart: {
-            width: 10,
-            height: 10,
-            type: MarkerType.Arrow,
-            color:
-              selectedNode && selectedNode.id === course.id ? "red" : "#ff7f7f", // faded red
-          },
-          style: {
-            stroke:
-              selectedNode && selectedNode.id === course.id ? "red" : "#ff7f7f", // faded red
-            strokeWidth: 3,
-          },
-          animated: selectedNode && selectedNode.id === course.id,
-        })),
-      ]);
-      setNodes(nodes);
-      setEdges(edges);
-      setDisplayState(DisplayState.SHOW);
     })();
   }, [selectedNode]);
 

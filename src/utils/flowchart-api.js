@@ -1,9 +1,9 @@
 import { supabase } from "./supabase";
 
 export async function getVisibleYears() {
-  console.log(`flowcharts${appendEnv()}`);
+  console.log(`${getFlowchartEnv()}`);
   let { data: flowcharts, error } = await supabase
-    .from(`flowcharts${appendEnv()}`)
+    .from(`${getFlowchartEnv()}`)
     .select("flowchart_year");
 
   if (error) {
@@ -17,7 +17,7 @@ export async function getVisibleYears() {
 
 export async function createNewFlowchart(nodes, fileName) {
   const { data, error } = await supabase
-    .from(`flowcharts${appendEnv()}`)
+    .from(`${getFlowchartEnv()}`)
     .insert([{ flowchart_json: nodes, flowchart_year: fileName }]);
 
   if (error) {
@@ -25,12 +25,43 @@ export async function createNewFlowchart(nodes, fileName) {
   }
 }
 
-export async function getFlowchartYearByDegree(degree) {}
+export async function getDegreeMapByDegree(degree) {
+  if (!degree) throw new Error("degree required");
+
+  let { data: flowcharts, error } = await supabase
+    .from("degrees")
+    .select(`name, ${getFlowchartEnv()}(flowchart_json, flowchart_year)`)
+    .eq("name", degree);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return flowcharts;
+}
+
+export async function getDegreeMapByDegreeYear(degree, year) {
+  if (!degree || !year) throw new Error("degree and year required");
+
+  let { data: flowcharts, error } = await supabase
+    .from("degrees")
+    .select(`name, ${getFlowchartEnv()}(flowchart_json, flowchart_year)`)
+    .eq("name", degree)
+    .eq(`${getFlowchartEnv()}.flowchart_year`, year);
+
+  if (error || flowcharts.length === 0) {
+    if (flowcharts.length === 0)
+      throw new Error("degree and year could not be found");
+    else throw new Error(error.message);
+  }
+
+  return flowcharts;
+}
 
 export async function getAllFlowcharts() {
   let { data: flowcharts, error } = await supabase
-    .from(`flowcharts${appendEnv()}`)
-    .select("*");
+    .from(`${getFlowchartEnv()}`)
+    .select("flowchart_year, flowchart_json");
 
   if (error) {
     throw new Error(error.message);
@@ -40,7 +71,9 @@ export async function getAllFlowcharts() {
 }
 
 export async function getDegrees() {
-  let { data: degrees, error } = await supabase.from(`degrees`).select("*");
+  let { data: degrees, error } = await supabase
+    .from(`degrees`)
+    .select(`name, ${getFlowchartEnv()}(flowchart_year, flowchart_json)`);
 
   if (error) {
     throw new Error(error.message);
@@ -49,12 +82,10 @@ export async function getDegrees() {
   return degrees;
 }
 
-function appendEnv() {
+export function getFlowchartEnv() {
   return process.env.NEXT_PUBLIC_ENV === "dev"
-    ? "_dev"
-    : process.env.NEXT_PUBLIC_ENV === "qa"
-    ? "_qa"
-    : "";
+    ? "flowcharts_dev"
+    : "flowcharts";
 }
 
 export function cleanNodes(nodes) {

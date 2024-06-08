@@ -9,16 +9,16 @@ import { getDegrees } from "@/utils/flowchart-api";
 const _size = 20;
 
 export default function FlowchartGuide() {
-  const [track, setTrack] = useState("");
+  const [degree, setDegree] = useState("");
   const [degrees, setDegrees] = useState([]);
 
   const router = useRouter();
 
   function handleNextClick() {
-    localStorage.setItem("selected-track", track);
+    localStorage.setItem("selected-degree", degree);
 
     setTimeout(() => {
-      router.push("/flowchart-guide/select-course-year");
+      router.push("/flowchart-guide/select-degree-map");
     }, 400);
   }
 
@@ -39,7 +39,7 @@ export default function FlowchartGuide() {
       <dialog id="info-modal" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">
-            How to find computer science track?
+            How to find my computer science degree?
           </h3>
           <ol className="list-decimal list-inside mt-4">
             <li>
@@ -57,7 +57,7 @@ export default function FlowchartGuide() {
               section
             </li>
             <li>
-              Your computer science track is to the right of{" "}
+              Your computer science degree is to the right of{" "}
               <span className="font-bold">Major</span>
             </li>
           </ol>
@@ -75,7 +75,7 @@ export default function FlowchartGuide() {
       <div className="min-h-screen-header flex justify-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
           <h2 className="mb-8 text-2xl font-bold">
-            Select Computer Science Track
+            Select Computer Science Degree
           </h2>
           <div className="indicator">
             <button
@@ -112,22 +112,24 @@ export default function FlowchartGuide() {
           </a>
           <select
             className="select select-bordered w-full max-w-xs mt-16"
-            value={track ? track : "Select Computer Science Track"}
-            onChange={(e) => setTrack(e.target.value)}
+            value={degree ? degree : "Select Computer Science Degree"}
+            onChange={(e) => setDegree(e.target.value)}
           >
-            <option disabled>Select Computer Science Track</option>
+            <option disabled>Select Computer Science Degree</option>
 
             {degrees.length === 0 ? (
               <option disabled>none</option>
             ) : (
               <>
                 {degrees.map((degree, i) => (
-                  <option key={i}>{degree.name}</option>
+                  <option key={i} className="cursor-pointer">
+                    {degree.name}
+                  </option>
                 ))}
               </>
             )}
           </select>
-          {track && (
+          {degree && (
             <button className="btn btn-primary mt-4" onClick={handleNextClick}>
               Next
             </button>
