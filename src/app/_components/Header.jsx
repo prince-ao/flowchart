@@ -36,6 +36,9 @@ export default function Header({ navigator }) {
                 className="drawer-overlay"
               ></label>
               <ul className="menu p-4 w-60 min-h-full bg-primary text-white">
+              <li>
+                  <a href="/" className="p-[1rem]">Home</a>
+                </li>
                 <li>
                   <a className="p-[1rem]">About</a>
                 </li>
@@ -119,17 +122,20 @@ export default function Header({ navigator }) {
           </div>
           <a href="/" className="flex">
             <img
-              className="w-[200px]"
+              className="h-[60px] ml-[100px] w-[600px] md:w-[200px] md:h-[30px]"
               src="/images/cslogo.png"
               alt="college of staten island computer science department logo"
             />
-            <h1 className="font-bold">Home</h1>
+
           </a>
         </div>
         {navigator && (
           <>
             <div className="navbar-center hidden lg:flex ">
               <ul className="menu menu-horizontal px-1">
+              <li>
+                  <a href="/">Home</a>
+                </li>
                 <li>
                   <a href="#">About</a>
                 </li>
@@ -154,7 +160,7 @@ export default function Header({ navigator }) {
                 </li>
               </ul>
             </div>
-            <div className="navbar-end">
+            <div className="md:navbar-end">
               <a
                 href="/flowchart-guide/select-cs-track"
                 className="hidden lg:block lg:me-6"
