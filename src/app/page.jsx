@@ -26,9 +26,11 @@ export default function Home() {
               build your entire college journey. Visualize your courses, track
               your progress, and adjust your schedule with ease.
             </p>
-            <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
-              Get Started
-            </button>
+            <a href="/flowchart-guide/select-degree" className="mt-6">
+              <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
+                Get Started
+              </button>
+            </a>
           </div>
         </div>
       </div>
@@ -78,9 +80,11 @@ export default function Home() {
       </div>
 
       <div className="mt-16">
-        <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
-          Get Started
-        </button>
+        <a href="/flowchart-guide/select-degree" className="mt-6">
+          <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
+            Get Started
+          </button>
+        </a>
       </div>
 
       <Footer />
