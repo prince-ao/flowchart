@@ -101,7 +101,10 @@ export default function FlowchartGuide() {
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
             </button>
             {/* make a video */}
-            <img src="/images/degreeworks-track.png" width="600" height="350" />
+            <img
+              src="/images/degreeworks-track.png"
+              className="w-[300px] h-[150px] lg:w-[600px] lg:h-[350px]"
+            />
           </div>
           <a
             className="link link-primary"

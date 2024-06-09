@@ -128,14 +128,9 @@ export default function FlowchartGuide() {
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
             </button>
             {/* make the video responsive */}
-            {/* <img
-              src="https://picsum.photos/600/350"
-              alt="instruction for finding a student's flowchart"
-            /> */}
             <video
               ref={videoRef}
-              width="600"
-              height="350"
+              className="w-[300px] h-[150px] lg:w-[600px] lg:h-[350px]"
               autoPlay
               loop
               muted

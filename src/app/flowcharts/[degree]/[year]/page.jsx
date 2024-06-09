@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/utils/supabase";
 import ReactFlow, {
   Background,
@@ -12,6 +12,7 @@ import {
   getDegreeMapByDegreeYear,
   getFlowchartEnv,
 } from "@/utils/flowchart-api";
+import { EditableNode, CoreqNode } from "@/app/_components/nodes";
 import "reactflow/dist/style.css";
 
 const nodeColor = (node) => {
@@ -75,25 +76,31 @@ export default function FlowchartsYear({ params }) {
         const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
         console.log(courses);
 
-        const nodes = courses.map((course) => ({
-          id: course.id,
-          type: course.nodeType,
-          data: {
-            label: course.courseName,
-            fullName: course.fullName,
-            description: course.description,
-            prerequisite: course.prerequisites,
-            corequisite: course.corequisites,
-          },
-          style: {
-            backgroundColor: nodeColor({ type: "default" }),
-            border: "3px solid #79BDE8",
-            color: "black",
-            borderRadius: "0.375rem",
-            padding: "1rem", // p-4
-          },
-          position: { x: course.position.x, y: course.position.y },
-        }));
+        const nodes = courses.map((course) =>
+          course.nodeType === "coreq"
+            ? {
+                id: course.id,
+                type: course.nodeType,
+                data: {
+                  courseNumber1: course.courseName1,
+                  fullName1: course.fullName1,
+                  courseNumber2: course.courseName2,
+                  fullName2: course.fullName2,
+                  description: course.description,
+                },
+                position: { x: course.position.x, y: course.position.y },
+              }
+            : {
+                id: course.id,
+                type: course.nodeType,
+                data: {
+                  courseNumber: course.courseName,
+                  fullName: course.fullName,
+                  description: course.description,
+                },
+                position: { x: course.position.x, y: course.position.y },
+              }
+        );
 
         const edges = courses.flatMap((course) => [
           ...course.prerequisites.map((prerequisite) => ({
@@ -111,7 +118,7 @@ export default function FlowchartsYear({ params }) {
               stroke: "#79BDE8",
               strokeWidth: 3,
             },
-            animated: selectedNode && selectedNode.id === course.id,
+            animated: true,
           })),
         ]);
 
@@ -125,25 +132,24 @@ export default function FlowchartsYear({ params }) {
     })();
   }, [selectedNode]);
 
+  const nodeTypes = useMemo(
+    () => ({
+      single: EditableNode,
+      coreq: CoreqNode,
+    }),
+    []
+  );
+
   return (
     <main className="p-4 bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">{params.year}</h1>
+      <h1 className="text-2xl font-bold mb-4">{displayYear(params.year)}</h1>
       <div className=" h-[90vh] bg-white p-4 rounded shadow">
         {displayState === DisplayState.LOADING ? (
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodeMouseEnter={handleMouseEnter}
-            onNodeMouseLeave={handleMouseLeave}
-            onNodeDragStart={(event, node) => setSelected(node.id)}
-            onNodeDragStop={() => setSelected(null)}
-            onNodeClick={(event, node) => setSelectedNode(node)}
-            fitView
-          >
+          <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView>
             <Background color="#aaa" gap={16} />
-            <Controls />
+            {/* <Controls /> */}
           </ReactFlow>
         ) : displayState === DisplayState.ERROR ? (
           <p className="text-red-500">

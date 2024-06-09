@@ -90,14 +90,16 @@ export default function Header({ navigator }) {
               </ul>
             </div>
           </div>
-          <a href="/" className="flex">
-            <img
-              className="w-[200px] ms-6"
-              src="/images/cslogo.png"
-              alt="college of staten island computer science department logo"
-            />
-            <h1 className="font-bold">Home</h1>
-          </a>
+          <div className="">
+            <a href="/" className="flex ">
+              <img
+                className="w-[200px] ms-6"
+                src="/images/cslogo.png"
+                alt="college of staten island computer science department logo"
+              />
+              <h1 className="font-bold">flowchart</h1>
+            </a>
+          </div>
         </div>
         {navigator && (
           <>
