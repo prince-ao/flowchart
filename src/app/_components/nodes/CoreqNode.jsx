@@ -1,11 +1,6 @@
-import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
 
 export default function CoreqNode({ data }) {
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
-
   const TOTAL_WIDTH = 134.168;
   const TOTAL_WIDTH2 = 362.504;
   const MARGIN_HEIGHT = 25;
@@ -37,7 +32,6 @@ export default function CoreqNode({ data }) {
           height: 10,
           left: TOTAL_WIDTH,
           top: MARGIN_HEIGHT,
-          zIndex: 30,
         }}
       />
       <Handle
@@ -50,7 +44,6 @@ export default function CoreqNode({ data }) {
           height: 10,
           left: TOTAL_WIDTH,
           bottom: MARGIN_HEIGHT,
-          zIndex: 30,
         }}
       />
 
@@ -64,7 +57,6 @@ export default function CoreqNode({ data }) {
           height: 10,
           left: TOTAL_WIDTH2,
           top: MARGIN_HEIGHT,
-          zIndex: 30,
         }}
       />
 
@@ -78,7 +70,6 @@ export default function CoreqNode({ data }) {
           height: 10,
           left: TOTAL_WIDTH2,
           bottom: MARGIN_HEIGHT,
-          zIndex: 30,
         }}
       />
 
@@ -90,7 +81,6 @@ export default function CoreqNode({ data }) {
           background: "#414A4C",
           width: 10,
           height: 10,
-          zIndex: 30,
         }}
       />
 
@@ -102,7 +92,6 @@ export default function CoreqNode({ data }) {
           background: "#414A4C",
           width: 10,
           height: 10,
-          zIndex: 30,
         }}
       />
     </>

@@ -12,7 +12,7 @@ import {
   getDegreeMapByDegreeYear,
   getFlowchartEnv,
 } from "@/utils/flowchart-api";
-import { EditableNode, CoreqNode } from "@/app/_components/nodes";
+import { ViewEditableNode, ViewCoreqNode } from "@/app/_components/nodes";
 import "reactflow/dist/style.css";
 
 const nodeColor = (node) => {
@@ -134,8 +134,8 @@ export default function FlowchartsYear({ params }) {
 
   const nodeTypes = useMemo(
     () => ({
-      single: EditableNode,
-      coreq: CoreqNode,
+      single: ViewEditableNode,
+      coreq: ViewCoreqNode,
     }),
     []
   );
