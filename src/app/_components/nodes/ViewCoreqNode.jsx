@@ -4,7 +4,6 @@ export default function CoreqNode({ data }) {
   const TOTAL_WIDTH = 134.168;
   const TOTAL_WIDTH2 = 362.504;
   const MARGIN_HEIGHT = 25;
-
   return (
     <>
       <div className="flex bg-primary p-6 rounded gap-4">
@@ -26,10 +25,11 @@ export default function CoreqNode({ data }) {
         id="a"
         type="target"
         position={Position.Top}
+        isConnectable={false}
         style={{
           background: "#414A4C",
-          width: 10,
-          height: 10,
+          width: 0,
+          height: 0,
           left: TOTAL_WIDTH,
           top: MARGIN_HEIGHT,
         }}
@@ -38,10 +38,11 @@ export default function CoreqNode({ data }) {
         id="b"
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
         style={{
           background: "#414A4C",
-          width: 10,
-          height: 10,
+          width: 0,
+          height: 0,
           left: TOTAL_WIDTH,
           bottom: MARGIN_HEIGHT,
         }}
@@ -51,10 +52,11 @@ export default function CoreqNode({ data }) {
         id="c"
         type="target"
         position={Position.Top}
+        isConnectable={false}
         style={{
           background: "#414A4C",
-          width: 10,
-          height: 10,
+          width: 0,
+          height: 0,
           left: TOTAL_WIDTH2,
           top: MARGIN_HEIGHT,
         }}
@@ -64,10 +66,11 @@ export default function CoreqNode({ data }) {
         id="d"
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
         style={{
           background: "#414A4C",
-          width: 10,
-          height: 10,
+          width: 0,
+          height: 0,
           left: TOTAL_WIDTH2,
           bottom: MARGIN_HEIGHT,
         }}
@@ -77,10 +80,11 @@ export default function CoreqNode({ data }) {
         id="e"
         type="target"
         position={Position.Top}
+        isConnectable={false}
         style={{
           background: "#414A4C",
-          width: 10,
-          height: 10,
+          width: 0,
+          height: 0,
         }}
       />
 
@@ -88,10 +92,11 @@ export default function CoreqNode({ data }) {
         id="f"
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
         style={{
           background: "#414A4C",
-          width: 10,
-          height: 10,
+          width: 0,
+          height: 0,
         }}
       />
     </>

@@ -3,48 +3,27 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminSideBar from "@/app/_components/AdminSideBar";
 import { isLoggedIn, logout, withAuth } from "@/utils/authentication";
-import { displayYear, getVisibleYears } from "@/utils/flowchart";
 import { supabase } from "@/utils/supabase";
+import {
+  getAllFlowcharts,
+  displayYear,
+  getDegrees,
+} from "@/utils/flowchart-api";
 import Header from "@/app/_components/Header";
 function AdminHome() {
   const [isAuth, setIsAuth] = useState(false);
   const [flowChartUploadName, setFlowChartUploadName] = useState("");
-  const [totalFlowcharts, setTotalFlowcharts] = useState(0);
-  const [courseYears, setCourseYears] = useState([]);
+  const [flowcharts, setFlowcharts] = useState([]);
+  const [degrees, setDegrees] = useState([]);
   const [selectedChart, setSelectedChart] = useState(null);
   const [file, setFile] = useState(null);
-  const [flowchartYear, setFlowchartYear] = useState('');
-  const [successUploadMessage, setSuccessUploadMessage] = useState('');
-  const [errorUploadMessage, setErrorUploadMessage] = useState('');
+  const [flowchartYear, setFlowchartYear] = useState("");
+  const [successUploadMessage, setSuccessUploadMessage] = useState("");
+  const [errorUploadMessage, setErrorUploadMessage] = useState("");
+  const [track, setTrack] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
-
-  const getAllFlowcharts = async () => {
-    setIsLoading(true);
-    let { data: flowcharts, error } = await supabase
-      .from('flowcharts')
-      .select('flowchart_json');
-  
-    if (error) {
-      console.log('Error: ', error);
-      setIsLoading(false);
-      return;
-    }
-  
-    console.log('Total Flowcharts: ', flowcharts.length);
-    setTotalFlowcharts(flowcharts.length);
-    setIsLoading(false);
-  };
-
-  const getAllFlowchartData = async () => {
-    try {
-      const years = await getVisibleYears();
-      setCourseYears(years);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   async function handleFileUpload() {
     if (!file) {
@@ -85,8 +64,24 @@ function AdminHome() {
   }
 
   useEffect(() => {
-    getAllFlowcharts();
-    getAllFlowchartData();
+    (async () => {
+      try {
+        setIsLoading(true);
+
+        const flowcharts = await getAllFlowcharts();
+        const degrees = await getDegrees();
+        console.log(degrees);
+        setFlowcharts(flowcharts);
+        setDegrees(degrees);
+
+        setIsLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+    setTimeout(() => {
+      setIsAuth(true);
+    }, 500);
   }, []);
 
   function goToLoginError() {
@@ -99,29 +94,47 @@ function AdminHome() {
     router.push("/admin/login");
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsAuth(true);
-    }, 500);
-  }, []);
-
   return (
     <main className=" h-lvh flex-auto" role="login-home">
-   <div className="navbar">
-    <div className="navbar-start"> <AdminSideBar/> </div>
- 
-      <div className="navbar-end">
-      {isAuth ? (
-      
-        <button className=" btn btn-primary" onClick={handleLogout}>
-          Log out
-        </button>
-      ) : (
-        <div className="absolute h-lvh w-lvw z-20 flex items-center justify-center">
-          <span className="loading loading-spinner loading-lg"></span>
+      <div className="navbar">
+        <div className="navbar-start">
+          {" "}
+          <AdminSideBar />{" "}
         </div>
-      )}</div></div>
-      <h1 className="text-4xl font-bold text-center mb-8">Welcome to the Admin Home Page</h1>
+
+        <div className="navbar-end">
+          {isAuth ? (
+            <button className=" btn btn-primary" onClick={handleLogout}>
+              Log out
+            </button>
+          ) : (
+            <div className="absolute h-lvh w-lvw z-20 flex items-center justify-center">
+              <span className="loading loading-spinner loading-lg"></span>
+            </div>
+          )}
+        </div>
+      </div>
+      <h1 className="text-4xl font-bold text-center mb-8">
+        Welcome to the Admin Home Page
+      </h1>
+
+      <select
+        className="select select-bordered w-full max-w-xs mt-16"
+        value={track ? track : "Select Computer Science Track"}
+        onChange={(e) => setTrack(e.target.value)}
+      >
+        <option disabled>Select Computer Science Track</option>
+        {degrees.length === 0 ? (
+          <option disabled>none</option>
+        ) : (
+          <>
+            {degrees.map((degree, i) => (
+              <option key={i}>{degree.name}</option>
+            ))}
+          </>
+        )}
+      </select>
+
       <div className="grid gap-8 grid-cols-1">
         <div className="flex flex-col justify-center items-center">
           <h2 className="text-2xl font-bold text-center">Flowchart Data</h2>
@@ -131,14 +144,9 @@ function AdminHome() {
               {isLoading ? (
                 <div className="stat-value loading loading-spinner loading-sm text-center"></div>
               ) : (
-                <div className="stat-value">{totalFlowcharts}</div>
+                <div className="stat-value">{flowcharts.length}</div>
               )}
               <div className="stat-desc">Total number of flowcharts</div>
-            </div>
-            <div className="stat text-center">
-              <div className="stat-title">Current Classes Added</div>
-              <div className="stat-value">TBD</div>
-              <div className="stat-desc">Total number of classes</div>
             </div>
             <div className="stat">
               <div className="text-xl font-bold text-center">
@@ -151,11 +159,13 @@ function AdminHome() {
                 <option disabled selected>
                   Pick a Chart
                 </option>
-                {courseYears.map((year, index) => (
-                  <option key={index} value={year}>
-                    {displayYear(year)}
-                  </option>
-                ))}
+                {flowcharts
+                  .map((flowchart) => flowchart.flowchart_year)
+                  .map((year, index) => (
+                    <option key={index} value={year}>
+                      {displayYear(year)}
+                    </option>
+                  ))}
               </select>
               <button
                 className="btn btn-ghost"

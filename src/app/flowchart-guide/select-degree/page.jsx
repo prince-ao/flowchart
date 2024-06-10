@@ -1,23 +1,37 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Header from "../../_components/Header";
+import { getDegrees } from "@/utils/flowchart-api";
 
 const _size = 20;
 
 export default function FlowchartGuide() {
-  const [track, setTrack] = useState("");
+  const [degree, setDegree] = useState("");
+  const [degrees, setDegrees] = useState([]);
+
   const router = useRouter();
 
   function handleNextClick() {
-    localStorage.setItem("selected-track", track);
+    localStorage.setItem("selected-degree", degree);
 
     setTimeout(() => {
-      router.push("/flowchart-guide/select-course-year");
+      router.push("/flowchart-guide/select-degree-map");
     }, 400);
   }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const degrees = await getDegrees();
+        setDegrees(degrees);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  }, []);
 
   return (
     <main className="">
@@ -25,7 +39,7 @@ export default function FlowchartGuide() {
       <dialog id="info-modal" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">
-            How to find computer science track?
+            How to find my computer science degree?
           </h3>
           <ol className="list-decimal list-inside mt-4">
             <li>
@@ -43,7 +57,7 @@ export default function FlowchartGuide() {
               section
             </li>
             <li>
-              Your computer science track is to the right of{" "}
+              Your computer science degree is to the right of{" "}
               <span className="font-bold">Major</span>
             </li>
           </ol>
@@ -61,7 +75,7 @@ export default function FlowchartGuide() {
       <div className="min-h-screen-header flex justify-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
           <h2 className="mb-8 text-2xl font-bold">
-            Select Computer Science Track
+            Select Computer Science Degree
           </h2>
           <div className="indicator">
             <button
@@ -87,7 +101,10 @@ export default function FlowchartGuide() {
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
             </button>
             {/* make a video */}
-            <img src="/images/degreeworks-track.png" width="600" height="350" />
+            <img
+              src="/images/degreeworks-track.png"
+              className="w-[300px] h-[150px] lg:w-[600px] lg:h-[350px]"
+            />
           </div>
           <a
             className="link link-primary"
@@ -98,15 +115,24 @@ export default function FlowchartGuide() {
           </a>
           <select
             className="select select-bordered w-full max-w-xs mt-16"
-            value={track ? track : "Select Computer Science Track"}
-            onChange={(e) => setTrack(e.target.value)}
+            value={degree ? degree : "Select Computer Science Degree"}
+            onChange={(e) => setDegree(e.target.value)}
           >
-            <option disabled>Select Computer Science Track</option>
-            <option>Computer Science BS</option>
-            <option>Computer Science - Mathematics BS</option>
-            <option>Computer Science Associates</option>
+            <option disabled>Select Computer Science Degree</option>
+
+            {degrees.length === 0 ? (
+              <option disabled>none</option>
+            ) : (
+              <>
+                {degrees.map((degree, i) => (
+                  <option key={i} className="cursor-pointer">
+                    {degree.name}
+                  </option>
+                ))}
+              </>
+            )}
           </select>
-          {track && (
+          {degree && (
             <button className="btn btn-primary mt-4" onClick={handleNextClick}>
               Next
             </button>

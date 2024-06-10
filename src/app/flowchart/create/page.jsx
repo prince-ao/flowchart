@@ -93,7 +93,6 @@ export default function CreateFlowchart() {
       let style = {
         stroke: "#79BDE8",
         strokeWidth: 3,
-        zIndex: 30,
       };
 
       let type = "bezier";
