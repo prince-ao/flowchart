@@ -1,17 +1,7 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
 
-export default function EditableNode({ data, isConnectable }) {
-  // Function to handle changes in the node data
-  const onChange = useCallback(
-    (evt) => {
-      const { name, value } = evt.target;
-      data[name] = value;
-      // updateNodeData(data);
-    },
-    [data]
-  );
-
+export default function EditableNode({ data }) {
   return (
     <>
       <div className="flex flex-col rounded border-0 bg-secondary items-center p-6 w-48">
@@ -21,14 +11,16 @@ export default function EditableNode({ data, isConnectable }) {
       <Handle
         id="a"
         type="target"
+        isConnectable={false}
         position={Position.Top}
-        style={{ background: "#414A4C", width: 10, height: 10 }}
+        style={{ background: "#414A4C", width: 0, height: 0 }}
       />
       <Handle
         id="b"
         type="source"
+        isConnectable={false}
         position={Position.Bottom}
-        style={{ background: "#414A4C", width: 10, height: 10 }}
+        style={{ background: "#414A4C", width: 0, height: 0 }}
       />
     </>
   );

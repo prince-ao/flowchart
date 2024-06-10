@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { isLoggedIn } from "@/utils/authentication";
-import { getVisibleYears } from "@/utils/flowchart";
+import { getVisibleYears } from "@/utils/flowchart-api";
 
 // change icons from svg to radix
 export default function Flowcharts() {
