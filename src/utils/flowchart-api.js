@@ -40,6 +40,16 @@ export async function getDegreeMapByDegree(degree) {
   return flowcharts;
 }
 
+export async function getAllDegrees() {
+  let { data: degrees, error } = await supabase.from("degrees").select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return degrees;
+}
+
 export async function getDegreeMapByDegreeYear(degree, year) {
   if (!degree || !year) throw new Error("degree and year required");
 
@@ -74,6 +84,17 @@ export async function deleteFlowchart(flowchart_year) {
   let { data, error } = await supabase
     .from(`${getFlowchartEnv()}`)
     .delete()
+    .eq("flowchart_year", flowchart_year);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function updateFlowchart(flowchart_year, flowchart_data) {
+  let { data, error } = await supabase
+    .from(`${getFlowchartEnv()}`)
+    .update({ flowchart_json: flowchart_data })
     .eq("flowchart_year", flowchart_year);
 
   if (error) {
