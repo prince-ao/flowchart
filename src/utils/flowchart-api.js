@@ -70,6 +70,17 @@ export async function getAllFlowcharts() {
   return flowcharts;
 }
 
+export async function deleteFlowchart(flowchart_year) {
+  let { data, error } = await supabase
+    .from(`${getFlowchartEnv()}`)
+    .delete()
+    .eq("flowchart_year", flowchart_year);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function getAllCourses() {
   let { data: classes, error } = await supabase
     .from("courses")
