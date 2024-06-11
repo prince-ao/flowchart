@@ -6,6 +6,7 @@ import ReactFlow, {
   MiniMap,
   Controls,
   MarkerType,
+  ReactFlowProvider,
 } from "reactflow";
 import {
   displayYear,
@@ -15,6 +16,7 @@ import {
 } from "@/utils/flowchart-api";
 import { ViewEditableNode, ViewCoreqNode } from "@/app/_components/nodes";
 import "reactflow/dist/style.css";
+import ViewableFlowchart from "@/app/_components/ViewableFlowchart";
 
 const nodeColor = (node) => {
   switch (node.type) {
@@ -155,10 +157,9 @@ export default function FlowchartsYear({ params }) {
         {displayState === DisplayState.LOADING ? (
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
-          <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView>
-            <Background color="#aaa" gap={16} />
-            {/* <Controls /> */}
-          </ReactFlow>
+          <ReactFlowProvider>
+          <ViewableFlowchart nodes={nodes} edges={edges} nodeTypes={nodeTypes} viewHeight="74.1vh"/>
+          </ReactFlowProvider>
         ) : displayState === DisplayState.ERROR ? (
           <p className="text-red-500">
             Flowchart for course year {params.year} not found.
