@@ -9,6 +9,7 @@ import ReactFlow, {
 } from "reactflow";
 import {
   displayYear,
+  getAllCourses,
   getDegreeMapByDegreeYear,
   getFlowchartEnv,
 } from "@/utils/flowchart-api";
@@ -36,6 +37,7 @@ export default function FlowchartsYear({ params }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [displayState, setDisplayState] = useState(DisplayState.LOADING);
+  const [courses, setCourses] = useState([]);
   const [tooltip, setTooltip] = useState({
     display: false,
     content: "",
@@ -73,6 +75,10 @@ export default function FlowchartsYear({ params }) {
           params.year
         );
 
+        const real_courses = await getAllCourses();
+
+        setCourses(real_courses);
+
         const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
         console.log(courses);
 
@@ -101,6 +107,8 @@ export default function FlowchartsYear({ params }) {
                 position: { x: course.position.x, y: course.position.y },
               }
         );
+
+        console.log(nodes);
 
         const edges = courses.flatMap((course) => [
           ...course.prerequisites.map((prerequisite) => ({
@@ -141,9 +149,9 @@ export default function FlowchartsYear({ params }) {
   );
 
   return (
-    <main className="p-4 bg-gray-100">
+    <main className="p-4">
       <h1 className="text-2xl font-bold mb-4">{displayYear(params.year)}</h1>
-      <div className=" h-[90vh] bg-white p-4 rounded shadow">
+      <div className="h-[75vh] border-4 border-[#1e90ff] rounded-lg shadow">
         {displayState === DisplayState.LOADING ? (
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
@@ -159,14 +167,68 @@ export default function FlowchartsYear({ params }) {
           <></>
         )}
       </div>
-      {tooltip.display && (
+      {/* {tooltip.display && (
         <div
           style={{ position: "absolute", top: tooltip.y, left: tooltip.x }}
           className="bg-blue-500 text-white p-2 rounded-md shadow-lg max-w-xs"
         >
           {tooltip.content}
         </div>
-      )}
+      )} */}
+      <div className="flex gap-4 mt-16">
+        <div className="grow-[1] flex flex-col items-center border-[5px] border-blue-300 rounded py-6">
+          <h2 className="mb-8 text-xl font-bold">Required CS Courses</h2>
+          <div className="flex gap-3 flex-wrap">
+            {courses.length > 0 ? (
+              courses.map(
+                (course, i) =>
+                  course.category === "cs_required" && (
+                    <div
+                      className="tooltip bg-gray-200 p-2 rounded-full"
+                      data-tip={`${course.name}`}
+                      key={i}
+                    >
+                      <a
+                        href={`${course.url ?? "#"}`}
+                        target={course.url ? "_blank" : ""}
+                      >
+                        <p>{course.code}</p>
+                      </a>
+                    </div>
+                  )
+              )
+            ) : (
+              <p>No courses yet.</p>
+            )}
+          </div>
+        </div>
+        <div className="grow-[1] flex flex-col items-center border-[5px] border-blue-300 rounded py-6">
+          <h2 className="mb-8 text-xl font-bold">Elective CS Courses</h2>
+          <div className="flex gap-3 flex-wrap">
+            {courses.length > 0 ? (
+              courses.map(
+                (course, i) =>
+                  course.category === "cs_elective" && (
+                    <div
+                      className="tooltip bg-gray-200 p-2 rounded-full"
+                      data-tip={`${course.name}`}
+                      key={i}
+                    >
+                      <a
+                        href={`${course.url ?? "#"}`}
+                        target={course.url ? "_blank" : ""}
+                      >
+                        <p>{course.code}</p>
+                      </a>
+                    </div>
+                  )
+              )
+            ) : (
+              <p>No courses yet.</p>
+            )}
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

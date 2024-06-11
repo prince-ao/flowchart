@@ -66,7 +66,7 @@ export default function Header({ navigator }) {
                               {degree[flowchartEnv].map((data, j) => (
                                 <li key={j}>
                                   <a
-                                    href={`/flowcharts/${data.flowchart_year}`}
+                                    href={`/flowcharts/${degree.name}/${data.flowchart_year}`}
                                   >
                                     {displayYear(data.flowchart_year)}
                                   </a>
@@ -145,7 +145,7 @@ export default function Header({ navigator }) {
                       <li key={j}>
                         <a
                           className="hover:link"
-                          href={`/flowcharts/${data.flowchart_year}`}
+                          href={`/flowcharts/${degree.name}/${data.flowchart_year}`}
                         >
                           {displayYear(data.flowchart_year)}
                         </a>

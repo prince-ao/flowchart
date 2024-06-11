@@ -70,6 +70,18 @@ export async function getAllFlowcharts() {
   return flowcharts;
 }
 
+export async function getAllCourses() {
+  let { data: classes, error } = await supabase
+    .from("courses")
+    .select("code, name, category, url");
+
+  if (error) {
+    throw error;
+  }
+
+  return classes;
+}
+
 export async function getDegrees() {
   let { data: degrees, error } = await supabase
     .from(`degrees`)
