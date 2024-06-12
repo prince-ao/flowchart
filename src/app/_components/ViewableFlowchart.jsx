@@ -53,6 +53,8 @@ import ReactFlow, {
  * 
  * enableMouseEvents: A boolean that determines whether mouse enter and leave events are handled.
  * 
+ * nodeTypes: An object that defines the types of nodes that can be displayed in the flowchart.
+ * 
  * Always use the ViewableFlowchart component to display a flowchart in the application.
  * Wrap the component in a ReactFlowProvider to enable drag and drop functionality.
  * 
@@ -83,7 +85,8 @@ const ViewableFlowchart = ({
   chartPadding,
   backgroundGap,
   enableTooltip,
-  backgroundGridColor
+  backgroundGridColor,
+  nodeTypes,
 }) => {
   const [tooltip, setTooltip] = useState({
     display: false,
@@ -181,13 +184,14 @@ const ViewableFlowchart = ({
             </div>
             )}
     
-      <ReactFlow nodes={defaultNodes} edges={defaultEdges}    
+      <ReactFlow nodes={defaultNodes} edges={defaultEdges}
+        nodeTypes={nodeTypes ? nodeTypes : { default: { type: 'default', backgroundColor: backgroundColor, borderColor: borderColor, color: textColor, borderRadius: borderRadius, padding: padding, strokeColor: strokeColor, strokeWidth: strokeWidth } }} 
         onNodeMouseEnter={enableMouseEvents ? handleMouseEnter : undefined}
         onNodeMouseLeave={enableMouseEvents ? handleMouseLeave : undefined}
         onNodeDragStart={handleNodeDragStart}
         onNodeDragStop={handleNodeDragStop}
         onNodeClick={handleNodeClick}
-        minZoom={0.2}
+        minZoom={0.05}
         maxZoom={1.5}
         fitView
         fitViewOptions={{nodes: defaultNodes}}
