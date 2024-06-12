@@ -40,34 +40,73 @@ export default function FlowchartsYear({ params }) {
   const [edges, setEdges] = useState([]);
   const [displayState, setDisplayState] = useState(DisplayState.LOADING);
   const [courses, setCourses] = useState([]);
-  const [tooltip, setTooltip] = useState({
-    display: false,
-    content: "",
-    x: 0,
-    y: 0,
-  });
-  const [selected, setSelected] = useState(null);
-  const [selectedNode, setSelectedNode] = useState(null);
-
   const flowchartEnv = getFlowchartEnv();
 
-  const handleMouseEnter = (event, node) => {
-    setTooltip({
-      display: true,
-      content: node.data.fullName,
-      x: event.pageX,
-      y: event.pageY,
-    });
-  };
+  function handleNodeClick(e, n) {
+    const current_node = nodes.find((node) => node.id === n.id);
 
-  const handleMouseLeave = () => {
-    setTooltip({
-      display: false,
-      content: "",
-      x: 0,
-      y: 0,
-    });
-  };
+    function selectAncestors(node_id) {
+      const current_node = nodes.find((node) => node.id === node_id);
+      if (!current_node) return;
+
+      current_node.selected = true;
+      current_node.data.canTake = false;
+
+      for (let edge of edges) {
+        if (edge.target === node_id) {
+          selectAncestors(edge.source);
+        }
+      }
+    }
+
+    function deselectDescendents(node_id) {
+      const current_node = nodes.find((node) => node.id === node_id);
+      if (!current_node) return;
+
+      current_node.selected = false;
+      current_node.data.canTake = false;
+
+      for (let edge of edges) {
+        if (edge.source === node_id) {
+          deselectDescendents(edge.target);
+        }
+      }
+    }
+
+    function noteChildren(node_id) {
+      for (let edge of edges) {
+        if (edge.source === node_id) {
+          const child = nodes.find((node) => node.id === edge.target);
+          console.log("child", child);
+
+          for (let parent_id of child.data.prerequisites) {
+            const parent = nodes.find((node) => node.id === parent_id);
+            console.log("parent", parent);
+            if (!parent.selected) return;
+          }
+
+          child.data.canTake = true;
+        }
+      }
+    }
+
+    function noteSelf() {
+      for (let parent_id of current_node.data.prerequisites) {
+        const parent = nodes.find((node) => node.id === parent_id);
+        if (!parent.selected) return;
+      }
+      current_node.data.canTake = true;
+    }
+
+    if (!current_node.selected) {
+      selectAncestors(current_node.id);
+      noteChildren(current_node.id);
+    } else {
+      deselectDescendents(current_node.id);
+      noteSelf();
+    }
+    setNodes([...nodes]);
+  }
 
   useEffect(() => {
     (async () => {
@@ -95,6 +134,7 @@ export default function FlowchartsYear({ params }) {
                   courseNumber2: course.courseName2,
                   fullName2: course.fullName2,
                   description: course.description,
+                  prerequisites: course.prerequisites,
                 },
                 position: { x: course.position.x, y: course.position.y },
               }
@@ -105,6 +145,7 @@ export default function FlowchartsYear({ params }) {
                   courseNumber: course.courseName,
                   fullName: course.fullName,
                   description: course.description,
+                  prerequisites: course.prerequisites,
                 },
                 position: { x: course.position.x, y: course.position.y },
               }
@@ -140,7 +181,7 @@ export default function FlowchartsYear({ params }) {
         setDisplayState(DisplayState.ERROR);
       }
     })();
-  }, [selectedNode]);
+  }, []);
 
   const nodeTypes = useMemo(
     () => ({
@@ -158,7 +199,13 @@ export default function FlowchartsYear({ params }) {
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
           <ReactFlowProvider>
-          <ViewableFlowchart nodes={nodes} edges={edges} nodeTypes={nodeTypes} viewHeight="74.1vh"/>
+            <ViewableFlowchart
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              onNodeClick={handleNodeClick}
+              viewHeight="74.1vh"
+            />
           </ReactFlowProvider>
         ) : displayState === DisplayState.ERROR ? (
           <p className="text-red-500">
