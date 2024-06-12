@@ -87,6 +87,7 @@ export default function FlowchartsYear({ params }) {
                   courseNumber2: course.courseName2,
                   fullName2: course.fullName2,
                   description: course.description,
+                  prerequisites: course.prerequisites,
                 },
                 position: { x: course.position.x, y: course.position.y },
               }
@@ -97,6 +98,7 @@ export default function FlowchartsYear({ params }) {
                   courseNumber: course.courseName,
                   fullName: course.fullName,
                   description: course.description,
+                  prerequisites: course.prerequisites,
                 },
                 position: { x: course.position.x, y: course.position.y },
               }
@@ -147,7 +149,79 @@ export default function FlowchartsYear({ params }) {
         {displayState === DisplayState.LOADING ? (
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
-          <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodeClick={(e, n) => {
+              const current_node = nodes.find((node) => node.id === n.id);
+
+              function selectAncestors(node_id) {
+                const current_node = nodes.find((node) => node.id === node_id);
+                if (!current_node) return;
+
+                current_node.selected = true;
+                current_node.data.canTake = false;
+
+                for (let edge of edges) {
+                  if (edge.target === node_id) {
+                    selectAncestors(edge.source);
+                  }
+                }
+              }
+
+              function deselectDescendents(node_id) {
+                const current_node = nodes.find((node) => node.id === node_id);
+                if (!current_node) return;
+
+                current_node.selected = false;
+                current_node.data.canTake = false;
+
+                for (let edge of edges) {
+                  if (edge.source === node_id) {
+                    deselectDescendents(edge.target);
+                  }
+                }
+              }
+
+              function noteChildren(node_id) {
+                for (let edge of edges) {
+                  if (edge.source === node_id) {
+                    const child = nodes.find((node) => node.id === edge.target);
+                    console.log("child", child);
+
+                    for (let parent_id of child.data.prerequisites) {
+                      const parent = nodes.find(
+                        (node) => node.id === parent_id
+                      );
+                      console.log("parent", parent);
+                      if (!parent.selected) return;
+                    }
+
+                    child.data.canTake = true;
+                  }
+                }
+              }
+
+              function noteSelf() {
+                for (let parent_id of current_node.data.prerequisites) {
+                  const parent = nodes.find((node) => node.id === parent_id);
+                  if (!parent.selected) return;
+                }
+                current_node.data.canTake = true;
+              }
+
+              if (!current_node.selected) {
+                selectAncestors(current_node.id);
+                noteChildren(current_node.id);
+              } else {
+                deselectDescendents(current_node.id);
+                noteSelf();
+              }
+              setNodes([...nodes]);
+            }}
+            fitView
+          >
             <Background color="#aaa" gap={16} />
             {/* <Controls /> */}
           </ReactFlow>
