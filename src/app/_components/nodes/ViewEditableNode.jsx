@@ -1,10 +1,14 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
 
-export default function EditableNode({ data }) {
+export default function ViewEditableNode({ data, selected }) {
   return (
     <>
-      <div className="flex flex-col rounded border-0 bg-secondary items-center p-6 w-48">
+      <div
+        className={`flex flex-col rounded border-0 bg-secondary items-center p-6 w-48  ${
+          selected ? "border-[6px] border-green-500" : ""
+        } ${data.canTake ? "border-[6px] border-red-500" : ""}`}
+      >
         <h1 className="font-bold text-xl text-center">{data.courseNumber}</h1>
         <h2 className="text-center">{data.fullName}</h2>
       </div>
