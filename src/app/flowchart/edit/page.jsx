@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { isLoggedIn } from "@/utils/authentication";
 import { getAllDegrees, getDegreeMapByDegree, getFlowchartEnv } from "@/utils/flowchart-api";
 
-export default function Flowcharts() {
+export default function EditFlowcharts() {
   const [degrees, setDegrees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentEnvironment, setCurrentEnvironment] = useState("")
@@ -39,7 +39,7 @@ export default function Flowcharts() {
               {(currentEnvironment === "flowcharts_dev" ? degree[0].flowcharts_dev : degree[0].flowcharts).length > 0 ? (
                 (currentEnvironment === "flowcharts_dev" ? degree[0].flowcharts_dev : degree[0].flowcharts).map((flowchart, i) => (
                   <li key={i}>
-                    <a href={`/flowcharts/${degree[0].name}/${flowchart.flowchart_year}`} className="text-blue-500 hover:underline">{flowchart.flowchart_year}</a>
+                    <a href={`/flowchart/edit/${degree[0].name}/${flowchart.flowchart_year}`} className="text-blue-500 hover:underline">{flowchart.flowchart_year}</a>
                   </li>
                 ))
               ) : (
