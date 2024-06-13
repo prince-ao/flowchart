@@ -8,6 +8,7 @@ import {
   getAllFlowcharts,
   displayYear,
   getDegrees,
+  deleteFlowchart,
 } from "@/utils/flowchart-api";
 import Header from "@/app/_components/Header";
 function AdminHome() {
@@ -16,6 +17,8 @@ function AdminHome() {
   const [flowcharts, setFlowcharts] = useState([]);
   const [degrees, setDegrees] = useState([]);
   const [selectedChart, setSelectedChart] = useState(null);
+  const [selectedEditChart, setSelectedEditChart] = useState(null);
+  const [selectedDeleteChart, setSelectedDeleteChart] = useState(null);
   const [file, setFile] = useState(null);
   const [flowchartYear, setFlowchartYear] = useState("");
   const [successUploadMessage, setSuccessUploadMessage] = useState("");
@@ -95,46 +98,50 @@ function AdminHome() {
   }
 
   return (
-    <main className=" h-lvh flex-auto" role="login-home">
-      <div className="navbar">
-        <div className="navbar-start">
-          {" "}
-          <AdminSideBar />{" "}
-        </div>
-
-        <div className="navbar-end">
-          {isAuth ? (
-            <button className=" btn btn-primary" onClick={handleLogout}>
-              Log out
-            </button>
-          ) : (
-            <div className="absolute h-lvh w-lvw z-20 flex items-center justify-center">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          )}
-        </div>
+    <main className="h-lvh flex-auto p-2" role="login-home">
+    <div className="navbar ">
+      <div className="navbar-start">
+        <AdminSideBar />
       </div>
-      <h1 className="text-4xl font-bold text-center mb-8">
-        Welcome to the Admin Home Page
-      </h1>
 
-      <select
-        className="select select-bordered w-full max-w-xs mt-16"
-        value={track ? track : "Select Computer Science Track"}
-        onChange={(e) => setTrack(e.target.value)}
-      >
-        <option disabled>Select Computer Science Track</option>
-        {degrees.length === 0 ? (
-          <option disabled>none</option>
+      <div className="navbar-end">
+        {isAuth ? (
+          <button className="btn btn-primary" onClick={handleLogout}>
+            Log out
+          </button>
         ) : (
-          <>
-            {degrees.map((degree, i) => (
-              <option key={i}>{degree.name}</option>
-            ))}
-          </>
+          <div className="absolute h-lvh w-lvw z-20 flex items-center justify-center">
+            <span className="loading loading-spinner loading-lg"></span>
+          </div>
         )}
-      </select>
+      </div>
+    </div>
+    <h1 className="text-4xl font-bold text-center">
+      Welcome to the Admin Home Page
+    </h1>
 
+    <div className="flex justify-center">
+    <select
+      className="select select-bordered max-w-xs mt-16"
+      value={track ? track : "Select Computer Science Track"}
+      onChange={(e) => setTrack(e.target.value)}
+    >
+      <option disabled>Select Computer Science Track</option>
+      {degrees.length === 0 ? (
+        <option disabled>none</option>
+      ) : (
+        <>
+          {degrees.map((degree, i) => (
+            <option key={i}>{degree.name}</option>
+          ))}
+        </>
+      )}
+    </select>
+  </div>
+
+    {track === "" ? ( 
+      <p className="text-center mt-4">Please select a track to manage flowcharts</p>
+    ) : (  
       <div className="grid gap-8 grid-cols-1">
         <div className="flex flex-col justify-center items-center">
           <h2 className="text-2xl font-bold text-center">Flowchart Data</h2>
@@ -171,7 +178,7 @@ function AdminHome() {
                 className="btn btn-ghost"
                 onClick={() => {
                   if (selectedChart) {
-                    router.push(`/flowcharts/${selectedChart}`);
+                    router.push(`/flowcharts/${track}/${selectedChart}`);
                   } else {
                     /* add a toast message here */
                   }
@@ -232,27 +239,54 @@ function AdminHome() {
               <div className="text-xl font-bold text-center">
                 Edit Flowcharts
               </div>
-              <select className="select select-primary w-full max-w-xs">
+              <select className="select select-primary w-full max-w-xs" onChange={(e) => setSelectedEditChart(e.target.value)}>
                 <option disabled selected>
-                  Edit a Chart (NC){" "}
+                  Edit a Chart {" "}
                 </option>
-                <option>In Progress</option>
+                {flowcharts.map((flowchart, index) => (
+                  <option key={index}>{flowchart.flowchart_year}</option>
+                ))}
               </select>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  if (selectedEditChart) {
+                    router.push(`/flowchart/edit/${track}/${selectedEditChart}`);
+                  } else {
+                    /* add a toast message here */
+                  }
+                }}
+              >
+                Edit
+              </button>
             </div>
             <div className="stat">
               <div className="text-xl font-bold text-center">
                 Delete Flowchart
               </div>
-              <select className="select select-primary w-full max-w-xs">
+              <select className="select select-primary w-full max-w-xs" onChange={(e) => setSelectedDeleteChart(e.target.value)}>
                 <option disabled selected>
                   Delete a Chart
                 </option>
-                <option>In Progress</option>
+                {flowcharts.map((flowchart, index) => (
+                  <option key={index}>{flowchart.flowchart_year}</option>
+                ))}
               </select>
+                <button className="btn btn-error" onClick={() => {
+                  if (selectedDeleteChart) {
+                    deleteFlowchart(selectedDeleteChart);
+                    getAllFlowchartData();
+                  } else {
+                    /* add a toast message here */
+                  }
+                }}>
+                  Delete
+                </button>
             </div>
           </div>
         </div>
       </div>
+    )}
     </main>
   );
 }
