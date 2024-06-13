@@ -46,6 +46,9 @@ export default function Header({ navigator }) {
                 className="drawer-overlay"
               ></label>
               <ul className="menu p-4 w-60 min-h-full bg-primary text-white">
+              <li>
+                  <a href="/" className="p-[1rem]">Home</a>
+                </li>
                 <li>
                   <a className="p-[1rem]">About</a>
                 </li>
@@ -90,21 +93,22 @@ export default function Header({ navigator }) {
               </ul>
             </div>
           </div>
-          <div className="">
-            <a href="/" className="flex ">
-              <img
-                className="w-[200px] ms-6"
-                src="/images/cslogo.png"
-                alt="college of staten island computer science department logo"
-              />
-              <h1 className="font-bold">flowchart</h1>
-            </a>
-          </div>
+          <a href="/" className="flex">
+            <img
+              className=" w-[600px] md:w-[200px] ml-[100px] md:ml-0"
+              src="/images/cslogo.png"
+              alt="college of staten island computer science department logo"
+            />
+
+          </a>
         </div>
         {navigator && (
           <>
             <div className="navbar-center hidden lg:flex ">
               <ul className="menu menu-horizontal px-1">
+              <li>
+                  <a href="/">Home</a>
+                </li>
                 <li>
                   <a href="#">About</a>
                 </li>
@@ -119,7 +123,7 @@ export default function Header({ navigator }) {
                 </li>
               </ul>
             </div>
-            <div className="navbar-end">
+            <div className="md:navbar-end">
               <a
                 href="/flowchart-guide/select-degree"
                 className="hidden lg:block lg:me-6"
