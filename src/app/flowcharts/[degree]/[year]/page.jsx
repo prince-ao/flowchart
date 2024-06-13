@@ -158,7 +158,12 @@ export default function FlowchartsYear({ params }) {
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
           <ReactFlowProvider>
-          <ViewableFlowchart nodes={nodes} edges={edges} nodeTypes={nodeTypes} viewHeight="74.1vh"/>
+            <ViewableFlowchart
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              viewHeight="74.1vh"
+            />
           </ReactFlowProvider>
         ) : displayState === DisplayState.ERROR ? (
           <p className="text-red-500">
@@ -168,14 +173,6 @@ export default function FlowchartsYear({ params }) {
           <></>
         )}
       </div>
-      {/* {tooltip.display && (
-        <div
-          style={{ position: "absolute", top: tooltip.y, left: tooltip.x }}
-          className="bg-blue-500 text-white p-2 rounded-md shadow-lg max-w-xs"
-        >
-          {tooltip.content}
-        </div>
-      )} */}
       <div className="flex gap-4 mt-16">
         <div className="grow-[1] flex flex-col items-center border-[5px] border-blue-300 rounded py-6">
           <h2 className="mb-8 text-xl font-bold">Required CS Courses</h2>

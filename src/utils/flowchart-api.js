@@ -68,6 +68,19 @@ export async function getDegreeMapByDegreeYear(degree, year) {
   return flowcharts;
 }
 
+export async function getDegreeMapYears(degree) {
+  let { data: years, error } = await supabase
+    .from("degrees")
+    .select(`name, ${getFlowchartEnv()}(flowchart_year)`)
+    .eq("name", degree);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return years;
+}
+
 export async function getAllFlowcharts() {
   let { data: flowcharts, error } = await supabase
     .from(`${getFlowchartEnv()}`)
