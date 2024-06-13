@@ -39,6 +39,7 @@ export default function FlowchartsYear({ params }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [displayState, setDisplayState] = useState(DisplayState.LOADING);
+  const [color, setColor] = useState("#1e90ff");
   const [courses, setCourses] = useState([]);
   const flowchartEnv = getFlowchartEnv();
 
@@ -121,7 +122,7 @@ export default function FlowchartsYear({ params }) {
         setCourses(real_courses);
 
         const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
-        console.log(courses);
+        setColor(flowcharts[0].color);
 
         const nodes = courses.map((course) =>
           course.nodeType === "coreq"
@@ -192,9 +193,12 @@ export default function FlowchartsYear({ params }) {
   );
 
   return (
-    <main className="p-4">
+    <main className="p-4" style={{ backgroundColor: color + "20" }}>
       <h1 className="text-2xl font-bold mb-4">{displayYear(params.year)}</h1>
-      <div className="h-[75vh] border-4 border-[#1e90ff] rounded-lg shadow">
+      <div
+        className={`h-[75vh] border-4 rounded-lg shadow`}
+        style={{ borderColor: color }}
+      >
         {displayState === DisplayState.LOADING ? (
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
@@ -215,7 +219,10 @@ export default function FlowchartsYear({ params }) {
         )}
       </div>
       <div className="flex gap-4 mt-16">
-        <div className="grow-[1] flex flex-col items-center border-[5px] border-blue-300 rounded py-6">
+        <div
+          className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white"
+          style={{ borderColor: color }}
+        >
           <h2 className="mb-8 text-xl font-bold">Required CS Courses</h2>
           <div className="flex gap-3 flex-wrap">
             {courses.length > 0 ? (
@@ -241,7 +248,10 @@ export default function FlowchartsYear({ params }) {
             )}
           </div>
         </div>
-        <div className="grow-[1] flex flex-col items-center border-[5px] border-blue-300 rounded py-6">
+        <div
+          className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white"
+          style={{ borderColor: color }}
+        >
           <h2 className="mb-8 text-xl font-bold">Elective CS Courses</h2>
           <div className="flex gap-3 flex-wrap">
             {courses.length > 0 ? (

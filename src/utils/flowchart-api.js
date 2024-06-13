@@ -55,7 +55,7 @@ export async function getDegreeMapByDegreeYear(degree, year) {
 
   let { data: flowcharts, error } = await supabase
     .from("degrees")
-    .select(`name, ${getFlowchartEnv()}(flowchart_json, flowchart_year)`)
+    .select(`name, color, ${getFlowchartEnv()}(flowchart_json, flowchart_year)`)
     .eq("name", degree)
     .eq(`${getFlowchartEnv()}.flowchart_year`, year);
 
