@@ -44,21 +44,29 @@ import "reactflow/dist/style.css";
 import DragNodes from "@/app/_components/DragNodes";
 import { EditableNode, CoreqNode } from "@/app/_components/nodes";
 import NodeEditorPanel from "@/app/_components/NodeEditorPanel";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { withAuth } from "@/utils/authentication";
 
 // Initial state for nodes and edges
 const initialNodes = [];
 const initialEdges = [];
 const MAX_NODES = 200;
 
-export default function CreateFlowchart() {
+function CreateFlowchart() {
   // References to the reactflow instance and the ID of the node being connected
   const reactFlowWrapper = useRef(null);
   const connectingNodeId = useRef(null);
   const hasRendered = useRef(false);
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   // State for the nodes and edges in the flowchart
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [year, setYear] = useState("");
+  const [degree, setDegree] = useState("");
 
   function idExists(id) {
     for (const node of nodes) {
@@ -194,6 +202,16 @@ export default function CreateFlowchart() {
   );
 
   useEffect(() => {
+    const year = searchParams.get("year");
+    const degree = searchParams.get("degree");
+
+    if (!year || !degree) {
+      router.push("/admin/home");
+    }
+
+    setYear(year);
+    setDegree(degree);
+
     const loadFromLocalStorage = () => {
       const cachedNodes = localStorage.getItem("cache_nodes");
       const cachedEdges = localStorage.getItem("cache_edges");
@@ -248,8 +266,18 @@ export default function CreateFlowchart() {
             <Controls />
           </ReactFlow>
         </div>
-        <DragNodes clearCache={clearCache} />
+        <DragNodes clearCache={clearCache} year={year} degree={degree} />
       </ReactFlowProvider>
     </div>
   );
 }
+
+export default withAuth(
+  CreateFlowchart,
+  () => {},
+  () => {
+    localStorage.setItem("homeAuthFailed", "true");
+  },
+  "/admin/login",
+  ""
+);
