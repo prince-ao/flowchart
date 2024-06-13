@@ -82,7 +82,7 @@ export default function YearViewableFlowchart({ year, degree, height }) {
         console.log(e);
       }
     })();
-  }, []);
+  }, [year, degree]);
 
   const nodeTypes = useMemo(
     () => ({

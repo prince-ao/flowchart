@@ -15,10 +15,22 @@ export async function getVisibleYears() {
   return course_years;
 }
 
-export async function createNewFlowchart(nodes, fileName) {
-  const { data, error } = await supabase
-    .from(`${getFlowchartEnv()}`)
-    .insert([{ flowchart_json: nodes, flowchart_year: fileName }]);
+export async function createNewFlowchart(chart, year, degree) {
+  const { data: degrees, d_error } = await supabase
+    .from(`degrees`)
+    .select("id, name");
+
+  if (d_error) {
+    throw new Error(d_error.message);
+  }
+
+  const { _, error } = await supabase.from(`${getFlowchartEnv()}`).insert([
+    {
+      flowchart_json: chart,
+      flowchart_year: year,
+      degrees_fk: degrees.find((m_degree) => m_degree.name === degree).id,
+    },
+  ]);
 
   if (error) {
     throw new Error(error.message);
@@ -104,11 +116,40 @@ export async function deleteFlowchart(flowchart_year) {
   }
 }
 
-export async function updateFlowchart(flowchart_year, flowchart_data) {
+export async function updateFlowchart(flowchart_data, year, degree) {
+  const { data: degrees, d_error } = await supabase
+    .from(`degrees`)
+    .select("id, name");
+
+  if (d_error) {
+    throw new Error(d_error.message);
+  }
+
   let { data, error } = await supabase
     .from(`${getFlowchartEnv()}`)
     .update({ flowchart_json: flowchart_data })
-    .eq("flowchart_year", flowchart_year);
+    .eq("flowchart_year", year)
+    .eq("degrees_fk", degrees.find((m_degree) => m_degree.name === degree).id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteDegreeMap(year, degree) {
+  const { data: degrees, d_error } = await supabase
+    .from(`degrees`)
+    .select("id, name");
+
+  if (d_error) {
+    throw new Error(d_error.message);
+  }
+
+  let { data, error } = await supabase
+    .from(`${getFlowchartEnv()}`)
+    .delete()
+    .eq("flowchart_year", year)
+    .eq("degrees_fk", degrees.find((m_degree) => m_degree.name === degree).id);
 
   if (error) {
     throw new Error(error.message);

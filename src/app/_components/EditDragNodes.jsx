@@ -1,30 +1,15 @@
-/**
- * This file defines a DragNodes component
- * The component is designed to be used with the reactflow library, which provides
- * a way to create and manipulate a flowchart-like network of nodes.
- *
- * The DragNodes component allows users to drag a "Class Node" into a flowchart.
- * It also provides a way to save the current state of the nodes in the flowchart to a JSON file.
- *
- * The component uses the useState and useRef hooks from React to manage the name of the file to be saved
- * and a reference to a download link, respectively.
- *
- * The component also uses the useNodes hook from reactflow to access the current state of the nodes in the flowchart.
- *
- * The onDragStart function is used to set the data and effect for the drag operation.
- *
- * The saveNodes function is used to create a clean copy of the nodes (with only the necessary data),
- * convert it to a JSON string, create a data URL with the JSON string, and trigger a download of the data URL.
- *
- * The component is styled using Tailwind CSS.
- */
+/** */
 
 import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
-import { createNewFlowchart, cleanNodes } from "@/utils/flowchart-api";
+import {
+  createNewFlowchart,
+  cleanNodes,
+  updateFlowchart,
+} from "@/utils/flowchart-api";
 import { useRouter } from "next/navigation";
 
-export default function DragNodes({ clearCache, year, degree }) {
+export default function EditDragNodes({ year, degree }) {
   const nodes = useNodes();
   const router = useRouter();
 
@@ -68,15 +53,14 @@ export default function DragNodes({ clearCache, year, degree }) {
     const clean = cleanNodes(nodes);
 
     try {
-      await createNewFlowchart(clean, year, degree);
+      await updateFlowchart(clean, year, degree);
 
       setInsertSuccess(true);
-      clearCache();
 
       setTimeout(() => {
         setInsertSuccess(false);
 
-        router.push("/admin/home");
+        // router.push("/admin/home");
       }, 4 * 1e3);
     } catch (e) {
       setInsertError({ value: true, text: e.message });
@@ -86,7 +70,7 @@ export default function DragNodes({ clearCache, year, degree }) {
   return (
     <aside className="h-screen md:w-1/4 p-6 bg-white shadow-lg rounded-lg space-y-4">
       <h1 className="font-bold text-2xl text-center">
-        Create the degree map for <span className="italicize">{year}</span> |{" "}
+        Edit the degree map for <span className="italicize">{year}</span> |{" "}
         <span className="italicize">{degree}</span>
       </h1>
       <h2 className="text-2xl font-bold text-gray-900">Instructions</h2>
@@ -122,9 +106,9 @@ export default function DragNodes({ clearCache, year, degree }) {
         </p>
       )}
       <button className="btn btn-blue" onClick={saveToSupabase}>
-        Create
+        Submit
       </button>
-      {insertSuccess && <p className="text-success">New flowchart created!</p>}
+      {insertSuccess && <p className="text-success">Degree map updated!</p>}
       <a ref={downloadLink} className="hidden" />
     </aside>
   );

@@ -44,7 +44,7 @@ function AdminHome() {
         setDegrees(degrees);
         setDegree(degrees[0].name);
 
-        updateDegreeMaps(degrees[0].name);
+        await updateDegreeMaps(degrees[0].name);
 
         setIsLoading(false);
       } catch (e) {
@@ -67,10 +67,10 @@ function AdminHome() {
     router.push("/admin/login");
   }
 
-  function handleDegreeChange(e) {
+  async function handleDegreeChange(e) {
     setIsLoading(true);
     setDegree(e.target.value);
-    updateDegreeMaps(e.target.value);
+    await updateDegreeMaps(e.target.value);
     setSelectedChart(null);
     setIsLoading(false);
   }
