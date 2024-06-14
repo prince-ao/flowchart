@@ -23,7 +23,7 @@ import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import EditDragNodes from "@/app/_components/EditDragNodes";
 import { EditableNode, CoreqNode } from "@/app/_components/nodes";
-import NodeEditorPanel from "@/app/_components/NodeEditorPanel";
+import NodeEditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { withAuth } from "@/utils/authentication";

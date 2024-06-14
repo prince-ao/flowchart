@@ -5,25 +5,35 @@ export default function ViewEditableNode({ data, selected }) {
   return (
     <>
       <div
-        className={`flex flex-col rounded border-0 bg-secondary items-center p-6 w-48  ${
-          selected ? "border-[6px] border-green-500" : ""
-        } ${data.canTake ? "border-[6px] border-red-500" : ""}`}
+        className={`flex flex-col rounded border-2 border-black items-center p-6 w-48  ${
+          selected ? "" : ""
+        } ${data.canTake ? "" : ""}`}
       >
-        <h1 className="font-bold text-xl text-center">{data.courseNumber}</h1>
-        <h2 className="text-center">{data.fullName}</h2>
+        <h1 className="font-bold text-xl text-center">{data.courseCode}</h1>
+        <h2 className="text-center">{data.courseName}</h2>
       </div>
       <Handle
         id="a"
         type="target"
-        isConnectable={false}
         position={Position.Top}
         style={{ background: "#414A4C", width: 0, height: 0 }}
       />
       <Handle
         id="b"
         type="source"
-        isConnectable={false}
         position={Position.Bottom}
+        style={{ background: "#414A4C", width: 0, height: 0 }}
+      />
+      <Handle
+        id="c"
+        type="source"
+        position={Position.Left}
+        style={{ background: "#414A4C", width: 0, height: 0 }}
+      />
+      <Handle
+        id="d"
+        type="target"
+        position={Position.Right}
         style={{ background: "#414A4C", width: 0, height: 0 }}
       />
     </>

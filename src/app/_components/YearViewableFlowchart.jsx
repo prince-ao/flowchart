@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import ViewableFlowchart from "./ViewableFlowchart";
 import {
+  dirtyNodes,
   getDegreeMapByDegreeYear,
   getFlowchartEnv,
 } from "@/utils/flowchart-api";
@@ -14,7 +15,12 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 
-export default function YearViewableFlowchart({ year, degree, height }) {
+export default function YearViewableFlowchart({
+  year,
+  degree,
+  height,
+  onNodeClick,
+}) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
@@ -27,54 +33,62 @@ export default function YearViewableFlowchart({ year, degree, height }) {
         const flowcharts = await getDegreeMapByDegreeYear(degree, year);
 
         const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
+        console.log(courses);
 
-        const nodes = courses.map((course) =>
-          course.nodeType === "coreq"
-            ? {
-                id: course.id,
-                type: course.nodeType,
-                data: {
-                  courseNumber1: course.courseName1,
-                  fullName1: course.fullName1,
-                  courseNumber2: course.courseName2,
-                  fullName2: course.fullName2,
-                  description: course.description,
-                },
-                position: { x: course.position.x, y: course.position.y },
-              }
-            : {
-                id: course.id,
-                type: course.nodeType,
-                data: {
-                  courseNumber: course.courseName,
-                  fullName: course.fullName,
-                  description: course.description,
-                },
-                position: { x: course.position.x, y: course.position.y },
-              }
-        );
+        const nodes = dirtyNodes(courses);
+        console.log(nodes);
+        const setCoreqs = new Set();
 
         const edges = courses.flatMap((course) => [
-          ...course.prerequisites.map((prerequisite) => ({
-            id: "e" + prerequisite + "-" + course.id,
-            source: prerequisite,
-            target: course.id,
+          ...course.postrequisites.map((post) => ({
+            id: "e" + course.id + "-" + post,
+            source: course.id,
+            target: post,
             type: "bezier",
             markerEnd: {
-              type: MarkerType.Arrow,
+              type: MarkerType.ArrowClosed,
               width: 10,
               height: 10,
-              color: "#79BDE8",
+              color: "#000",
             },
             style: {
-              stroke: "#79BDE8",
+              stroke: "#000",
               strokeWidth: 3,
             },
             animated: true,
           })),
+          ...course.corequisites.map((co) => {
+            console.log(co);
+            if (co.source) {
+              setCoreqs.add(`e${course.id}-${co.id}`);
+              return {
+                id: `e${co}-${course.id}`,
+                source: course.id,
+                target: co.id,
+                sourceHandle: "c",
+                targetHandle: "d",
+                type: "bezier",
+                markerEnd: {
+                  type: MarkerType.ArrowClosed,
+                  width: 10,
+                  height: 10,
+                  color: "#f00",
+                },
+                markerStart: {
+                  type: MarkerType.ArrowClosed,
+                  width: 10,
+                  height: 10,
+                  color: "#f00",
+                },
+                style: {
+                  stroke: "#f00",
+                  strokeWidth: 3,
+                },
+                animated: true,
+              };
+            }
+          }),
         ]);
-
-        console.log(nodes);
 
         setNodes(nodes);
         setEdges(edges);
@@ -87,7 +101,6 @@ export default function YearViewableFlowchart({ year, degree, height }) {
   const nodeTypes = useMemo(
     () => ({
       single: ViewEditableNode,
-      coreq: ViewCoreqNode,
     }),
     []
   );

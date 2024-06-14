@@ -17,6 +17,7 @@ import {
 import { ViewEditableNode, ViewCoreqNode } from "@/app/_components/nodes";
 import "reactflow/dist/style.css";
 import ViewableFlowchart from "@/app/_components/ViewableFlowchart";
+import YearViewableFlowchart from "@/app/_components/YearViewableFlowchart";
 
 const nodeColor = (node) => {
   switch (node.type) {
@@ -202,15 +203,21 @@ export default function FlowchartsYear({ params }) {
         {displayState === DisplayState.LOADING ? (
           <p className="text-gray-500">Loading...</p>
         ) : displayState === DisplayState.SHOW ? (
-          <ReactFlowProvider>
-            <ViewableFlowchart
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              viewHeight="74.1vh"
-            />
-          </ReactFlowProvider>
-        ) : displayState === DisplayState.ERROR ? (
+          <YearViewableFlowchart
+            year={params.year}
+            degree={params.degree}
+            height="74.1vh"
+          />
+        ) : // <ReactFlowProvider>
+        //   <ViewableFlowchart
+        //     nodes={nodes}
+        //     edges={edges}
+        //     nodeTypes={nodeTypes}
+        //     onNodeClick={handleNodeClick}
+        //     viewHeight="74.1vh"
+        //   />
+        // </ReactFlowProvider>
+        displayState === DisplayState.ERROR ? (
           <p className="text-red-500">
             Flowchart for course year {params.year} not found.
           </p>
