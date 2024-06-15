@@ -23,6 +23,7 @@ import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
 import { createNewFlowchart, cleanNodes } from "@/utils/flowchart-api";
 import { useRouter } from "next/navigation";
+import confetti from "canvas-confetti";
 
 export default function DragNodes({ clearCache, year, degree }) {
   const nodes = useNodes();
@@ -71,11 +72,33 @@ export default function DragNodes({ clearCache, year, degree }) {
       await createNewFlowchart(clean, year, degree);
 
       setInsertSuccess(true);
+      var end = Date.now() + 4 * 1000;
+
+      var colors = ["#8ac2eb"];
+
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 90,
+          origin: { x: 0 },
+          colors: colors,
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 90,
+          origin: { x: 1 },
+          colors: colors,
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
       clearCache();
 
       setTimeout(() => {
-        setInsertSuccess(false);
-
         router.push("/admin/home");
       }, 4 * 1e3);
     } catch (e) {
@@ -101,19 +124,17 @@ export default function DragNodes({ clearCache, year, degree }) {
           and drop it to the desired location.
         </li>
       </ul>
-      <div
-        className="p-2 bg-blue-500 text-white cursor-move rounded"
-        onDragStart={(event) => onDragStart(event, "single")}
-        draggable
-      >
-        Class Node
-      </div>
-      <div
-        className="p-2 bg-red-500 text-white cursor-move rounded"
-        onDragStart={(event) => onDragStart(event, "coreq")}
-        draggable
-      >
-        Coreq Node
+      <h3 className="mt-4 font-bold text-lg">Nodes</h3>
+      <div>
+        <h2>Course Node:</h2>
+        <div
+          className="p-2 border-2 border-black cursor-move rounded flex justify-center items-center flex-col"
+          onDragStart={(event) => onDragStart(event, "single")}
+          draggable
+        >
+          <p className="font-bold text-lg">Course Code</p>
+          <p>Course Name</p>
+        </div>
       </div>
       {/* change the input to make it more strict */}
       {insertError.value && (
@@ -121,7 +142,7 @@ export default function DragNodes({ clearCache, year, degree }) {
           error creating a flowchart: {insertError.text}
         </p>
       )}
-      <button className="btn btn-blue" onClick={saveToSupabase}>
+      <button className="btn btn-success" onClick={saveToSupabase}>
         Create
       </button>
       {insertSuccess && <p className="text-success">New flowchart created!</p>}

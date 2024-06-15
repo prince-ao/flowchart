@@ -23,11 +23,12 @@ import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import EditDragNodes from "@/app/_components/EditDragNodes";
 import { EditableNode, CoreqNode } from "@/app/_components/nodes";
-import NodeEditorPanel from "@/app/_components/NodeEditorPanel";
+import NodeEditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { withAuth } from "@/utils/authentication";
 import {
+  dirtyNodes,
   getDegreeMapByDegreeYear,
   getFlowchartEnv,
 } from "@/utils/flowchart-api";
@@ -87,20 +88,35 @@ function EditFlowchart() {
       let type = "bezier";
       let animated = true;
 
-      // Add the new edge
       setEdges((eds) =>
-        addEdge({ ...params, markerEnd, type, style, animated }, eds)
+        addEdge(
+          { ...params, markerEnd, markerStart, type, style, animated },
+          eds
+        )
       );
 
-      // Add the source node to the target node's prerequisites list
       setNodes((ns) =>
         ns.map((n) => {
-          if (n.id === params.target) {
+          if (n.id === params.source) {
             return {
               ...n,
               data: {
                 ...n.data,
-                prerequisites: [...n.data.prerequisites, params.source],
+                corequisites: [
+                  ...n.data.corequisites,
+                  { id: params.target, source: true },
+                ],
+              },
+            };
+          } else if (n.id === params.target) {
+            return {
+              ...n,
+              data: {
+                ...n.data,
+                corequisites: [
+                  ...n.data.corequisites,
+                  { id: params.source, source: false },
+                ],
               },
             };
           }
@@ -134,39 +150,18 @@ function EditFlowchart() {
       });
 
       const id = getId();
-      let newNode = undefined;
-      if (type === "coreq") {
-        newNode = {
-          id: id,
-          type,
-          position,
-          data: {
-            label: ` node ${id}`,
-            courseNumber1: "CSC 101",
-            fullName1: "Introduction to Computer Science",
 
-            courseNumber2: "CSC 101",
-            fullName2: "Introduction to Computer Science",
-
-            description: "",
-            prerequisites: [],
-          },
-        };
-      } else {
-        newNode = {
-          id: id,
-          type,
-          position,
-          data: {
-            label: ` node ${id}`,
-            courseNumber: "CSC 101",
-            fullName: "Introduction to Computer Science",
-
-            description: "",
-            prerequisites: [],
-          },
-        };
-      }
+      const newNode = {
+        id: id,
+        type,
+        position,
+        data: {
+          courseCode: "CSC 101",
+          courseName: "Introduction to Computer Science",
+          postrequisites: [],
+          corequisites: [],
+        },
+      };
 
       // Add the new node to the state
       setNodes((nds) => nds.concat(newNode));
@@ -177,7 +172,6 @@ function EditFlowchart() {
   const nodeTypes = useMemo(
     () => ({
       single: EditableNode,
-      coreq: CoreqNode,
     }),
     []
   );
@@ -209,52 +203,56 @@ function EditFlowchart() {
         const degreeMap = await getDegreeMapByDegreeYear(degree, year);
         const courses = degreeMap[0][flowchartEnv][0].flowchart_json;
 
-        const nodes = courses.map((course) =>
-          course.nodeType === "coreq"
-            ? {
-                id: course.id,
-                type: course.nodeType,
-                data: {
-                  courseNumber1: course.courseName1,
-                  fullName1: course.fullName1,
-                  courseNumber2: course.courseName2,
-                  fullName2: course.fullName2,
-                  description: course.description,
-                  prerequisites: course.prerequisites,
-                },
-                position: { x: course.position.x, y: course.position.y },
-              }
-            : {
-                id: course.id,
-                type: course.nodeType,
-                data: {
-                  courseNumber: course.courseName,
-                  fullName: course.fullName,
-                  description: course.description,
-                  prerequisites: course.prerequisites,
-                },
-                position: { x: course.position.x, y: course.position.y },
-              }
-        );
+        const nodes = dirtyNodes(courses);
 
         const edges = courses.flatMap((course) => [
-          ...course.prerequisites.map((prerequisite) => ({
-            id: "e" + prerequisite + "-" + course.id,
-            source: prerequisite,
-            target: course.id,
+          ...course.postrequisites.map((post) => ({
+            id: "e" + course.id + "-" + post,
+            source: course.id,
+            target: post,
             type: "bezier",
             markerEnd: {
-              type: MarkerType.Arrow,
+              type: MarkerType.ArrowClosed,
               width: 10,
               height: 10,
-              color: "#79BDE8",
+              color: "#000",
             },
             style: {
-              stroke: "#79BDE8",
+              stroke: "#000",
               strokeWidth: 3,
             },
             animated: true,
           })),
+          ...course.corequisites.map((co) => {
+            console.log(co);
+            if (co.source) {
+              return {
+                id: `e${co}-${course.id}`,
+                source: course.id,
+                target: co.id,
+                sourceHandle: "c",
+                targetHandle: "d",
+                type: "bezier",
+                markerEnd: {
+                  type: MarkerType.ArrowClosed,
+                  width: 10,
+                  height: 10,
+                  color: "#f00",
+                },
+                markerStart: {
+                  type: MarkerType.ArrowClosed,
+                  width: 10,
+                  height: 10,
+                  color: "#f00",
+                },
+                style: {
+                  stroke: "#f00",
+                  strokeWidth: 3,
+                },
+                animated: true,
+              };
+            }
+          }),
         ]);
 
         setNodes(nodes);

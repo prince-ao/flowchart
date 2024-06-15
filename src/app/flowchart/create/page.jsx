@@ -43,7 +43,7 @@ import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import DragNodes from "@/app/_components/DragNodes";
 import { EditableNode, CoreqNode } from "@/app/_components/nodes";
-import NodeEditorPanel from "@/app/_components/NodeEditorPanel";
+import EditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { withAuth } from "@/utils/authentication";
@@ -54,7 +54,6 @@ const initialEdges = [];
 const MAX_NODES = 200;
 
 function CreateFlowchart() {
-  // References to the reactflow instance and the ID of the node being connected
   const reactFlowWrapper = useRef(null);
   const connectingNodeId = useRef(null);
   const hasRendered = useRef(false);
@@ -62,7 +61,6 @@ function CreateFlowchart() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // State for the nodes and edges in the flowchart
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [year, setYear] = useState("");
@@ -83,49 +81,104 @@ function CreateFlowchart() {
     return `${randomNumber}`;
   }
 
-  // State for the reactflow instance
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  // Function to handle connections between nodes
   const onConnect = useCallback(
     (params) => {
       connectingNodeId.current = null;
 
-      // Set the default markerEnd
-      let markerEnd = {
-        type: MarkerType.ArrowClosed,
-        width: 10,
-        height: 10,
-        color: "#79BDE8",
-      };
-      let style = {
-        stroke: "#79BDE8",
-        strokeWidth: 3,
-      };
+      console.log(params);
 
-      let type = "bezier";
-      let animated = true;
+      if (params.sourceHandle === "a" || params.sourceHandle === "b") {
+        let markerEnd = {
+          type: MarkerType.ArrowClosed,
+          width: 10,
+          height: 10,
+          color: "#000",
+        };
+        let style = {
+          stroke: "#000",
+          strokeWidth: 3,
+        };
 
-      // Add the new edge
-      setEdges((eds) =>
-        addEdge({ ...params, markerEnd, type, style, animated }, eds)
-      );
+        let type = "bezier";
+        let animated = true;
 
-      // Add the source node to the target node's prerequisites list
-      setNodes((ns) =>
-        ns.map((n) => {
-          if (n.id === params.target) {
-            return {
-              ...n,
-              data: {
-                ...n.data,
-                prerequisites: [...n.data.prerequisites, params.source],
-              },
-            };
-          }
-          return n;
-        })
-      );
+        setEdges((eds) =>
+          addEdge({ ...params, markerEnd, type, style, animated }, eds)
+        );
+
+        setNodes((ns) =>
+          ns.map((n) => {
+            if (n.id === params.source) {
+              return {
+                ...n,
+                data: {
+                  ...n.data,
+                  postrequisites: [...n.data.postrequisites, params.target],
+                },
+              };
+            }
+            return n;
+          })
+        );
+      } else {
+        let markerEnd = {
+          type: MarkerType.ArrowClosed,
+          width: 10,
+          height: 10,
+          color: "#F00",
+        };
+        let markerStart = {
+          type: MarkerType.ArrowClosed,
+          width: 10,
+          height: 10,
+          color: "#F00",
+        };
+        let style = {
+          stroke: "#F00",
+          strokeWidth: 3,
+        };
+
+        let type = "bezier";
+        let animated = true;
+
+        setEdges((eds) =>
+          addEdge(
+            { ...params, markerEnd, markerStart, type, style, animated },
+            eds
+          )
+        );
+
+        setNodes((ns) =>
+          ns.map((n) => {
+            if (n.id === params.source) {
+              return {
+                ...n,
+                data: {
+                  ...n.data,
+                  corequisites: [
+                    ...n.data.corequisites,
+                    { id: params.target, source: true },
+                  ],
+                },
+              };
+            } else if (n.id === params.target) {
+              return {
+                ...n,
+                data: {
+                  ...n.data,
+                  corequisites: [
+                    ...n.data.corequisites,
+                    { id: params.source, source: false },
+                  ],
+                },
+              };
+            }
+            return n;
+          })
+        );
+      }
     },
     [nodes]
   );
@@ -141,51 +194,30 @@ function CreateFlowchart() {
 
       const type = event.dataTransfer.getData("application/reactflow");
 
-      // Check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
         return;
       }
 
-      // Get the position where the element was dropped
       const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
 
       const id = getId();
-      let newNode = undefined;
-      if (type === "coreq") {
-        newNode = {
-          id: id,
-          type,
-          position,
-          data: {
-            label: ` node ${id}`,
-            courseNumber1: "CSC 101",
-            fullName1: "Introduction to Computer Science",
 
-            courseNumber2: "CSC 101",
-            fullName2: "Introduction to Computer Science",
+      const newNode = {
+        id: id,
+        type,
+        position,
+        data: {
+          courseCode: "CSC 101",
+          courseName: "Introduction to Computer Science",
+          postrequisites: [],
+          corequisites: [],
+        },
+      };
 
-            description: "",
-            prerequisites: [],
-          },
-        };
-      } else {
-        newNode = {
-          id: id,
-          type,
-          position,
-          data: {
-            label: ` node ${id}`,
-            courseNumber: "CSC 101",
-            fullName: "Introduction to Computer Science",
-
-            description: "",
-            prerequisites: [],
-          },
-        };
-      }
+      console.log(nodes);
 
       // Add the new node to the state
       setNodes((nds) => nds.concat(newNode));
@@ -196,7 +228,6 @@ function CreateFlowchart() {
   const nodeTypes = useMemo(
     () => ({
       single: EditableNode,
-      coreq: CoreqNode,
     }),
     []
   );
@@ -216,7 +247,7 @@ function CreateFlowchart() {
       const cachedNodes = localStorage.getItem("cache_nodes");
       const cachedEdges = localStorage.getItem("cache_edges");
 
-      console.log("here3");
+      // console.log("here3");
       // console.log(cachedNodes, cachedEdges);
       if (cachedNodes && cachedEdges) {
         setNodes(JSON.parse(cachedNodes));
@@ -228,12 +259,13 @@ function CreateFlowchart() {
   }, []);
 
   useEffect(() => {
+    console.log(edges);
     if (hasRendered.current) {
-      console.log("here1");
+      // console.log("here1");
       localStorage.setItem("cache_nodes", JSON.stringify(nodes));
       localStorage.setItem("cache_edges", JSON.stringify(edges));
     } else {
-      console.log("here2");
+      // console.log("here2");
       hasRendered.current = true;
     }
   }, [nodes, edges]);
@@ -260,7 +292,7 @@ function CreateFlowchart() {
             fitView
           >
             <Panel position="top-right">
-              <NodeEditorPanel setEdges={setEdges} />
+              <EditorPanel setEdges={setEdges} />
             </Panel>
             <Background />
             <Controls />
