@@ -52,79 +52,79 @@ export default function EditorPanel({ setEdges }) {
   // Handle changes to input fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSelectedNodes({
-      ...selection,
-      data: { ...selection.data, [name]: value },
-    });
+    console.log(name, value);
+    selection.data[name] = value;
+    console.log(selection);
+    setSelection({ ...selection });
   };
 
   // Move a node from corequisites to prerequisites
-  const moveToPrerequisites = (nodeId, index) => {
-    const list = [...selectedNodes];
-    const node = list[index];
-    const corequisites = node.data.corequisites || [];
-    const corequisitesIndex = corequisites.indexOf(nodeId);
-    if (corequisitesIndex > -1) {
-      corequisites.splice(corequisitesIndex, 1);
-      node.data.prerequisites = [...(node.data.prerequisites || []), nodeId];
-    }
-    setSelectedNodes(list);
+  // const moveToPrerequisites = (nodeId, index) => {
+  //   const list = [...selectedNodes];
+  //   const node = list[index];
+  //   const corequisites = node.data.corequisites || [];
+  //   const corequisitesIndex = corequisites.indexOf(nodeId);
+  //   if (corequisitesIndex > -1) {
+  //     corequisites.splice(corequisitesIndex, 1);
+  //     node.data.prerequisites = [...(node.data.prerequisites || []), nodeId];
+  //   }
+  //   setSelectedNodes(list);
 
-    // Modify the edge
-    setEdges((eds) =>
-      eds.map((e) => {
-        if (
-          (e.source === nodeId && e.target === node.id) ||
-          (e.source === node.id && e.target === nodeId)
-        ) {
-          return {
-            ...e,
-            markerStart: {
-              type: null,
-            },
-            markerEnd: {
-              type: MarkerType.Arrow,
-            },
-          };
-        }
-        return e;
-      })
-    );
-  };
+  //   // Modify the edge
+  //   setEdges((eds) =>
+  //     eds.map((e) => {
+  //       if (
+  //         (e.source === nodeId && e.target === node.id) ||
+  //         (e.source === node.id && e.target === nodeId)
+  //       ) {
+  //         return {
+  //           ...e,
+  //           markerStart: {
+  //             type: null,
+  //           },
+  //           markerEnd: {
+  //             type: MarkerType.Arrow,
+  //           },
+  //         };
+  //       }
+  //       return e;
+  //     })
+  //   );
+  // };
 
   // Move a node from prerequisites to corequisites
-  const moveToCorequisites = (nodeId, index) => {
-    const list = [...selectedNodes];
-    const node = list[index];
-    const prerequisites = node.data.prerequisites || [];
-    const prerequisitesIndex = prerequisites.indexOf(nodeId);
-    if (prerequisitesIndex > -1) {
-      prerequisites.splice(prerequisitesIndex, 1);
-      node.data.corequisites = [...(node.data.corequisites || []), nodeId];
-    }
-    setSelectedNodes(list);
+  // const moveToCorequisites = (nodeId, index) => {
+  //   const list = [...selectedNodes];
+  //   const node = list[index];
+  //   const prerequisites = node.data.prerequisites || [];
+  //   const prerequisitesIndex = prerequisites.indexOf(nodeId);
+  //   if (prerequisitesIndex > -1) {
+  //     prerequisites.splice(prerequisitesIndex, 1);
+  //     node.data.corequisites = [...(node.data.corequisites || []), nodeId];
+  //   }
+  //   setSelectedNodes(list);
 
-    // Modify the edge
-    setEdges((eds) =>
-      eds.map((e) => {
-        if (
-          (e.source === nodeId && e.target === node.id) ||
-          (e.source === node.id && e.target === nodeId)
-        ) {
-          return {
-            ...e,
-            markerStart: {
-              type: MarkerType.Arrow,
-            },
-            markerEnd: {
-              type: MarkerType.Arrow,
-            },
-          };
-        }
-        return e;
-      })
-    );
-  };
+  //   // Modify the edge
+  //   setEdges((eds) =>
+  //     eds.map((e) => {
+  //       if (
+  //         (e.source === nodeId && e.target === node.id) ||
+  //         (e.source === node.id && e.target === nodeId)
+  //       ) {
+  //         return {
+  //           ...e,
+  //           markerStart: {
+  //             type: MarkerType.Arrow,
+  //           },
+  //           markerEnd: {
+  //             type: MarkerType.Arrow,
+  //           },
+  //         };
+  //       }
+  //       return e;
+  //     })
+  //   );
+  // };
 
   return (
     <div className="flex flex-col items-center gap-4 rounded-box bg-base-200 max-w-md p-4">
@@ -175,10 +175,10 @@ export default function EditorPanel({ setEdges }) {
                 )}
                 {selection.data.corequisites.map((coreq) => (
                   <span
-                    key={coreq}
+                    key={coreq.id}
                     className="badge badge-primary cursor-pointer"
                   >
-                    {coreq}
+                    {coreq.id}
                   </span>
                 ))}
               </div>

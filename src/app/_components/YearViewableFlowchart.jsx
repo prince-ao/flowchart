@@ -23,6 +23,7 @@ export default function YearViewableFlowchart({
 }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
+  const [error, setError] = useState(false);
 
   const flowchartEnv = getFlowchartEnv();
 
@@ -30,14 +31,14 @@ export default function YearViewableFlowchart({
     (async () => {
       try {
         console.log(degree, year);
-        const flowcharts = await getDegreeMapByDegreeYear(degree, year);
+        const flowcharts = await getDegreeMapByDegreeYear(
+          decodeURIComponent(degree),
+          year
+        );
 
         const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
-        console.log(courses);
 
         const nodes = dirtyNodes(courses);
-        console.log(nodes);
-        const setCoreqs = new Set();
 
         const edges = courses.flatMap((course) => [
           ...course.postrequisites.map((post) => ({
@@ -60,7 +61,6 @@ export default function YearViewableFlowchart({
           ...course.corequisites.map((co) => {
             console.log(co);
             if (co.source) {
-              setCoreqs.add(`e${course.id}-${co.id}`);
               return {
                 id: `e${co}-${course.id}`,
                 source: course.id,
@@ -94,6 +94,7 @@ export default function YearViewableFlowchart({
         setEdges(edges);
       } catch (e) {
         console.log(e);
+        setError(true);
       }
     })();
   }, [year, degree]);
@@ -106,13 +107,22 @@ export default function YearViewableFlowchart({
   );
 
   return (
-    <ReactFlowProvider>
-      <ViewableFlowchart
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        viewHeight={height}
-      />
-    </ReactFlowProvider>
+    <>
+      {error ? (
+        <p className="text-red-500">
+          Flowchart for course year {year} and degree{" "}
+          {decodeURIComponent(degree)} not found.
+        </p>
+      ) : (
+        <ReactFlowProvider>
+          <ViewableFlowchart
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            viewHeight={height}
+          />
+        </ReactFlowProvider>
+      )}
+    </>
   );
 }
