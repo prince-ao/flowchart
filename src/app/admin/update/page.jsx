@@ -33,6 +33,7 @@ function AdminHomeUpdate() {
   const [uploadError, setUploadError] = useState(false);
   const [selectEdit, setSelectEdit] = useState("");
   const [selectDelete, setSelectDelete] = useState("");
+  const [degreeLoading, setDegreeLoading] = useState(true);
 
   const router = useRouter();
   const flowchartEnv = getFlowchartEnv();
@@ -86,10 +87,11 @@ function AdminHomeUpdate() {
       try {
         setIsLoading(true);
 
+        setDegreeLoading(true);
         const degrees = await getDegrees();
-        // console.log(degrees);
         setDegrees(degrees);
         setDegree(degrees[0].name);
+        setDegreeLoading(false);
 
         await updateDegreeMaps(degrees[0].name);
 
@@ -113,7 +115,13 @@ function AdminHomeUpdate() {
     router.push("/admin/login");
   }
 
-  function handleDegreeChange(e) {}
+  async function handleDegreeChange(e) {
+    setIsLoading(true);
+    setDegree(e.target.value);
+    await updateDegreeMaps(e.target.value);
+    setSelectedChart(null);
+    setIsLoading(false);
+  }
 
   return (
     <main className="h-lvh flex" role="login-home">
@@ -163,169 +171,182 @@ function AdminHomeUpdate() {
 
         <div className="flex flex-col items-center mb-16">
           <h2 className="text-3xl font-bold mb-4">Computer Science Degree</h2>
-          <select
-            className="select select-bordered w-full max-w-xs"
-            onChange={(e) => setDegree(e.target.value)}
-          >
-            {degrees.length === 0 ? (
-              <option disabled>none</option>
-            ) : (
-              <>
-                {degrees.map((degree, i) => (
-                  <option key={i} value={degree.name}>
-                    {degree.name}
-                  </option>
-                ))}
-              </>
-            )}
-          </select>
+          {degreeLoading ? (
+            <div className="stat-value loading loading-spinner loading-lg text-center"></div>
+          ) : (
+            <select
+              className="select select-bordered w-full max-w-xs"
+              onChange={handleDegreeChange}
+            >
+              {degrees.length === 0 ? (
+                <option disabled>none</option>
+              ) : (
+                <>
+                  {degrees.map((degree, i) => (
+                    <option key={i} value={degree.name}>
+                      {degree.name}
+                    </option>
+                  ))}
+                </>
+              )}
+            </select>
+          )}
         </div>
 
-        <div className="grid gap-8 grid-cols-1">
-          <div className="flex flex-col justify-center items-center">
-            <h2 className="text-2xl font-bold text-center mb-4">
-              Manage Degree Maps
-            </h2>
-            <div className="stats shadow stats-vertical md:stats-horizontal">
-              <div className="stat">
-                <div className="text-xl font-bold text-center">
-                  Upload Degree Maps
-                </div>
-                <input
-                  type="file"
-                  className={`file-input file-input-primary w-full mb-4 max-w-xs ${
-                    uploadError && "file-input-error"
-                  }`}
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
-                <input
-                  type="text"
-                  className={`input input-primary w-full max-w-xs ${
-                    fileNameError && "input-error"
-                  }`}
-                  placeholder="Flowchart Year"
-                  onChange={(e) => setFlowchartYear(e.target.value)}
-                />
-                <p
-                  className={`text-xs mb-4 !mt-0 ${
-                    fileNameError ? "text-error" : ""
-                  }`}
-                >
-                  must be in the format &#123;start year&#125;-&#123;end
-                  year&#125;
-                </p>
-                <button className="btn btn-primary" onClick={handleFileUpload}>
-                  Upload
-                </button>
-                {successUploadMessage && (
-                  <div className="text-center text-success">
-                    {successUploadMessage}
+        {isLoading ? (
+          <div className="flex justify-center items-center">
+            <div className="stat-value loading loading-spinner loading-lg text-center"></div>
+          </div>
+        ) : (
+          <div className="grid gap-8 grid-cols-1">
+            <div className="flex flex-col justify-center items-center">
+              <h2 className="text-2xl font-bold text-center mb-4">
+                Manage Degree Maps
+              </h2>
+              <div className="stats shadow stats-vertical md:stats-horizontal">
+                <div className="stat">
+                  <div className="text-xl font-bold text-center">
+                    Upload Degree Maps
                   </div>
-                )}
-                {errorUploadMessage && (
-                  <div className="text-center text-error">
-                    {errorUploadMessage}
+                  <input
+                    type="file"
+                    className={`file-input file-input-primary w-full mb-4 max-w-xs ${
+                      uploadError && "file-input-error"
+                    }`}
+                    onChange={(e) => setFile(e.target.files[0])}
+                  />
+                  <input
+                    type="text"
+                    className={`input input-primary w-full max-w-xs ${
+                      fileNameError && "input-error"
+                    }`}
+                    placeholder="Flowchart Year"
+                    onChange={(e) => setFlowchartYear(e.target.value)}
+                  />
+                  <p
+                    className={`text-xs mb-4 !mt-0 ${
+                      fileNameError ? "text-error" : ""
+                    }`}
+                  >
+                    must be in the format &#123;start year&#125;-&#123;end
+                    year&#125;
+                  </p>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleFileUpload}
+                  >
+                    Upload
+                  </button>
+                  {successUploadMessage && (
+                    <div className="text-center text-success">
+                      {successUploadMessage}
+                    </div>
+                  )}
+                  {errorUploadMessage && (
+                    <div className="text-center text-error">
+                      {errorUploadMessage}
+                    </div>
+                  )}
+                </div>
+                <div className="stat">
+                  <div className="text-xl font-bold text-center">
+                    Create Flowchart
                   </div>
-                )}
-              </div>
-              <div className="stat">
-                <div className="text-xl font-bold text-center">
-                  Create Flowchart
+                  <input
+                    type="text"
+                    className={`input input-primary w-full max-w-xs ${
+                      createFileNameError && "input-error"
+                    }`}
+                    placeholder="Flowchart Year"
+                    onChange={(e) => setCreateFlowchartYear(e.target.value)}
+                  />
+                  <p
+                    className={`text-xs mb-4 !mt-0 ${
+                      createFileNameError ? "text-error" : ""
+                    }`}
+                  >
+                    must be in the format &#123;start year&#125;-&#123;end
+                    year&#125;
+                  </p>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      if (!/^\d{4}-\d{4}$/.test(createFlowchartYear)) {
+                        setCreateFileNameError(true);
+                        return;
+                      }
+                      router.push(
+                        `/flowchart/create?year=${createFlowchartYear}&degree=${degree}`
+                      );
+                    }}
+                  >
+                    Get Started
+                  </button>
                 </div>
-                <input
-                  type="text"
-                  className={`input input-primary w-full max-w-xs ${
-                    createFileNameError && "input-error"
-                  }`}
-                  placeholder="Flowchart Year"
-                  onChange={(e) => setCreateFlowchartYear(e.target.value)}
-                />
-                <p
-                  className={`text-xs mb-4 !mt-0 ${
-                    createFileNameError ? "text-error" : ""
-                  }`}
-                >
-                  must be in the format &#123;start year&#125;-&#123;end
-                  year&#125;
-                </p>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => {
-                    if (!/^\d{4}-\d{4}$/.test(createFlowchartYear)) {
-                      setCreateFileNameError(true);
-                      return;
-                    }
-                    router.push(
-                      `/flowchart/create?year=${createFlowchartYear}&degree=${degree}`
-                    );
-                  }}
-                >
-                  Get Started
-                </button>
-              </div>
-              <div className="stat">
-                <div className="text-xl font-bold text-center">
-                  Edit Flowcharts
+                <div className="stat">
+                  <div className="text-xl font-bold text-center">
+                    Edit Flowcharts
+                  </div>
+                  <select
+                    className="select select-primary w-full max-w-xs"
+                    onChange={(e) => setSelectEdit(e.target.value)}
+                  >
+                    <option disabled selected>
+                      Edit a Chart
+                    </option>
+                    {flowcharts
+                      .map((flowchart) => flowchart.flowchart_year)
+                      .map((year, index) => (
+                        <option key={index} value={year}>
+                          {displayYear(year)}
+                        </option>
+                      ))}
+                  </select>
+                  <button
+                    disabled={selectEdit === ""}
+                    className="btn btn-primary"
+                    onClick={() => {
+                      router.push(
+                        `/flowchart/edit?year=${selectEdit}&degree=${degree}`
+                      );
+                    }}
+                  >
+                    Edit
+                  </button>
                 </div>
-                <select
-                  className="select select-primary w-full max-w-xs"
-                  onChange={(e) => setSelectEdit(e.target.value)}
-                >
-                  <option disabled selected>
-                    Edit a Chart
-                  </option>
-                  {flowcharts
-                    .map((flowchart) => flowchart.flowchart_year)
-                    .map((year, index) => (
-                      <option key={index} value={year}>
-                        {displayYear(year)}
-                      </option>
-                    ))}
-                </select>
-                <button
-                  disabled={selectEdit === ""}
-                  className="btn btn-primary"
-                  onClick={() => {
-                    router.push(
-                      `/flowchart/edit?year=${selectEdit}&degree=${degree}`
-                    );
-                  }}
-                >
-                  Edit
-                </button>
-              </div>
-              <div className="stat">
-                <div className="text-xl font-bold text-center">
-                  Delete Flowchart
+                <div className="stat">
+                  <div className="text-xl font-bold text-center">
+                    Delete Flowchart
+                  </div>
+                  <select
+                    className="select select-primary w-full max-w-xs"
+                    onChange={(e) => setSelectDelete(e.target.value)}
+                  >
+                    <option disabled selected>
+                      Delete a Chart
+                    </option>
+                    {flowcharts
+                      .map((flowchart) => flowchart.flowchart_year)
+                      .map((year, index) => (
+                        <option key={index} value={year}>
+                          {displayYear(year)}
+                        </option>
+                      ))}
+                  </select>
+                  <button
+                    disabled={selectDelete === ""}
+                    className="btn btn-primary"
+                    onClick={() => {
+                      document.getElementById("delete_modal").showModal();
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
-                <select
-                  className="select select-primary w-full max-w-xs"
-                  onChange={(e) => setSelectDelete(e.target.value)}
-                >
-                  <option disabled selected>
-                    Delete a Chart
-                  </option>
-                  {flowcharts
-                    .map((flowchart) => flowchart.flowchart_year)
-                    .map((year, index) => (
-                      <option key={index} value={year}>
-                        {displayYear(year)}
-                      </option>
-                    ))}
-                </select>
-                <button
-                  disabled={selectDelete === ""}
-                  className="btn btn-primary"
-                  onClick={() => {
-                    document.getElementById("delete_modal").showModal();
-                  }}
-                >
-                  Delete
-                </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );

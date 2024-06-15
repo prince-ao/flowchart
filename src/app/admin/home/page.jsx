@@ -23,6 +23,7 @@ function AdminHome() {
   const [selectedChart, setSelectedChart] = useState(null);
   const [degree, setDegree] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [degreeLoading, setDegreeLoading] = useState(true);
 
   const router = useRouter();
 
@@ -31,7 +32,6 @@ function AdminHome() {
   async function updateDegreeMaps(degree) {
     const flowcharts = await getDegreeMapYears(degree);
     setFlowcharts(flowcharts[0][flowchartEnv]);
-    console.log(flowcharts);
   }
 
   useEffect(() => {
@@ -39,10 +39,12 @@ function AdminHome() {
       try {
         setIsLoading(true);
 
+        setDegreeLoading(true);
         const degrees = await getDegrees();
 
         setDegrees(degrees);
         setDegree(degrees[0].name);
+        setDegreeLoading(false);
 
         await updateDegreeMaps(degrees[0].name);
 
@@ -87,22 +89,26 @@ function AdminHome() {
 
         <div className="flex flex-col items-center mb-16">
           <h2 className="text-3xl font-bold mb-4">Computer Science Degree</h2>
-          <select
-            className="select select-bordered w-full max-w-xs"
-            onChange={handleDegreeChange}
-          >
-            {degrees.length === 0 ? (
-              <option disabled>none</option>
-            ) : (
-              <>
-                {degrees.map((degree, i) => (
-                  <option key={i} value={degree.name}>
-                    {degree.name}
-                  </option>
-                ))}
-              </>
-            )}
-          </select>
+          {degreeLoading ? (
+            <div className="stat-value loading loading-spinner loading-lg text-center"></div>
+          ) : (
+            <select
+              className="select select-bordered w-full max-w-xs"
+              onChange={handleDegreeChange}
+            >
+              {degrees.length === 0 ? (
+                <option disabled>none</option>
+              ) : (
+                <>
+                  {degrees.map((degree, i) => (
+                    <option key={i} value={degree.name}>
+                      {degree.name}
+                    </option>
+                  ))}
+                </>
+              )}
+            </select>
+          )}
         </div>
 
         <div className="grid gap-8 grid-cols-1">
@@ -110,38 +116,39 @@ function AdminHome() {
             <h2 className="text-2xl font-bold text-center mb-4">
               Flowchart Data
             </h2>
-            <div className="stats shadow stats-vertical md:stats-horizontal mb-4">
-              <div className="stat justify-center text-center">
-                <div className="stat-title">Total Degree Maps</div>
-                {isLoading ? (
-                  <div className="stat-value loading loading-spinner loading-sm text-center"></div>
-                ) : (
+            {isLoading ? (
+              <div className="stat-value loading loading-spinner loading-lg text-center"></div>
+            ) : (
+              <div className="stats shadow stats-vertical md:stats-horizontal mb-4">
+                <div className="stat justify-center text-center">
+                  <div className="stat-title">Total Degree Maps</div>
                   <div className="stat-value">{flowcharts.length}</div>
-                )}
-                <div className="stat-desc">Total number of degree maps</div>
-              </div>
-              <div className="stat">
-                <div className="text-xl font-bold text-center">
-                  View Degree Maps
+                  <div className="stat-desc">Total number of degree maps</div>
                 </div>
-                <select
-                  className="select select-primary w-full max-w-xs"
-                  value={selectedChart}
-                  onChange={(e) => setSelectedChart(e.target.value)}
-                >
-                  <option disabled selected>
-                    Pick A Year
-                  </option>
-                  {flowcharts
-                    .map((flowchart) => flowchart.flowchart_year)
-                    .map((year, index) => (
-                      <option key={index} value={year}>
-                        {displayYear(year)}
-                      </option>
-                    ))}
-                </select>
+
+                <div className="stat">
+                  <div className="text-xl font-bold text-center">
+                    View Degree Maps
+                  </div>
+                  <select
+                    className="select select-primary w-full max-w-xs"
+                    value={selectedChart}
+                    onChange={(e) => setSelectedChart(e.target.value)}
+                  >
+                    <option disabled selected>
+                      Pick A Year
+                    </option>
+                    {flowcharts
+                      .map((flowchart) => flowchart.flowchart_year)
+                      .map((year, index) => (
+                        <option key={index} value={year}>
+                          {displayYear(year)}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
