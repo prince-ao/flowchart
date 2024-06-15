@@ -42,7 +42,7 @@ import ReactFlow, {
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import DragNodes from "@/app/_components/DragNodes";
-import { EditableNode, CoreqNode } from "@/app/_components/nodes";
+import { EditableNode } from "@/app/_components/nodes";
 import EditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -292,7 +292,12 @@ function CreateFlowchart() {
             fitView
           >
             <Panel position="top-right">
-              <EditorPanel setEdges={setEdges} />
+              <EditorPanel
+                setEdges={setEdges}
+                setNodes={setNodes}
+                edges={edges}
+                nodes={nodes}
+              />
             </Panel>
             <Background />
             <Controls />

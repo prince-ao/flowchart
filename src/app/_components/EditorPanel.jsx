@@ -17,7 +17,7 @@ import ReactFlow, {
   MarkerType,
 } from "reactflow";
 
-export default function EditorPanel({ setEdges }) {
+export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
   // State for storing currently selected nodes
   const [selection, setSelection] = useState(() => {
     const savedSelectedNodes = localStorage.getItem("selection");
@@ -135,8 +135,17 @@ export default function EditorPanel({ setEdges }) {
       ) : (
         <>
           {selection.panelType === "edge" ? (
-            <div className="w-full">
-              <button className="btn btn-error text-white">Delete</button>
+            <div className="flex flex-col w-full">
+              <label className="font-bold text-xl">Edge:</label>
+              <p className="text-lg mb-4">id: {selection.id}</p>
+              <button
+                className="btn btn-error text-white"
+                onClick={() => {
+                  setEdges(edges.filter((edge) => edge.id !== selection.id));
+                }}
+              >
+                Delete
+              </button>
             </div>
           ) : (
             <div className="flex flex-col gap-2 w-full">
@@ -182,7 +191,14 @@ export default function EditorPanel({ setEdges }) {
                   </span>
                 ))}
               </div>
-              <button className="btn btn-error mt-4 text-white">Delete</button>
+              <button
+                className="btn btn-error mt-4 text-white"
+                onClick={() => {
+                  setNodes(nodes.filter((node) => node.id !== selection.id));
+                }}
+              >
+                Delete
+              </button>
             </div>
           )}
         </>

@@ -1,4 +1,4 @@
-/** */
+/** Fix this so it martches DragNodes */
 
 import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
@@ -91,13 +91,6 @@ export default function EditDragNodes({ year, degree }) {
         draggable
       >
         Class Node
-      </div>
-      <div
-        className="p-2 bg-red-500 text-white cursor-move rounded"
-        onDragStart={(event) => onDragStart(event, "coreq")}
-        draggable
-      >
-        Coreq Node
       </div>
       {/* change the input to make it more strict */}
       {insertError.value && (
