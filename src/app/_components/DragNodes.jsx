@@ -106,6 +106,11 @@ export default function DragNodes({ clearCache, year, degree }) {
     }
   }
 
+  function cancelCreation() {
+    clearCache();
+    router.push("/admin/update");
+  }
+
   return (
     <aside className="h-screen md:w-1/4 p-6 bg-white shadow-lg rounded-lg space-y-4">
       <h1 className="font-bold text-2xl text-center">
@@ -142,9 +147,14 @@ export default function DragNodes({ clearCache, year, degree }) {
           error creating a flowchart: {insertError.text}
         </p>
       )}
-      <button className="btn btn-success" onClick={saveToSupabase}>
-        Create
-      </button>
+      <div className="flex gap-3">
+        <button className="btn btn-success" onClick={saveToSupabase}>
+          Create
+        </button>
+        <button className="btn btn-error" onClick={cancelCreation}>
+          Cancel
+        </button>
+      </div>
       {insertSuccess && <p className="text-success">New flowchart created!</p>}
       <a ref={downloadLink} className="hidden" />
     </aside>
