@@ -7,7 +7,9 @@ export default function ViewEditableNode({ data, selected }) {
       <div
         className={`flex flex-col rounded border-2 border-black items-center p-6 w-48  ${
           selected ? "" : ""
-        } ${data.canTake ? "" : ""}`}
+        } ${data.canTakeCourse === undefined ? "" : data.canTakeCourse ? "shadow-md glass" : " opacity-25 "}
+          ${data.futureCourse === undefined ? "" : data.futureCourse ? " bg-blue-200 shadow-2xl" : " "}`
+      }
       >
         <h1 className="font-bold text-xl text-center">{data.courseCode}</h1>
         <h2 className="text-center">{data.courseName}</h2>

@@ -4,9 +4,11 @@ import ReactFlow, {
   MiniMap,
   Controls,
   MarkerType,
+  Panel,
   useReactFlow,
   ReactFlowProvider,
 } from "reactflow";
+import CourseBuilderBar from "./CourseBuilderBar";
 
 /**
  * ViewableFlowchart Component
@@ -87,6 +89,9 @@ const ViewableFlowchart = ({
   backgroundGridColor,
   nodeTypes,
   onNodeClick,
+  hasCourseBuilder,
+  setNodes,
+  setEdges,
 }) => {
   const [tooltip, setTooltip] = useState({
     display: false,
@@ -210,6 +215,10 @@ const ViewableFlowchart = ({
         fitView
         fitViewOptions={{ nodes: defaultNodes }}
       >
+        <Panel position="top-right">
+        {hasCourseBuilder && <CourseBuilderBar setEdges={setEdges} setNodes={setNodes} />}
+        </Panel>
+
         <Background color={backgroundGridColor} gap={backgroundGap} />
         <Controls />
       </ReactFlow>
@@ -236,6 +245,9 @@ ViewableFlowchart.defaultProps = {
   backgroundGridColor: "#aaa",
   mobileView: false, // default value
   enableTooltip: false,
+  hasCourseBuilder: false,
+  setNodes: () => {},
+  setEdges: () => {},
 };
 
 export default ViewableFlowchart;
