@@ -37,6 +37,14 @@ export async function createNewFlowchart(chart, year, degree) {
   }
 }
 
+export async function addDegree(degree_name, color) {
+  const { _, error } = await supabase
+    .from("degrees")
+    .insert([{ name: degree_name, color }]);
+
+  if (error) throw new Error(error);
+}
+
 export async function getDegreeMapByDegree(degree) {
   if (!degree) throw new Error("degree required");
 
@@ -150,6 +158,17 @@ export async function deleteDegreeMap(year, degree) {
     .delete()
     .eq("flowchart_year", year)
     .eq("degrees_fk", degrees.find((m_degree) => m_degree.name === degree).id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteDegree(degree) {
+  let { data, error } = await supabase
+    .from(`degrees`)
+    .delete()
+    .eq("name", degree);
 
   if (error) {
     throw new Error(error.message);
