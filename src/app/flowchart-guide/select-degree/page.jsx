@@ -18,7 +18,7 @@ export default function FlowchartGuide() {
     localStorage.setItem("selected-degree", degree);
 
     setTimeout(() => {
-      router.push("/flowchart-guide/select-degree-map");
+      router.push("/flowchart-guide/select-prereq-flowchart");
     }, 400);
   }
 

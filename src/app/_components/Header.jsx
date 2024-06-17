@@ -46,8 +46,10 @@ export default function Header({ navigator }) {
                 className="drawer-overlay"
               ></label>
               <ul className="menu p-4 w-60 min-h-full bg-primary text-white">
-              <li>
-                  <a href="/" className="p-[1rem]">Home</a>
+                <li>
+                  <a href="/" className="p-[1rem]">
+                    Home
+                  </a>
                 </li>
                 <li>
                   <a className="p-[1rem]">About</a>
@@ -77,7 +79,9 @@ export default function Header({ navigator }) {
                               ))}
                             </>
                           ) : (
-                            <p>No degree maps yet</p>
+                            <p className="italic">
+                              No prerequisite flowchart yet
+                            </p>
                           )}
                         </ul>
                       </div>
@@ -99,14 +103,13 @@ export default function Header({ navigator }) {
               src="/images/cslogo.png"
               alt="college of staten island computer science department logo"
             />
-
           </a>
         </div>
         {navigator && (
           <>
             <div className="navbar-center hidden lg:flex ">
               <ul className="menu menu-horizontal px-1">
-              <li>
+                <li>
                   <a href="/">Home</a>
                 </li>
                 <li>
@@ -117,7 +120,7 @@ export default function Header({ navigator }) {
                     <summary
                       onClick={() => setLargeCollapseOpen(!largeCollapseOpen)}
                     >
-                      Degree map
+                      Prerequisite flowcharts
                     </summary>
                   </details>
                 </li>
@@ -157,7 +160,7 @@ export default function Header({ navigator }) {
                     ))}
                   </>
                 ) : (
-                  <p>No degree map yet</p>
+                  <p className="italic">No prerequisite flowchart yet</p>
                 )}
               </ul>
             </div>
