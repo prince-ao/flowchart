@@ -13,6 +13,7 @@ import {
   deleteDegreeMap,
   addDegree,
   deleteDegree,
+  addCourse,
 } from "@/utils/flowchart-api";
 import AdminSideBar from "@/app/_components/AdminSideBar";
 
@@ -40,6 +41,13 @@ function AdminHomeUpdate() {
   const [addDegreeState, setAddDegreeState] = useState("");
   const [degreeName, setDegreeName] = useState("");
   const [degreeDeleteSuccess, setDegreeDeleteSuccess] = useState(false);
+  const [courseInfo, setCourseInfo] = useState({
+    code: "",
+    name: "",
+    url: "",
+    category: "cs_elective",
+  });
+  const [courseSuccess, setCourseSuccess] = useState(true);
 
   const router = useRouter();
   const flowchartEnv = getFlowchartEnv();
@@ -140,6 +148,12 @@ function AdminHomeUpdate() {
     await updateDegreeMaps(degrees[0].name);
 
     setIsLoading(false);
+  }
+
+  function handleCourseChange(e) {
+    const { name, value } = e.target;
+
+    setCourseInfo({ ...courseInfo, [name]: value });
   }
 
   return (
@@ -475,6 +489,111 @@ function AdminHomeUpdate() {
                       Delete
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-8 grid-cols-1 mt-16">
+              <div className="flex flex-col justify-center items-center">
+                <h2 className="text-2xl font-bold text-center mb-4">
+                  Manage Courses
+                </h2>
+                <div className="stats shadow stats-vertical md:stats-horizontal">
+                  <form className="stat">
+                    <h2 className="text-xl font-bold text-center">
+                      Add Course
+                    </h2>
+                    <label className="mt-4 font-bold">Course Code:</label>
+                    <input
+                      name="code"
+                      type="text"
+                      value={courseInfo.code}
+                      onChange={handleCourseChange}
+                      className={`input input-primary mb-4 w-full max-w-xs ${
+                        addDegreeState === "error"
+                          ? "input-error"
+                          : addDegreeState === "success"
+                          ? "input-success"
+                          : ""
+                      }`}
+                      placeholder="CSC 126"
+                    />
+
+                    <label className="font-bold">Course Name:</label>
+                    <input
+                      name="name"
+                      type="text"
+                      value={courseInfo.name}
+                      onChange={handleCourseChange}
+                      className={`input input-primary mb-4 w-full max-w-xs ${
+                        addDegreeState === "error"
+                          ? "input-error"
+                          : addDegreeState === "success"
+                          ? "input-success"
+                          : ""
+                      }`}
+                      placeholder="Introduction to Computer Science"
+                    />
+
+                    <label className="font-bold">Catelog URL:</label>
+                    <input
+                      name="url"
+                      type="text"
+                      value={courseInfo.url}
+                      onChange={handleCourseChange}
+                      className={`input input-primary mb-4 w-full max-w-xs ${
+                        addDegreeState === "error"
+                          ? "input-error"
+                          : addDegreeState === "success"
+                          ? "input-success"
+                          : ""
+                      }`}
+                      placeholder="https://csi-undergraduate.catalog.cuny.edu/courses/..."
+                    />
+
+                    <label className="font-bold">Course Category:</label>
+                    <select
+                      name="category"
+                      onChange={handleCourseChange}
+                      className="select select-primary w-full max-w-xs"
+                      value={courseInfo.category}
+                    >
+                      <option value="cs_elective">CS Elective</option>
+                      <option value="cs_required">CS Required</option>
+                    </select>
+
+                    {courseSuccess && (
+                      <p className="text-success">Course Added</p>
+                    )}
+                    <button
+                      className="btn btn-primary mt-6"
+                      onClick={async () => {
+                        await addCourse(
+                          courseInfo.code,
+                          courseInfo.name,
+                          courseInfo.url,
+                          courseInfo.category
+                        );
+
+                        setCourseSuccess(true);
+                        setCourseInfo({
+                          code: "",
+                          name: "",
+                          url: "",
+                          category: "cs_elective",
+                        });
+
+                        setTimeout(() => {
+                          setCourseSuccess(false);
+
+                          updateDegree();
+                        }, 3 * 1e3);
+                      }}
+                      type="button"
+                    >
+                      Add
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>

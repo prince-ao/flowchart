@@ -144,6 +144,14 @@ export async function updateFlowchart(flowchart_data, year, degree) {
   }
 }
 
+export async function addCourse(code, name, url, category) {
+  const { _, error } = await supabase
+    .from("courses")
+    .insert([{ code, name, url, category }]);
+
+  if (error) throw new Error(error.message);
+}
+
 export async function deleteDegreeMap(year, degree) {
   const { data: degrees, d_error } = await supabase
     .from(`degrees`)
