@@ -42,7 +42,7 @@ import ReactFlow, {
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import DragNodes from "@/app/_components/DragNodes";
-import { EditableNode } from "@/app/_components/nodes";
+import { EditableNode, TextNode } from "@/app/_components/nodes";
 import EditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -205,17 +205,28 @@ function CreateFlowchart() {
 
       const id = getId();
 
-      const newNode = {
-        id: id,
-        type,
-        position,
-        data: {
-          courseCode: "CSC 101",
-          courseName: "Introduction to Computer Science",
-          postrequisites: [],
-          corequisites: [],
-        },
-      };
+      const newNode =
+        type === "text"
+          ? {
+              id: id,
+              type,
+              position,
+              data: {
+                text: "",
+                color: "#000",
+              },
+            }
+          : {
+              id: id,
+              type,
+              position,
+              data: {
+                courseCode: "CSC 101",
+                courseName: "Introduction to Computer Science",
+                postrequisites: [],
+                corequisites: [],
+              },
+            };
 
       console.log(nodes);
 
@@ -228,6 +239,7 @@ function CreateFlowchart() {
   const nodeTypes = useMemo(
     () => ({
       single: EditableNode,
+      text: TextNode,
     }),
     []
   );

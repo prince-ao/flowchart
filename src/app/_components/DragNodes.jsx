@@ -141,6 +141,16 @@ export default function DragNodes({ clearCache, year, degree }) {
           <p>Course Name</p>
         </div>
       </div>
+      <div>
+        <h2>Text Node:</h2>
+        <div
+          className="p-2 border-2 border-black cursor-move rounded flex justify-center items-center flex-col"
+          onDragStart={(event) => onDragStart(event, "text")}
+          draggable
+        >
+          <p className="font-bold text-lg">Enter Text</p>
+        </div>
+      </div>
       {/* change the input to make it more strict */}
       {insertError.value && (
         <p className="text-error">

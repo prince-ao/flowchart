@@ -148,58 +148,94 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 w-full">
-              <label className="font-bold text-xl">Course Code:</label>
-              <input
-                name="courseCode"
-                value={selection.data.courseCode}
-                onChange={(e) => handleInputChange(e)}
-                className="input input-bordered bg-gray-700 text-white"
-              />
-              <label className="font-bold text-xl">Full Name:</label>
-              <input
-                name="courseName"
-                value={selection.data.courseName}
-                onChange={(e) => handleInputChange(e)}
-                className="input input-bordered bg-gray-700 text-white"
-              />
-              <label className="font-bold text-xl">Postrequites:</label>
-              <div className="flex gap-2 flex-wrap justify-center">
-                {!selection.data.postrequisites.length && (
-                  <span className="text-gray-500">No postrequisites</span>
-                )}
-                {selection.data.postrequisites.map((postreq) => (
-                  <span
-                    key={postreq}
-                    className="badge badge-primary cursor-pointer"
+            <>
+              {selection.type === "text" ? (
+                <div className="flex flex-col gap-2 w-full">
+                  <label className="font-bold text-xl">Note Text:</label>
+                  <textarea
+                    name="text"
+                    value={selection.data.text}
+                    onChange={(e) => handleInputChange(e)}
+                    className="input input-bordered bg-gray-700 text-white"
+                  />
+                  <label className="font-bold text-xl">
+                    Choose the note color:
+                  </label>
+                  <input
+                    name="color"
+                    type="color"
+                    value={selection.data.color}
+                    onChange={(e) => handleInputChange(e)}
+                    className=""
+                  />
+                  <button
+                    className="btn btn-error mt-4 text-white"
+                    onClick={() => {
+                      setNodes(
+                        nodes.filter((node) => node.id !== selection.id)
+                      );
+                    }}
                   >
-                    {postreq}
-                  </span>
-                ))}
-              </div>
-              <label className="font-bold text-xl">Corequisites:</label>
-              <div className="flex gap-2 flex-wrap justify-center">
-                {!selection.data.corequisites.length && (
-                  <span className="text-gray-500">No corequisites</span>
-                )}
-                {selection.data.corequisites.map((coreq) => (
-                  <span
-                    key={coreq.id}
-                    className="badge badge-primary cursor-pointer"
+                    Delete
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 w-full">
+                  <label className="font-bold text-xl">Course Code:</label>
+                  <input
+                    name="courseCode"
+                    value={selection.data.courseCode}
+                    onChange={(e) => handleInputChange(e)}
+                    className="input input-bordered bg-gray-700 text-white"
+                  />
+                  <label className="font-bold text-xl">Full Name:</label>
+                  <input
+                    name="courseName"
+                    value={selection.data.courseName}
+                    onChange={(e) => handleInputChange(e)}
+                    className="input input-bordered bg-gray-700 text-white"
+                  />
+                  <label className="font-bold text-xl">Postrequites:</label>
+                  <div className="flex gap-2 flex-wrap justify-center">
+                    {!selection.data.postrequisites.length && (
+                      <span className="text-gray-500">No postrequisites</span>
+                    )}
+                    {selection.data.postrequisites.map((postreq) => (
+                      <span
+                        key={postreq}
+                        className="badge badge-primary cursor-pointer"
+                      >
+                        {postreq}
+                      </span>
+                    ))}
+                  </div>
+                  <label className="font-bold text-xl">Corequisites:</label>
+                  <div className="flex gap-2 flex-wrap justify-center">
+                    {!selection.data.corequisites.length && (
+                      <span className="text-gray-500">No corequisites</span>
+                    )}
+                    {selection.data.corequisites.map((coreq) => (
+                      <span
+                        key={coreq.id}
+                        className="badge badge-primary cursor-pointer"
+                      >
+                        {coreq.id}
+                      </span>
+                    ))}
+                  </div>
+                  <button
+                    className="btn btn-error mt-4 text-white"
+                    onClick={() => {
+                      setNodes(
+                        nodes.filter((node) => node.id !== selection.id)
+                      );
+                    }}
                   >
-                    {coreq.id}
-                  </span>
-                ))}
-              </div>
-              <button
-                className="btn btn-error mt-4 text-white"
-                onClick={() => {
-                  setNodes(nodes.filter((node) => node.id !== selection.id));
-                }}
-              >
-                Delete
-              </button>
-            </div>
+                    Delete
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
