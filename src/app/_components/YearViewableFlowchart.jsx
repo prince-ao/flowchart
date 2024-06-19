@@ -42,7 +42,7 @@ export default function YearViewableFlowchart({
 
         const edges = courses.flatMap((course) => [
           ...course.postrequisites.map((post) => ({
-            id: "e" + course.id + "-" + post,
+            id: "e" + course.id + "-" + post + "p",
             source: course.id,
             target: post,
             type: "bezier",
@@ -59,10 +59,9 @@ export default function YearViewableFlowchart({
             animated: true,
           })),
           ...course.corequisites.map((co) => {
-            console.log(co);
             if (co.source) {
               return {
-                id: `e${co}-${course.id}`,
+                id: `e${co.id}-${course.id}c`,
                 source: course.id,
                 target: co.id,
                 sourceHandle: "c",

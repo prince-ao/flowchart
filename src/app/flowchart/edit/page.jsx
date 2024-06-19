@@ -21,7 +21,7 @@ import ReactFlow, {
 } from "reactflow";
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
-import EditDragNodes from "@/app/_components/EditDragNodes";
+import DragNodes from "@/app/_components/DragNodes";
 import { EditableNode, TextNode } from "@/app/_components/nodes";
 import EditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
@@ -256,7 +256,7 @@ function EditFlowchart() {
 
         const edges = courses.flatMap((course) => [
           ...course.postrequisites.map((post) => ({
-            id: "e" + course.id + "-" + post,
+            id: "e" + course.id + "-" + post + "p",
             source: course.id,
             target: post,
             type: "bezier",
@@ -272,37 +272,40 @@ function EditFlowchart() {
             },
             animated: true,
           })),
-          ...course.corequisites.map((co) => {
-            console.log(co);
-            if (co.source) {
-              return {
-                id: `e${co}-${course.id}`,
-                source: course.id,
-                target: co.id,
-                sourceHandle: "c",
-                targetHandle: "d",
-                type: "bezier",
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                  width: 10,
-                  height: 10,
-                  color: "#f00",
-                },
-                markerStart: {
-                  type: MarkerType.ArrowClosed,
-                  width: 10,
-                  height: 10,
-                  color: "#f00",
-                },
-                style: {
-                  stroke: "#f00",
-                  strokeWidth: 3,
-                },
-                animated: true,
-              };
-            }
-          }),
+          ...course.corequisites
+            .map((co) => {
+              if (co.source) {
+                return {
+                  id: `e${co.id}-${course.id}c`,
+                  source: course.id,
+                  target: co.id,
+                  sourceHandle: "c",
+                  targetHandle: "d",
+                  type: "bezier",
+                  markerEnd: {
+                    type: MarkerType.ArrowClosed,
+                    width: 10,
+                    height: 10,
+                    color: "#f00",
+                  },
+                  markerStart: {
+                    type: MarkerType.ArrowClosed,
+                    width: 10,
+                    height: 10,
+                    color: "#f00",
+                  },
+                  style: {
+                    stroke: "#f00",
+                    strokeWidth: 3,
+                  },
+                  animated: true,
+                };
+              }
+            })
+            .filter((edge) => edge !== undefined),
         ]);
+
+        console.log(edges);
 
         setNodes(nodes);
         setEdges(edges);
@@ -313,6 +316,7 @@ function EditFlowchart() {
   }, []);
 
   useEffect(() => {
+    console.log("teser1", nodes, edges);
     if (hasRendered.current) {
       localStorage.setItem("cache_nodes", JSON.stringify(nodes));
       localStorage.setItem("cache_edges", JSON.stringify(edges));
@@ -354,7 +358,7 @@ function EditFlowchart() {
             <Controls />
           </ReactFlow>
         </div>
-        <EditDragNodes clearCache={clearCache} year={year} degree={degree} />
+        <DragNodes clearCache={clearCache} year={year} degree={degree} />
       </ReactFlowProvider>
     </div>
   );

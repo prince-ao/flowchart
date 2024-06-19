@@ -47,7 +47,7 @@ function AdminHomeUpdate() {
     url: "",
     category: "cs_elective",
   });
-  const [courseSuccess, setCourseSuccess] = useState(true);
+  const [courseSuccess, setCourseSuccess] = useState(false);
 
   const router = useRouter();
   const flowchartEnv = getFlowchartEnv();
@@ -157,7 +157,7 @@ function AdminHomeUpdate() {
   }
 
   return (
-    <main className="h-lvh flex" role="login-home">
+    <main className="min-h-lvh flex" role="login-home">
       <dialog id="delete_modal" className="modal">
         <div className="modal-box">
           <form method="dialog">

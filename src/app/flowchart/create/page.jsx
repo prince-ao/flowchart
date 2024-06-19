@@ -267,7 +267,7 @@ function CreateFlowchart() {
   }, []);
 
   useEffect(() => {
-    console.log(edges);
+    console.log();
     if (hasRendered.current) {
       localStorage.setItem("cache_nodes", JSON.stringify(nodes));
       localStorage.setItem("cache_edges", JSON.stringify(edges));
@@ -312,7 +312,7 @@ function CreateFlowchart() {
             <Controls />
           </ReactFlow>
         </div>
-        <DragNodes clearCache={clearCache} year={year} degree={degree} />
+        <DragNodes clearCache={clearCache} year={year} degree={degree} create />
       </ReactFlowProvider>
     </div>
   );

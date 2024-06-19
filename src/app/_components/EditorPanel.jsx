@@ -141,7 +141,59 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
               <button
                 className="btn btn-error text-white"
                 onClick={() => {
-                  setEdges(edges.filter((edge) => edge.id !== selection.id));
+                  const edgeId = selection.id;
+                  const reactflowRegex = /^reactflow__edge-(\d+)c-(\d+)d$/;
+                  const simpleRegex = /^e(\d+)-(\d+)c$/;
+
+                  let match = edgeId.match(reactflowRegex);
+                  let sourceId, targetId, ignore;
+                  if (match) {
+                    [ignore, sourceId, targetId] = match;
+                  }
+                  match = edgeId.match(simpleRegex);
+                  if (match) {
+                    [ignore, sourceId, targetId] = match;
+                  }
+
+                  setNodes((prevNodes) => {
+                    const sourceNode = prevNodes.find(
+                      (node) => node.id === sourceId
+                    );
+                    const targetNode = prevNodes.find(
+                      (node) => node.id === targetId
+                    );
+
+                    if (!sourceNode || !targetNode) {
+                      throw new Error("Source or target node not found");
+                    }
+
+                    sourceNode.data.corequisites =
+                      sourceNode.data.corequisites.filter(
+                        (co) => co.id !== targetId
+                      );
+                    targetNode.data.corequisites =
+                      targetNode.data.corequisites.filter(
+                        (co) => co.id !== sourceId
+                      );
+
+                    return prevNodes.map((node) => {
+                      if (node.id === sourceNode.id) {
+                        return { ...sourceNode };
+                      } else if (node.id === targetNode.id) {
+                        return { ...targetNode };
+                      }
+                      return node;
+                    });
+                  });
+
+                  setEdges(
+                    edges.filter(
+                      (edge) =>
+                        edge.id !== selection.id &&
+                        edge.id !== `e${sourceId}-${targetId}c` &&
+                        edge.id !== `e${targetId}-${sourceId}c`
+                    )
+                  );
                 }}
               >
                 Delete
