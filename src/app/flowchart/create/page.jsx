@@ -87,8 +87,6 @@ function CreateFlowchart() {
     (params) => {
       connectingNodeId.current = null;
 
-      console.log(params);
-
       if (params.sourceHandle === "a" || params.sourceHandle === "b") {
         let markerEnd = {
           type: MarkerType.ArrowClosed,
@@ -228,8 +226,6 @@ function CreateFlowchart() {
               },
             };
 
-      console.log(nodes);
-
       // Add the new node to the state
       setNodes((nds) => nds.concat(newNode));
     },
@@ -273,14 +269,15 @@ function CreateFlowchart() {
   useEffect(() => {
     console.log(edges);
     if (hasRendered.current) {
-      // console.log("here1");
       localStorage.setItem("cache_nodes", JSON.stringify(nodes));
       localStorage.setItem("cache_edges", JSON.stringify(edges));
     } else {
-      // console.log("here2");
       hasRendered.current = true;
     }
   }, [nodes, edges]);
+
+  // clear cache upon new arrival
+  // send back if fake url (direct url access)
 
   function clearCache() {
     setNodes([]);

@@ -22,8 +22,8 @@ import ReactFlow, {
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import EditDragNodes from "@/app/_components/EditDragNodes";
-import { EditableNode, CoreqNode } from "@/app/_components/nodes";
-import NodeEditorPanel from "@/app/_components/EditorPanel";
+import { EditableNode, TextNode } from "@/app/_components/nodes";
+import EditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { withAuth } from "@/utils/authentication";
@@ -73,56 +73,96 @@ function EditFlowchart() {
     (params) => {
       connectingNodeId.current = null;
 
-      // Set the default markerEnd
-      let markerEnd = {
-        type: MarkerType.ArrowClosed,
-        width: 10,
-        height: 10,
-        color: "#79BDE8",
-      };
-      let style = {
-        stroke: "#79BDE8",
-        strokeWidth: 3,
-      };
+      if (params.sourceHandle === "a" || params.sourceHandle === "b") {
+        let markerEnd = {
+          type: MarkerType.ArrowClosed,
+          width: 10,
+          height: 10,
+          color: "#000",
+        };
+        let style = {
+          stroke: "#000",
+          strokeWidth: 3,
+        };
 
-      let type = "bezier";
-      let animated = true;
+        let type = "bezier";
+        let animated = true;
 
-      setEdges((eds) =>
-        addEdge(
-          { ...params, markerEnd, markerStart, type, style, animated },
-          eds
-        )
-      );
+        setEdges((eds) =>
+          addEdge({ ...params, markerEnd, type, style, animated }, eds)
+        );
 
-      setNodes((ns) =>
-        ns.map((n) => {
-          if (n.id === params.source) {
-            return {
-              ...n,
-              data: {
-                ...n.data,
-                corequisites: [
-                  ...n.data.corequisites,
-                  { id: params.target, source: true },
-                ],
-              },
-            };
-          } else if (n.id === params.target) {
-            return {
-              ...n,
-              data: {
-                ...n.data,
-                corequisites: [
-                  ...n.data.corequisites,
-                  { id: params.source, source: false },
-                ],
-              },
-            };
-          }
-          return n;
-        })
-      );
+        setNodes((ns) =>
+          ns.map((n) => {
+            if (n.id === params.source) {
+              return {
+                ...n,
+                data: {
+                  ...n.data,
+                  postrequisites: [...n.data.postrequisites, params.target],
+                },
+              };
+            }
+            return n;
+          })
+        );
+      } else {
+        let markerEnd = {
+          type: MarkerType.ArrowClosed,
+          width: 10,
+          height: 10,
+          color: "#F00",
+        };
+        let markerStart = {
+          type: MarkerType.ArrowClosed,
+          width: 10,
+          height: 10,
+          color: "#F00",
+        };
+        let style = {
+          stroke: "#F00",
+          strokeWidth: 3,
+        };
+
+        let type = "bezier";
+        let animated = true;
+
+        setEdges((eds) =>
+          addEdge(
+            { ...params, markerEnd, markerStart, type, style, animated },
+            eds
+          )
+        );
+
+        setNodes((ns) =>
+          ns.map((n) => {
+            if (n.id === params.source) {
+              return {
+                ...n,
+                data: {
+                  ...n.data,
+                  corequisites: [
+                    ...n.data.corequisites,
+                    { id: params.target, source: true },
+                  ],
+                },
+              };
+            } else if (n.id === params.target) {
+              return {
+                ...n,
+                data: {
+                  ...n.data,
+                  corequisites: [
+                    ...n.data.corequisites,
+                    { id: params.source, source: false },
+                  ],
+                },
+              };
+            }
+            return n;
+          })
+        );
+      }
     },
     [nodes]
   );
@@ -132,46 +172,55 @@ function EditFlowchart() {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
+  const onDrop = useCallback((event) => {
+    event.preventDefault();
 
-      const type = event.dataTransfer.getData("application/reactflow");
+    const type = event.dataTransfer.getData("application/reactflow");
 
-      // Check if the dropped element is valid
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
+    // Check if the dropped element is valid
+    if (typeof type === "undefined" || !type) {
+      return;
+    }
 
-      // Get the position where the element was dropped
-      const position = reactFlowInstance.screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
+    // Get the position where the element was dropped
+    const position = reactFlowInstance.screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
+    });
 
-      const id = getId();
+    const id = getId();
 
-      const newNode = {
-        id: id,
-        type,
-        position,
-        data: {
-          courseCode: "CSC 101",
-          courseName: "Introduction to Computer Science",
-          postrequisites: [],
-          corequisites: [],
-        },
-      };
+    const newNode =
+      type === "text"
+        ? {
+            id: id,
+            type,
+            position,
+            data: {
+              text: "",
+              color: "#000",
+            },
+          }
+        : {
+            id: id,
+            type,
+            position,
+            data: {
+              courseCode: "CSC 101",
+              courseName: "Introduction to Computer Science",
+              postrequisites: [],
+              corequisites: [],
+            },
+          };
 
-      // Add the new node to the state
-      setNodes((nds) => nds.concat(newNode));
-    },
-    [reactFlowInstance]
-  );
+    // Add the new node to the state
+    setNodes((nds) => nds.concat(newNode));
+  }, []);
 
   const nodeTypes = useMemo(
     () => ({
       single: EditableNode,
+      text: TextNode,
     }),
     []
   );
@@ -263,14 +312,14 @@ function EditFlowchart() {
     })();
   }, []);
 
-  // useEffect(() => {
-  //   if (hasRendered.current) {
-  //     localStorage.setItem("cache_nodes", JSON.stringify(nodes));
-  //     localStorage.setItem("cache_edges", JSON.stringify(edges));
-  //   } else {
-  //     hasRendered.current = true;
-  //   }
-  // }, [nodes, edges]);
+  useEffect(() => {
+    if (hasRendered.current) {
+      localStorage.setItem("cache_nodes", JSON.stringify(nodes));
+      localStorage.setItem("cache_edges", JSON.stringify(edges));
+    } else {
+      hasRendered.current = true;
+    }
+  }, [nodes, edges]);
 
   function clearCache() {
     setNodes([]);
@@ -294,7 +343,12 @@ function EditFlowchart() {
             fitView
           >
             <Panel position="top-right">
-              <NodeEditorPanel setEdges={setEdges} />
+              <EditorPanel
+                setEdges={setEdges}
+                setNodes={setNodes}
+                edges={edges}
+                nodes={nodes}
+              />
             </Panel>
             <Background />
             <Controls />
