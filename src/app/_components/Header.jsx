@@ -95,7 +95,7 @@ export default function Header({ navigator }) {
           </div>
           <a href="/" className="flex">
             <img
-              className=" w-[600px] md:w-[200px] ml-[100px] md:ml-0"
+              className=" w-[600px] md:w-[200px] ml-[100px] lg:ml-0"
               src="/images/cslogo.png"
               alt="college of staten island computer science department logo"
             />
