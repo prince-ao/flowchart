@@ -141,16 +141,22 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
               <button
                 className="btn btn-error text-white"
                 onClick={() => {
+                  console.log("selection", selection);
                   const edgeId = selection.id;
                   const reactflowRegex = /^reactflow__edge-(\d+)c-(\d+)d$/;
-                  const simpleRegex = /^e(\d+)-(\d+)c$/;
+                  const simpleRegex1 = /^e(\d+)-(\d+)c$/;
+                  const simpleRegex2 = /^e(\d+)-(\d+)p$/;
 
                   let match = edgeId.match(reactflowRegex);
                   let sourceId, targetId, ignore;
                   if (match) {
                     [ignore, sourceId, targetId] = match;
                   }
-                  match = edgeId.match(simpleRegex);
+                  match = edgeId.match(simpleRegex1);
+                  if (match) {
+                    [ignore, sourceId, targetId] = match;
+                  }
+                  match = edgeId.match(simpleRegex2);
                   if (match) {
                     [ignore, sourceId, targetId] = match;
                   }
@@ -162,19 +168,32 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
                     const targetNode = prevNodes.find(
                       (node) => node.id === targetId
                     );
+                    // console.log("source", sourceNode, targetNode);
 
                     if (!sourceNode || !targetNode) {
                       throw new Error("Source or target node not found");
                     }
 
-                    sourceNode.data.corequisites =
-                      sourceNode.data.corequisites.filter(
-                        (co) => co.id !== targetId
-                      );
-                    targetNode.data.corequisites =
-                      targetNode.data.corequisites.filter(
-                        (co) => co.id !== sourceId
-                      );
+                    if (
+                      selection.sourceHandle === "c" ||
+                      selection.sourceHandle === "d"
+                    ) {
+                      sourceNode.data.corequisites =
+                        sourceNode.data.corequisites.filter(
+                          (co) => co.id !== targetId
+                        );
+                      targetNode.data.corequisites =
+                        targetNode.data.corequisites.filter(
+                          (co) => co.id !== sourceId
+                        );
+                    } else {
+                      sourceNode.data.postrequisites =
+                        sourceNode.data.postrequisites.filter(
+                          (co) => co !== targetId
+                        );
+
+                      // console.log("updated", sourceNode);
+                    }
 
                     return prevNodes.map((node) => {
                       if (node.id === sourceNode.id) {
