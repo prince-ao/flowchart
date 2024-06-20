@@ -214,6 +214,7 @@ export function getFlowchartEnv() {
 }
 
 export function cleanNodes(nodes) {
+  console.log("clean", nodes);
   return nodes.map((node) => ({
     id: node.id,
     type: node.type,
@@ -226,6 +227,7 @@ export function cleanNodes(nodes) {
 }
 
 export function dirtyNodes(nodes) {
+  console.log("dirty", nodes);
   return nodes.map((node) => ({
     id: node.id,
     type: node.type,
