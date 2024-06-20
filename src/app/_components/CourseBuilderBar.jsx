@@ -1,3 +1,27 @@
+/**
+ * CourseBuilderBar is a component that allows users to select courses and see their prerequisites and postrequisites.
+ * 
+ * Props:
+ * - setNodes: Function to update the nodes in the parent component.
+ * - setEdges: Function to update the edges in the parent component.
+ * 
+ * State:
+ * - isOpen: Boolean indicating whether the Course Builder Bar is open.
+ * - selectedNodes: Map of selected nodes. The keys are node IDs and the values are course codes.
+ * - highlightedNodes: Set of IDs of nodes that should be highlighted.
+ * - currentPage: Current page number in the pagination of courses.
+ * - takenCourses: Set of course codes that the user has taken.
+ * - itemsPerPage: Number of items per page in the pagination of courses.
+ * 
+ * The component uses the useNodes and useEdges hooks from reactflow to get the current nodes and edges.
+ * 
+ * The handleNodeSelect function is used to handle the selection and deselection of nodes. When a node is selected, it is added to the selectedNodes map and the takenCourses set. If the node has any postrequisites, they are added to the highlightedNodes set. When a node is deselected, it is removed from the selectedNodes map and the highlightedNodes set, and its postrequisites are also removed from the highlightedNodes set.
+ * 
+ * The useEffect hook is used to update the nodes and edges whenever the selectedNodes, highlightedNodes, or takenCourses state changes. The new nodes and edges are created with updated colors and opacities based on whether they are selected or highlighted.
+ * 
+ * The component renders a button to open and close the Course Builder Bar, and when the bar is open, it renders a list of courses with pagination. The courses that are selected or highlighted are styled differently. The user can select a course to see its postrequisites and deselect a course to remove its postrequisites from the highlighted courses.
+ */
+
 import { useEffect, useState } from 'react';
 import { useNodes, useEdges } from 'reactflow';
 
@@ -12,6 +36,18 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
   const [takenCourses, setTakenCourses] = useState(new Set());
   const itemsPerPage = 12;
 
+
+  /*
+    * handleNodeSelect is a function that handles the selection and deselection of nodes.
+    * When a node is selected, it is added to the selectedNodes map and the takenCourses set.
+    * If the node has any postrequisites, they are added to the highlightedNodes set.
+    * When a node is deselected, it is removed from the selectedNodes map and the highlightedNodes set.
+    * Its postrequisites are also removed from the highlightedNodes set.
+    *
+    * @param {Object} node - The node that was selected or deselected.
+    * @returns {void}
+    *   
+    * */
   const handleNodeSelect = (node) => {
     setSelectedNodes((prevSelectedNodes) => {
       const newSelectedNodes = new Map(prevSelectedNodes);
@@ -76,10 +112,8 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
 
  // Calculate total pages
  const totalPages = Math.ceil(nodes.length / itemsPerPage);
-
  // Get current page items
  const currentPageItems = nodes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
 // Get taken and future courses
 const takenCoursesArray = Array.from(takenCourses);
 const futureCourses = nodes.filter(node => node.data.futureCourse && !takenCourses.has(node.data.courseCode)).map(node => node.data.courseCode);
@@ -92,8 +126,7 @@ return (
   >
     Course Builder
   </button>
-  <div className={`w-full max-w-sm mx-auto h-auto bg-white shadow-lg rounded-md p-2 ${isOpen ? '' : 'hidden'} sm:max-w-sm md:max-w-sm lg:max-w-sm`}>
-  <>
+<div className={` mx-auto h-[50vh] sm:h-[50vh] md:h-[50vh] lg:h-[60vh] xl:h-[75vh] bg-white shadow-lg rounded-md p-2 ${isOpen ? '' : 'hidden'} sm:max-w-md md:max-w-md lg:max-w-md overflow-y-scroll `}>  <>
     <button onClick={() => setIsOpen(!isOpen)} >{isOpen ? 'X' : 'Open'}</button>
     <h2 className="text-lg text-center font-bold mb-2">Course Builder</h2>
       <div className="text-sm text-center mb-2 bg-blue-100 p-2 rounded-md shadow-md">
@@ -137,8 +170,17 @@ return (
           Next
         </button>
       </div>
-      <h3 className="text-md text-center font-bold mt-2">Key</h3>
-      <p className='text-sm text-center'>Selected courses are highlighted in blue. Future courses are highlighted in green.</p>
+      <h3 className="text-md text-center font-bold mt-2 mb-2">Key</h3>
+      <div className="flex justify-center space-x-4">
+        <div>
+          <div className="w-16 rounded h-4 bg-blue-500"> </div>
+          <p className='text-sm'>Classes you've taken</p>
+        </div>
+        <div>
+          <div className="w-16 rounded h-4 bg-green-500"></div>
+          <p className='text-sm '>Classes you can take</p>
+        </div>
+      </div>      
     </>
   </div>
   </>
