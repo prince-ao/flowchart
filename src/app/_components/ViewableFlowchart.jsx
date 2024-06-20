@@ -215,7 +215,7 @@ const ViewableFlowchart = ({
         fitView
         fitViewOptions={{ nodes: defaultNodes }}
       >
-        <Panel position="top-right">
+        <Panel position="top-right" className="">
         {hasCourseBuilder && <CourseBuilderBar setEdges={setEdges} setNodes={setNodes} />}
         </Panel>
 

@@ -5,37 +5,12 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
   const nodes = useNodes();
   const edges = useEdges();
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState(new Map());
-  const [currentPage, setCurrentPage] = useState(1);
   const [highlightedNodes, setHighlightedNodes] = useState(new Set());
-  const [searchResults, setSearchResults] = useState([]);
-  const [isOpen, setIsOpen] = useState(true); // Add this line
-
-  const nodesPerPage = 8; // Adjust this value as needed
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-
-    // Update search results
-    if (event.target.value) {
-      const lowerCaseSearchTerm = event.target.value.toLowerCase();
-      const results = nodes.filter((node) => 
-        node.data.courseName.toLowerCase().includes(lowerCaseSearchTerm) ||
-        node.data.courseCode.toLowerCase().includes(lowerCaseSearchTerm)
-      ).slice(0, 5); // Limit to 5 results
-      setSearchResults(results);
-    } else {
-      setSearchResults([]);
-    }
-  };
-
-  const handleSearchResultSelect = (node) => {
-    handleNodeSelect(node);
-    setSearchTerm(''); // Clear search term
-    setSearchResults([]); // Clear search results
-  };
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [takenCourses, setTakenCourses] = useState(new Set());
+  const itemsPerPage = 12;
 
   const handleNodeSelect = (node) => {
     setSelectedNodes((prevSelectedNodes) => {
@@ -46,6 +21,7 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
         isNodeDeselected = true;
       } else {
         newSelectedNodes.set(node.id, node.data.courseCode);
+        setTakenCourses(prevTakenCourses => new Set([...prevTakenCourses, node.data.courseCode]));
       }
   
       // Update highlighted nodes
@@ -66,6 +42,7 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
       return newSelectedNodes;
     });
   };
+
   useEffect(() => {
     // Create new arrays of nodes and edges with updated colors
   
@@ -74,7 +51,7 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
   
       if (selectedNodes.size > 0) {
         newNode.data.canTakeCourse = selectedNodes.has(node.id) || highlightedNodes.has(node.id);
-        newNode.data.futureCourse = highlightedNodes.has(node.id);
+        newNode.data.futureCourse = highlightedNodes.has(node.id) && !takenCourses.has(node.data.courseCode);
       } else {
         delete newNode.data.canTakeCourse;
         delete newNode.data.futureCourse;
@@ -92,102 +69,78 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
       animated: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target),
     }));
   
-    console.log("newNodes", newNodes);
-  
     // Update the nodes and edges
     setNodes(newNodes);
     setEdges(newEdges);
-  }, [selectedNodes, highlightedNodes]);
+  }, [selectedNodes, highlightedNodes, takenCourses]);
 
-  const handlePageChange = (direction) => {
-    setCurrentPage((prevPage) => {
-      if (direction === 'prev' && prevPage > 1) {
-        return prevPage - 1;
-      } else if (direction === 'next' && prevPage < totalPages) {
-        return prevPage + 1;
-      } else {
-        return prevPage;
-      }
-    });
-  };
+ // Calculate total pages
+ const totalPages = Math.ceil(nodes.length / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * nodesPerPage;
-  const endIndex = startIndex + nodesPerPage;
-  const totalPages = Math.ceil(nodes.length / nodesPerPage);
+ // Get current page items
+ const currentPageItems = nodes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  return (
-    <div className="w-full max-w-md mx-auto bg-white shadow-lg rounded-md p-2 overflow-x-auto overflow-y-auto h-[700px]">
-      <>
+// Get taken and future courses
+const takenCoursesArray = Array.from(takenCourses);
+const futureCourses = nodes.filter(node => node.data.futureCourse && !takenCourses.has(node.data.courseCode)).map(node => node.data.courseCode);
 
-        <h2 className="text-lg text-center font-bold mb-2">Course Builder</h2>
-        <input
-          type="text"
-          className="input input-bordered w-full text-sm"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        {searchResults.length > 0 && (
-          <div className="border rounded mt-1">
-            {searchResults.map((node) => (
-              <div
-                key={node.id}
-                className="p-1 hover:bg-gray-200 cursor-pointer text-sm"
-                onClick={() => handleSearchResultSelect(node)}
+return (
+  <>
+    <button 
+    onClick={() => setIsOpen(!isOpen)} 
+    className={` bg-blue-500 text-white p-2 rounded-full shadow-lg ${isOpen ? 'hidden' : ''}`}
+  >
+    Course Builder
+  </button>
+  <div className={`w-full max-w-sm mx-auto h-auto bg-white shadow-lg rounded-md p-2 ${isOpen ? '' : 'hidden'} sm:max-w-sm md:max-w-sm lg:max-w-sm`}>
+  <>
+    <button onClick={() => setIsOpen(!isOpen)} >{isOpen ? 'X' : 'Open'}</button>
+    <h2 className="text-lg text-center font-bold mb-2">Course Builder</h2>
+      <div className="text-sm text-center mb-2 bg-blue-100 p-2 rounded-md shadow-md">
+        <p className="font-bold">Instructions:</p>
+        <p>Click on a class to see future courses you can take.</p>
+        <p className="text-xs text-gray-500 mt-1">The selected class will be highlighted, and the future courses will be shown below.</p>
+      </div>
+      <div className="text-sm text-center mb-2 bg-green-100 p-2 rounded-md shadow-md">
+        <p className="font-bold">Next courses to take:</p>
+        <p className="font-semibold text-blue-600">{futureCourses.length > 0 ? futureCourses.join(', ') : 'No courses selected'}</p>   
+        <p className="text-xs text-gray-500 mt-1">These are the courses that you can take</p>
+      </div>   
+      <h3 className="text-md text-center font-bold mt-2">Classes</h3>
+      <div className="grid grid-cols-2 gap-2 mt-2 sm:grid-cols-3 md:grid-cols-4">
+        {currentPageItems.map((node) => (
+          <div key={node.id} className="card bordered shadow-md">
+            <figure>
+              <button
+                className={`btn text-xs w-full ${selectedNodes.has(node.id) ? 'btn-secondary' : 'btn-white'} border-2 ${highlightedNodes.has(node.id) ? 'border-blue-500' : 'border-gray-300 hover:border-gray-500'} ${node.data.futureCourse ? 'bg-green-100' : ''}`}
+                onClick={() => handleNodeSelect(node)}
               >
-                {node.data.courseCode} - {node.data.courseName}
-              </div>
-            ))}
+                {node.data.courseCode}
+              </button>
+            </figure>
           </div>
-        )}
-  
-            <h3 className="text-md text-center font-bold mt-2">Taken Classes</h3>
-          <div className="grid grid-cols-4 gap-2 mt-2">
-            {selectedNodes.size > 0 ? (
-              Array.from(selectedNodes.keys()).map((nodeId) => {
-                const node = nodes.find((n) => n.id === nodeId);
-                return (
-                  <div key={nodeId} className="card bordered p-1">
-                    <figure>
-                      <button
-                        className="btn btn-secondary text-xs w-full"
-                        onClick={() => handleNodeSelect(node)}
-                      >
-                        {node.data.courseCode} 
-                      </button>
-                    </figure>
-                  </div>
-                );
-              })
-            ) : (
-              <div className='w-full col-span-4'> 
-                <h3 className="text-xs text-center text-red-600 mt-2">No Selected Classes</h3> 
-              </div>
-            )}
-          </div>
-  
-        <h3 className="text-md text-center font-bold mt-2">Untaken Classes</h3>
-        <div className="grid grid-cols-4 gap-2 mt-2">
-          {nodes.filter((node) => !selectedNodes.has(node.id)).slice(startIndex, endIndex).map((node, i) => (
-            <div key={i} className="card bordered p-1">
-              <figure>
-                <button
-                  className="btn btn-outline text-xs w-full"
-                  onClick={() => handleNodeSelect(node)}
-                >
-                  {node.data.courseCode} 
-                </button>
-              </figure>
-            </div>
-          ))}
-        </div>
-          
-        <div className="flex justify-center items-center mt-2">
-          <button className="mx-1 btn btn-xs" onClick={() => handlePageChange('prev')}>«</button>
-          <button className="mx-1 btn btn-xs">Page {currentPage}</button>
-          <button className="mx-1 btn btn-xs" onClick={() => handlePageChange('next')}>»</button>
-        </div>
-      </>
-    </div>
-  );
+        ))}
+      </div>
+      <div className="flex justify-between mt-2">
+        <button
+          className="btn btn-secondary text-xs"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prevPage) => prevPage - 1)}
+        >
+          Previous
+        </button>
+        <button
+          className="btn btn-secondary text-xs"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prevPage) => prevPage + 1)}
+        >
+          Next
+        </button>
+      </div>
+      <h3 className="text-md text-center font-bold mt-2">Key</h3>
+      <p className='text-sm text-center'>Selected courses are highlighted in blue. Future courses are highlighted in green.</p>
+    </>
+  </div>
+  </>
+);
 }

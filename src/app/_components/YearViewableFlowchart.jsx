@@ -126,6 +126,7 @@ export default function YearViewableFlowchart({
             setEdges={setEdges}
             setNodes={setNodes}
           />
+          
         </ReactFlowProvider>
       )}
     </>
