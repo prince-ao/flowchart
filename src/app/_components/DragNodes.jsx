@@ -21,11 +21,15 @@
 
 import React, { useState, useRef, useMemo } from "react";
 import { useNodes } from "reactflow";
-import { createNewFlowchart, cleanNodes } from "@/utils/flowchart-api";
+import {
+  createNewFlowchart,
+  cleanNodes,
+  updateFlowchart,
+} from "@/utils/flowchart-api";
 import { useRouter } from "next/navigation";
 import confetti from "canvas-confetti";
 
-export default function DragNodes({ clearCache, year, degree }) {
+export default function DragNodes({ clearCache, year, degree, create }) {
   const nodes = useNodes();
   const router = useRouter();
 
@@ -67,9 +71,14 @@ export default function DragNodes({ clearCache, year, degree }) {
     });
 
     const clean = cleanNodes(nodes);
+    console.log(clean);
 
     try {
-      await createNewFlowchart(clean, year, degree);
+      if (create) {
+        await createNewFlowchart(clean, year, degree);
+      } else {
+        await updateFlowchart(clean, year, degree);
+      }
 
       setInsertSuccess(true);
       var end = Date.now() + 4 * 1000;
@@ -106,10 +115,16 @@ export default function DragNodes({ clearCache, year, degree }) {
     }
   }
 
+  function cancelCreation() {
+    clearCache();
+    router.push("/admin/update");
+  }
+
   return (
     <aside className="h-screen md:w-1/4 p-6 bg-white shadow-lg rounded-lg space-y-4">
       <h1 className="font-bold text-2xl text-center">
-        Create the degree map for <span className="italicize">{year}</span> |{" "}
+        {create ? "Create" : "Edit"} the prerequisite flowchart for{" "}
+        <span className="italicize">{year}</span> |{" "}
         <span className="italicize">{degree}</span>
       </h1>
       <h2 className="text-2xl font-bold text-gray-900">Instructions</h2>
@@ -136,16 +151,35 @@ export default function DragNodes({ clearCache, year, degree }) {
           <p>Course Name</p>
         </div>
       </div>
+      <div>
+        <h2>Text Node:</h2>
+        <div
+          className="p-2 border-2 border-black cursor-move rounded flex justify-center items-center flex-col"
+          onDragStart={(event) => onDragStart(event, "text")}
+          draggable
+        >
+          <p className="font-bold text-lg">Enter Text</p>
+        </div>
+      </div>
       {/* change the input to make it more strict */}
       {insertError.value && (
         <p className="text-error">
           error creating a flowchart: {insertError.text}
         </p>
       )}
-      <button className="btn btn-success" onClick={saveToSupabase}>
-        Create
-      </button>
-      {insertSuccess && <p className="text-success">New flowchart created!</p>}
+      <div className="flex gap-3">
+        <button className="btn btn-success" onClick={saveToSupabase}>
+          {create ? "Create" : "Edit"}
+        </button>
+        <button className="btn btn-error" onClick={cancelCreation}>
+          Cancel
+        </button>
+      </div>
+      {insertSuccess && (
+        <p className="text-success">
+          {create ? "New flowchart created" : "Flowcharted edited"}!
+        </p>
+      )}
       <a ref={downloadLink} className="hidden" />
     </aside>
   );

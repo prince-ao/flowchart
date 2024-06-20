@@ -70,10 +70,10 @@ function AdminHome() {
   }
 
   async function handleDegreeChange(e) {
+    setSelectedChart(null);
     setIsLoading(true);
     setDegree(e.target.value);
     await updateDegreeMaps(e.target.value);
-    setSelectedChart(null);
     setIsLoading(false);
   }
 
@@ -152,17 +152,21 @@ function AdminHome() {
           </div>
         </div>
 
-        <div className="flex justify-center">
-          {selectedChart && (
-            <div className="w-4/5 border-4 border-[#1e90ff] rounded-lg shadow">
-              <YearViewableFlowchart
-                year={selectedChart}
-                degree={degree}
-                height="50vh"
-              />
-            </div>
-          )}
-        </div>
+        {isLoading ? (
+          <></>
+        ) : (
+          <div className="flex justify-center">
+            {selectedChart && (
+              <div className="w-4/5 border-4 border-[#1e90ff] rounded-lg shadow">
+                <YearViewableFlowchart
+                  year={selectedChart}
+                  degree={degree}
+                  height="50vh"
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );

@@ -25,7 +25,7 @@ export default function FlowchartGuide() {
   const videoRef = useRef(null);
   const hasFetched = useRef(false);
 
-  const defaultMessage = "Select Computer Science Degree Map";
+  const defaultMessage = "Select Computer Science Prerequisite Flowchart";
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -63,7 +63,9 @@ export default function FlowchartGuide() {
       <Header />
       <dialog id="info-modal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">How to find my degree map?</h3>
+          <h3 className="font-bold text-lg">
+            How to find my prerequisite flowchart?
+          </h3>
           <ol className="list-decimal list-inside mt-4">
             <li>
               Go to{" "}
@@ -84,8 +86,8 @@ export default function FlowchartGuide() {
               underneath that
             </li>
             <li>
-              Your year, which corresponds with the degree map, should be to the
-              right of that
+              Your year, which corresponds with the prerequisite flowchart,
+              should be to the right of that
             </li>
           </ol>
 
@@ -102,7 +104,7 @@ export default function FlowchartGuide() {
       <div className="min-h-screen-header flex justify-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
           <h2 className="mb-8 text-2xl font-bold text-center">
-            Select Computer Science Degree Map
+            Select Computer Science Prerequisite Flowchart
           </h2>
           <div className="indicator">
             <button

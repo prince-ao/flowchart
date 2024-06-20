@@ -17,7 +17,7 @@ import ReactFlow, {
   MarkerType,
 } from "reactflow";
 
-export default function EditorPanel({ setEdges }) {
+export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
   // State for storing currently selected nodes
   const [selection, setSelection] = useState(() => {
     const savedSelectedNodes = localStorage.getItem("selection");
@@ -135,55 +135,178 @@ export default function EditorPanel({ setEdges }) {
       ) : (
         <>
           {selection.panelType === "edge" ? (
-            <div className="w-full">
-              <button className="btn btn-error text-white">Delete</button>
+            <div className="flex flex-col w-full">
+              <label className="font-bold text-xl">Edge:</label>
+              <p className="text-lg mb-4">id: {selection.id}</p>
+              <button
+                className="btn btn-error text-white"
+                onClick={() => {
+                  console.log("selection", selection);
+                  const edgeId = selection.id;
+                  const reactflowRegex = /^reactflow__edge-(\d+)c-(\d+)d$/;
+                  const simpleRegex1 = /^e(\d+)-(\d+)c$/;
+                  const simpleRegex2 = /^e(\d+)-(\d+)p$/;
+
+                  let match = edgeId.match(reactflowRegex);
+                  let sourceId, targetId, ignore;
+                  if (match) {
+                    [ignore, sourceId, targetId] = match;
+                  }
+                  match = edgeId.match(simpleRegex1);
+                  if (match) {
+                    [ignore, sourceId, targetId] = match;
+                  }
+                  match = edgeId.match(simpleRegex2);
+                  if (match) {
+                    [ignore, sourceId, targetId] = match;
+                  }
+
+                  setNodes((prevNodes) => {
+                    const sourceNode = prevNodes.find(
+                      (node) => node.id === sourceId
+                    );
+                    const targetNode = prevNodes.find(
+                      (node) => node.id === targetId
+                    );
+                    // console.log("source", sourceNode, targetNode);
+
+                    if (!sourceNode || !targetNode) {
+                      throw new Error("Source or target node not found");
+                    }
+
+                    if (
+                      selection.sourceHandle === "c" ||
+                      selection.sourceHandle === "d"
+                    ) {
+                      sourceNode.data.corequisites =
+                        sourceNode.data.corequisites.filter(
+                          (co) => co.id !== targetId
+                        );
+                      targetNode.data.corequisites =
+                        targetNode.data.corequisites.filter(
+                          (co) => co.id !== sourceId
+                        );
+                    } else {
+                      sourceNode.data.postrequisites =
+                        sourceNode.data.postrequisites.filter(
+                          (co) => co !== targetId
+                        );
+
+                      // console.log("updated", sourceNode);
+                    }
+
+                    return prevNodes.map((node) => {
+                      if (node.id === sourceNode.id) {
+                        return { ...sourceNode };
+                      } else if (node.id === targetNode.id) {
+                        return { ...targetNode };
+                      }
+                      return node;
+                    });
+                  });
+
+                  setEdges(
+                    edges.filter(
+                      (edge) =>
+                        edge.id !== selection.id &&
+                        edge.id !== `e${sourceId}-${targetId}c` &&
+                        edge.id !== `e${targetId}-${sourceId}c`
+                    )
+                  );
+                }}
+              >
+                Delete
+              </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 w-full">
-              <label className="font-bold text-xl">Course Code:</label>
-              <input
-                name="courseCode"
-                value={selection.data.courseCode}
-                onChange={(e) => handleInputChange(e)}
-                className="input input-bordered bg-gray-700 text-white"
-              />
-              <label className="font-bold text-xl">Full Name:</label>
-              <input
-                name="courseName"
-                value={selection.data.courseName}
-                onChange={(e) => handleInputChange(e)}
-                className="input input-bordered bg-gray-700 text-white"
-              />
-              <label className="font-bold text-xl">Postrequites:</label>
-              <div className="flex gap-2 flex-wrap justify-center">
-                {!selection.data.postrequisites.length && (
-                  <span className="text-gray-500">No postrequisites</span>
-                )}
-                {selection.data.postrequisites.map((postreq) => (
-                  <span
-                    key={postreq}
-                    className="badge badge-primary cursor-pointer"
+            <>
+              {selection.type === "text" ? (
+                <div className="flex flex-col gap-2 w-full">
+                  <label className="font-bold text-xl">Note Text:</label>
+                  <textarea
+                    name="text"
+                    value={selection.data.text}
+                    onChange={(e) => handleInputChange(e)}
+                    className="input input-bordered bg-gray-700 text-white"
+                  />
+                  <label className="font-bold text-xl">
+                    Choose the note color:
+                  </label>
+                  <input
+                    name="color"
+                    type="color"
+                    value={selection.data.color}
+                    onChange={(e) => handleInputChange(e)}
+                    className=""
+                  />
+                  <button
+                    className="btn btn-error mt-4 text-white"
+                    onClick={() => {
+                      setNodes(
+                        nodes.filter((node) => node.id !== selection.id)
+                      );
+                    }}
                   >
-                    {postreq}
-                  </span>
-                ))}
-              </div>
-              <label className="font-bold text-xl">Corequisites:</label>
-              <div className="flex gap-2 flex-wrap justify-center">
-                {!selection.data.corequisites.length && (
-                  <span className="text-gray-500">No corequisites</span>
-                )}
-                {selection.data.corequisites.map((coreq) => (
-                  <span
-                    key={coreq.id}
-                    className="badge badge-primary cursor-pointer"
+                    Delete
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 w-full">
+                  <label className="font-bold text-xl">Course Code:</label>
+                  <input
+                    name="courseCode"
+                    value={selection.data.courseCode}
+                    onChange={(e) => handleInputChange(e)}
+                    className="input input-bordered bg-gray-700 text-white"
+                  />
+                  <label className="font-bold text-xl">Full Name:</label>
+                  <input
+                    name="courseName"
+                    value={selection.data.courseName}
+                    onChange={(e) => handleInputChange(e)}
+                    className="input input-bordered bg-gray-700 text-white"
+                  />
+                  <label className="font-bold text-xl">Postrequites:</label>
+                  <div className="flex gap-2 flex-wrap justify-center">
+                    {!selection.data.postrequisites.length && (
+                      <span className="text-gray-500">No postrequisites</span>
+                    )}
+                    {selection.data.postrequisites.map((postreq) => (
+                      <span
+                        key={postreq}
+                        className="badge badge-primary cursor-pointer"
+                      >
+                        {postreq}
+                      </span>
+                    ))}
+                  </div>
+                  <label className="font-bold text-xl">Corequisites:</label>
+                  <div className="flex gap-2 flex-wrap justify-center">
+                    {!selection.data.corequisites.length && (
+                      <span className="text-gray-500">No corequisites</span>
+                    )}
+                    {selection.data.corequisites.map((coreq) => (
+                      <span
+                        key={coreq.id}
+                        className="badge badge-primary cursor-pointer"
+                      >
+                        {coreq.id}
+                      </span>
+                    ))}
+                  </div>
+                  <button
+                    className="btn btn-error mt-4 text-white"
+                    onClick={() => {
+                      setNodes(
+                        nodes.filter((node) => node.id !== selection.id)
+                      );
+                    }}
                   >
-                    {coreq.id}
-                  </span>
-                ))}
-              </div>
-              <button className="btn btn-error mt-4 text-white">Delete</button>
-            </div>
+                    Delete
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
       )}

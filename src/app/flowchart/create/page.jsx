@@ -42,7 +42,7 @@ import ReactFlow, {
 import { FilePlusIcon, BoxIcon } from "@radix-ui/react-icons";
 import "reactflow/dist/style.css";
 import DragNodes from "@/app/_components/DragNodes";
-import { EditableNode, CoreqNode } from "@/app/_components/nodes";
+import { EditableNode, TextNode } from "@/app/_components/nodes";
 import EditorPanel from "@/app/_components/EditorPanel";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -86,8 +86,6 @@ function CreateFlowchart() {
   const onConnect = useCallback(
     (params) => {
       connectingNodeId.current = null;
-
-      console.log(params);
 
       if (params.sourceHandle === "a" || params.sourceHandle === "b") {
         let markerEnd = {
@@ -205,19 +203,28 @@ function CreateFlowchart() {
 
       const id = getId();
 
-      const newNode = {
-        id: id,
-        type,
-        position,
-        data: {
-          courseCode: "CSC 101",
-          courseName: "Introduction to Computer Science",
-          postrequisites: [],
-          corequisites: [],
-        },
-      };
-
-      console.log(nodes);
+      const newNode =
+        type === "text"
+          ? {
+              id: id,
+              type,
+              position,
+              data: {
+                text: "",
+                color: "#000",
+              },
+            }
+          : {
+              id: id,
+              type,
+              position,
+              data: {
+                courseCode: "CSC 101",
+                courseName: "Introduction to Computer Science",
+                postrequisites: [],
+                corequisites: [],
+              },
+            };
 
       // Add the new node to the state
       setNodes((nds) => nds.concat(newNode));
@@ -228,6 +235,7 @@ function CreateFlowchart() {
   const nodeTypes = useMemo(
     () => ({
       single: EditableNode,
+      text: TextNode,
     }),
     []
   );
@@ -259,16 +267,17 @@ function CreateFlowchart() {
   }, []);
 
   useEffect(() => {
-    console.log(edges);
+    console.log();
     if (hasRendered.current) {
-      // console.log("here1");
       localStorage.setItem("cache_nodes", JSON.stringify(nodes));
       localStorage.setItem("cache_edges", JSON.stringify(edges));
     } else {
-      // console.log("here2");
       hasRendered.current = true;
     }
   }, [nodes, edges]);
+
+  // clear cache upon new arrival
+  // send back if fake url (direct url access)
 
   function clearCache() {
     setNodes([]);
@@ -292,13 +301,18 @@ function CreateFlowchart() {
             fitView
           >
             <Panel position="top-right">
-              <EditorPanel setEdges={setEdges} />
+              <EditorPanel
+                setEdges={setEdges}
+                setNodes={setNodes}
+                edges={edges}
+                nodes={nodes}
+              />
             </Panel>
             <Background />
             <Controls />
           </ReactFlow>
         </div>
-        <DragNodes clearCache={clearCache} year={year} degree={degree} />
+        <DragNodes clearCache={clearCache} year={year} degree={degree} create />
       </ReactFlowProvider>
     </div>
   );
