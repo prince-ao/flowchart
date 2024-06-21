@@ -15,11 +15,13 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 
+
 export default function YearViewableFlowchart({
   year,
   degree,
   height,
   onNodeClick,
+  hasCourseBuilder,
 }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
@@ -119,9 +121,19 @@ export default function YearViewableFlowchart({
             edges={edges}
             nodeTypes={nodeTypes}
             viewHeight={height}
+            hasCourseBuilder={hasCourseBuilder}
+            setEdges={setEdges}
+            setNodes={setNodes}
           />
+          
         </ReactFlowProvider>
       )}
     </>
   );
 }
+
+YearViewableFlowchart.defaultProps = {
+  height: "50vh",
+  onNodeClick: () => {},
+  hasCourseBuilder: false,
+};

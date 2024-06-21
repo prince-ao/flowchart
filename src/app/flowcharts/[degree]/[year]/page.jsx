@@ -45,6 +45,7 @@ export default function FlowchartsYear({ params }) {
   const [courses, setCourses] = useState([]);
   const flowchartEnv = getFlowchartEnv();
 
+
   function handleNodeClick(e, n) {
     const current_node = nodes.find((node) => node.id === n.id);
 
@@ -176,6 +177,7 @@ export default function FlowchartsYear({ params }) {
           year={params.year}
           degree={params.degree}
           height="74.1vh"
+          hasCourseBuilder={true}
         />
       </div>
       <div className="flex gap-4 mt-16">
