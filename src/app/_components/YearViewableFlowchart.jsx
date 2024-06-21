@@ -30,7 +30,8 @@ export default function YearViewableFlowchart({
   useEffect(() => {
     (async () => {
       try {
-        console.log(degree, year);
+        console.log("degree", degree);
+        console.log("year", year);
         const flowcharts = await getDegreeMapByDegreeYear(
           decodeURIComponent(degree),
           year
@@ -38,6 +39,7 @@ export default function YearViewableFlowchart({
 
         const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
 
+        console.log(courses);
         const nodes = dirtyNodes(courses);
 
         const edges = courses.flatMap((course) => [
@@ -88,6 +90,8 @@ export default function YearViewableFlowchart({
             }
           }),
         ]);
+
+        console.log("dirtyStuff", nodes, edges);
 
         setNodes(nodes);
         setEdges(edges);
