@@ -22,6 +22,9 @@ module.exports = {
       backgroundSize: {
         "size-10": "30px 30px",
       },
+      boxShadow: {
+        glow: '0 0 10px 0 #34D399', // Change the color and size as needed
+      },
     },
   },
   plugins: [require("daisyui")],
