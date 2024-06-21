@@ -14,6 +14,7 @@ import ReactFlow, {
   ReactFlowProvider,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import ViewTextNode from "./nodes/ViewTextNode";
 
 export default function YearViewableFlowchart({
   year,
@@ -42,54 +43,58 @@ export default function YearViewableFlowchart({
         console.log(courses);
         const nodes = dirtyNodes(courses);
 
-        const edges = courses.flatMap((course) => [
-          ...course.postrequisites.map((post) => ({
-            id: "e" + course.id + "-" + post + "p",
-            source: course.id,
-            target: post,
-            type: "bezier",
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              width: 10,
-              height: 10,
-              color: "#000",
-            },
-            style: {
-              stroke: "#000",
-              strokeWidth: 3,
-            },
-            animated: true,
-          })),
-          ...course.corequisites.map((co) => {
-            if (co.source) {
-              return {
-                id: `e${co.id}-${course.id}c`,
-                source: course.id,
-                target: co.id,
-                sourceHandle: "c",
-                targetHandle: "d",
-                type: "bezier",
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                  width: 10,
-                  height: 10,
-                  color: "#f00",
-                },
-                markerStart: {
-                  type: MarkerType.ArrowClosed,
-                  width: 10,
-                  height: 10,
-                  color: "#f00",
-                },
-                style: {
-                  stroke: "#f00",
-                  strokeWidth: 3,
-                },
-                animated: true,
-              };
-            }
-          }),
-        ]);
+        const edges = courses.flatMap((course) =>
+          course.type !== "text"
+            ? [
+                ...course.postrequisites.map((post) => ({
+                  id: "e" + course.id + "-" + post + "p",
+                  source: course.id,
+                  target: post,
+                  type: "bezier",
+                  markerEnd: {
+                    type: MarkerType.ArrowClosed,
+                    width: 10,
+                    height: 10,
+                    color: "#000",
+                  },
+                  style: {
+                    stroke: "#000",
+                    strokeWidth: 3,
+                  },
+                  animated: true,
+                })),
+                ...course.corequisites.map((co) => {
+                  if (co.source) {
+                    return {
+                      id: `e${co.id}-${course.id}c`,
+                      source: course.id,
+                      target: co.id,
+                      sourceHandle: "c",
+                      targetHandle: "d",
+                      type: "bezier",
+                      markerEnd: {
+                        type: MarkerType.ArrowClosed,
+                        width: 10,
+                        height: 10,
+                        color: "#f00",
+                      },
+                      markerStart: {
+                        type: MarkerType.ArrowClosed,
+                        width: 10,
+                        height: 10,
+                        color: "#f00",
+                      },
+                      style: {
+                        stroke: "#f00",
+                        strokeWidth: 3,
+                      },
+                      animated: true,
+                    };
+                  }
+                }),
+              ]
+            : []
+        );
 
         console.log("dirtyStuff", nodes, edges);
 
@@ -105,6 +110,7 @@ export default function YearViewableFlowchart({
   const nodeTypes = useMemo(
     () => ({
       single: ViewEditableNode,
+      text: ViewTextNode,
     }),
     []
   );

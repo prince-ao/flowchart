@@ -111,6 +111,13 @@ export default function FlowchartsYear({ params }) {
     setNodes([...nodes]);
   }
 
+  useEffect(() => {
+    (async () => {
+      const courses = await getAllCourses();
+      setCourses(courses);
+    })();
+  });
+
   return (
     <main className="" style={{ backgroundColor: color + "20" }}>
       <Header navigator />
@@ -133,7 +140,8 @@ export default function FlowchartsYear({ params }) {
             It is recommended to view this flowchart on a laptop or desktop for
             the best experience.
             <br />
-            This flowchart is based on the official CS curriculum at CSI {params.year} Catalog.
+            This flowchart is based on the official CS curriculum at CSI{" "}
+            {params.year} Catalog.
             <br />
             You can drag the flowchart using your mouse to view all of classes,
             especially when you are on the phone! You can also click on any of
@@ -238,7 +246,7 @@ export default function FlowchartsYear({ params }) {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </main>
   );
 }

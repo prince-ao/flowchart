@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
 
-export default function TextNode({ data, isConnectable }) {
+export default function ViewTextNode({ data, isConnectable }) {
   return (
     <>
       <div

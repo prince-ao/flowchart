@@ -243,8 +243,8 @@ export function dirtyNodes(nodes) {
           type: node.type,
           position: node.position,
           data: {
-            text: node.data.text,
-            color: node.data.color,
+            text: node?.text,
+            color: node?.color,
           },
         }
       : {
