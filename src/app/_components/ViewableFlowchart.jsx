@@ -8,6 +8,7 @@ import ReactFlow, {
   ReactFlowProvider,
 } from "reactflow";
 
+import Legend from "./Legend";
 /**
  * ViewableFlowchart Component
  *
@@ -210,6 +211,7 @@ const ViewableFlowchart = ({
         fitView
         fitViewOptions={{ nodes: defaultNodes }}
       >
+        <Legend/>
         <Background color={backgroundGridColor} gap={backgroundGap} />
         <Controls />
       </ReactFlow>

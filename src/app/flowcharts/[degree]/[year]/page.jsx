@@ -129,11 +129,12 @@ export default function FlowchartsYear({ params }) {
           alt="Warning Icon"
         />
         <div>
-          <p className="justify-center " style={{ lineHeight: "2.5" }}>
+          <p className="justify-center " style={{ lineHeight: "2" }}>
             It is recommended to view this flowchart on a laptop or desktop for
             the best experience.
             <br />
-            This flowchart is based on the official CS curriculum at CSI {params.year} Catalog.
+            This flowchart is based on the official CS curriculum at CSI{" "}
+            {params.year} Catalog.
             <br />
             You can drag the flowchart using your mouse to view all of classes,
             especially when you are on the phone! You can also click on any of
@@ -152,7 +153,7 @@ export default function FlowchartsYear({ params }) {
           alt="Warning Icon"
         />
         <div>
-          <p className="justify-center">
+          <p className="justify-center" style={{ lineHeight: "2" }}>
             depending on your grade in MTH 123, you may take MTH 130 next, or
             MTH 230 in place of MTH 231. You must earn a minimum “C” or higher
             grade in CSC courses which are pre-requisites to other CSC course
@@ -160,18 +161,39 @@ export default function FlowchartsYear({ params }) {
         </div>
       </div>
 
-      {/* <div className="border border-info p-4 m-5 rounded-md bg-white inline-block ">
-        <img src="/images/warning.png" className="w-6 h-6  mr-2" />
-      <div className="inline-block">
-        <span className="text-center"> depending on your grade in MTH 123, you may take MTH 130 next, or MTH 230 in place of MTH 231.
-          You must earn a minimum “C” or higher grade in CSC courses which are pre-requisites to other CSC course
-     </span> </div>
-    </div>
-      */}
+      <div>
+        <div className="border border-[red] p-4 m-5 rounded-md bg-white inline-flex ">
+          <div>
+            <p className="justify-center">
+              <b>~ </b>Based on your MTH 123 grade, you may take MTH 130 next or MTH
+              230 instead of MTH 231.  <br/> <br/>
+               <b>* </b>Complete 12-14 CSC elective credits: either three 400-level
+              electives or two 400-level and two 200-level
+              electives. You may substitute one additional
+              upper-level MTH course for one 400-level elective.
+              <br/> <br/>
+              <b>#</b> After MTH 232, complete two upper-level MTH courses (excluding
+              MTH 306) with MTH 232 or higher as a prerequisite. Consult your
+              advisor for recommendations.  <br/> <br/>
+              <b>** </b>Prerequisites are senior class standing, CSC 330, and ENG 151.
+              You must earn a minimum grade of “C” in CSC prerequisite courses.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div
         className={`h-[75vh] border-4 rounded-lg shadow`}
         style={{ borderColor: color }}
       >
+        <a
+          href={`/flowchart/CSC_BS_Flowchart-${params.year}.pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {" "}
+          Download map ⬇️{" "}
+        </a>
         <YearViewableFlowchart
           year={params.year}
           degree={params.degree}
@@ -238,7 +260,7 @@ export default function FlowchartsYear({ params }) {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </main>
   );
 }
