@@ -45,7 +45,6 @@ export default function FlowchartsYear({ params }) {
   const [courses, setCourses] = useState([]);
   const flowchartEnv = getFlowchartEnv();
 
-
   function handleNodeClick(e, n) {
     const current_node = nodes.find((node) => node.id === n.id);
 
@@ -112,9 +111,16 @@ export default function FlowchartsYear({ params }) {
     setNodes([...nodes]);
   }
 
+  useEffect(() => {
+    (async () => {
+      const courses = await getAllCourses();
+      setCourses(courses);
+    })();
+  });
+
   return (
     <main className="" style={{ backgroundColor: color + "20" }}>
-      <Header navigator />
+      <Header />
 
       <h1
         className="text-2xl font-bold m-4 text-center  p-2 rounded"
@@ -134,7 +140,8 @@ export default function FlowchartsYear({ params }) {
             It is recommended to view this flowchart on a laptop or desktop for
             the best experience.
             <br />
-            This flowchart is based on the official CS curriculum at CSI {params.year} Catalog.
+            This flowchart is based on the official CS curriculum at CSI{" "}
+            {params.year} Catalog.
             <br />
             You can drag the flowchart using your mouse to view all of classes,
             especially when you are on the phone! You can also click on any of
@@ -170,7 +177,7 @@ export default function FlowchartsYear({ params }) {
     </div>
       */}
       <div
-        className={`h-[75vh] border-4 rounded-lg shadow`}
+        className={`h-[75vh] border-4 rounded-lg shadow w-[90%] m-auto`}
         style={{ borderColor: color }}
       >
         <YearViewableFlowchart
@@ -240,7 +247,7 @@ export default function FlowchartsYear({ params }) {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </main>
   );
 }

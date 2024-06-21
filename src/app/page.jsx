@@ -26,7 +26,7 @@ export default function Home() {
               build your entire college journey. Visualize your courses, track
               your progress, and adjust your schedule with ease.
             </p>
-            <a href="/flowchart-guide/select-degree" className="mt-6">
+            <a href="/flowchart-guide/select-degree" className="mt-6 w-fit">
               <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
                 Get Started
               </button>
