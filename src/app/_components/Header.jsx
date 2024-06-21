@@ -52,7 +52,14 @@ export default function Header({ navigator }) {
                   </a>
                 </li>
                 <li>
-                  <a className="p-[1rem]">About</a>
+                  <a href="/about" className="p-[1rem]">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="/contact" className="p-[1rem]">
+                    Contact
+                  </a>
                 </li>
 
                 {degrees.map((degree, i) => (
@@ -113,9 +120,6 @@ export default function Header({ navigator }) {
                   <a href="/">Home</a>
                 </li>
                 <li>
-                  <a href="#">About</a>
-                </li>
-                <li>
                   <details>
                     <summary
                       onClick={() => setLargeCollapseOpen(!largeCollapseOpen)}
@@ -123,6 +127,12 @@ export default function Header({ navigator }) {
                       Prerequisite flowcharts
                     </summary>
                   </details>
+                </li>
+                <li>
+                  <a href="/about">About</a>
+                </li>
+                <li>
+                  <a href="/contact">Contact</a>
                 </li>
               </ul>
             </div>
