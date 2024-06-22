@@ -111,9 +111,16 @@ export default function FlowchartsYear({ params }) {
     setNodes([...nodes]);
   }
 
+  useEffect(() => {
+    (async () => {
+      const courses = await getAllCourses();
+      setCourses(courses);
+    })();
+  });
+
   return (
     <main className="" style={{ backgroundColor: color + "20" }}>
-      <Header navigator />
+      <Header />
 
       <h1
         className="text-2xl font-bold m-4 text-center  p-2 rounded"
@@ -183,7 +190,7 @@ export default function FlowchartsYear({ params }) {
       </div>
 
       <div
-        className={`h-[75vh] border-4 rounded-lg shadow`}
+        className={`h-[75vh] border-4 rounded-lg shadow w-[90%] m-auto`}
         style={{ borderColor: color }}
       >
         <a
@@ -198,6 +205,7 @@ export default function FlowchartsYear({ params }) {
           year={params.year}
           degree={params.degree}
           height="74.1vh"
+          hasCourseBuilder={true}
         />
       </div>
       <div className="flex gap-4 mt-16">

@@ -214,29 +214,51 @@ export function getFlowchartEnv() {
 }
 
 export function cleanNodes(nodes) {
-  return nodes.map((node) => ({
-    id: node.id,
-    type: node.type,
-    courseCode: node.data.courseCode,
-    courseName: node.data.courseName,
-    position: node.position,
-    postrequisites: node.data.postrequisites,
-    corequisites: node.data.corequisites,
-  }));
+  return nodes.map((node) =>
+    node.type === "text"
+      ? {
+          id: node.id,
+          type: node.type,
+          position: node.position,
+          text: node.data.text,
+          color: node.data.color,
+        }
+      : {
+          id: node.id,
+          type: node.type,
+          courseCode: node.data.courseCode,
+          courseName: node.data.courseName,
+          position: node.position,
+          postrequisites: node.data.postrequisites,
+          corequisites: node.data.corequisites,
+        }
+  );
 }
 
 export function dirtyNodes(nodes) {
-  return nodes.map((node) => ({
-    id: node.id,
-    type: node.type,
-    data: {
-      courseCode: node.courseCode,
-      courseName: node.courseName,
-      postrequisites: node.postrequisites,
-      corequisites: node.corequisites,
-    },
-    position: { x: node.position.x, y: node.position.y },
-  }));
+  return nodes.map((node) =>
+    node.type === "text"
+      ? {
+          id: node.id,
+          type: node.type,
+          position: node.position,
+          data: {
+            text: node?.text,
+            color: node?.color,
+          },
+        }
+      : {
+          id: node.id,
+          type: node.type,
+          data: {
+            courseCode: node.courseCode,
+            courseName: node.courseName,
+            postrequisites: node.postrequisites,
+            corequisites: node.corequisites,
+          },
+          position: { x: node.position.x, y: node.position.y },
+        }
+  );
 }
 
 export function displayYear(year) {

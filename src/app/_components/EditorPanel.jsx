@@ -143,12 +143,18 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
                 onClick={() => {
                   console.log("selection", selection);
                   const edgeId = selection.id;
-                  const reactflowRegex = /^reactflow__edge-(\d+)c-(\d+)d$/;
+                  const reactflowRegex1 = /^reactflow__edge-(\d+)c-(\d+)d$/;
+                  const reactflowRegex2 = /^reactflow__edge-(\d+)b-(\d+)a$/;
                   const simpleRegex1 = /^e(\d+)-(\d+)c$/;
                   const simpleRegex2 = /^e(\d+)-(\d+)p$/;
 
-                  let match = edgeId.match(reactflowRegex);
                   let sourceId, targetId, ignore;
+
+                  let match = edgeId.match(reactflowRegex1);
+                  if (match) {
+                    [ignore, sourceId, targetId] = match;
+                  }
+                  match = edgeId.match(reactflowRegex2);
                   if (match) {
                     [ignore, sourceId, targetId] = match;
                   }
@@ -168,7 +174,7 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
                     const targetNode = prevNodes.find(
                       (node) => node.id === targetId
                     );
-                    // console.log("source", sourceNode, targetNode);
+                    console.log("source", sourceNode, targetNode);
 
                     if (!sourceNode || !targetNode) {
                       throw new Error("Source or target node not found");
