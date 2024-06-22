@@ -2,7 +2,7 @@ import {
   displayYear,
   getDegrees,
   getFlowchartEnv,
-} from "@/utils/flowchart-api";
+} from "../../utils/flowchart-api.js";
 import { useState, useEffect } from "react";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
