@@ -1,6 +1,6 @@
 export default function Legend({}) {
   return (
-<div className="absolute right-4 w-[150px] h-50 text-center  text-xs border-2 border-black">
+<div className="absolute left w-[150px] h-50 text-center  text-xs border-2 border-black">
     <b>LEGEND</b>
      <div className=" inline-flex items-center">   
   <img src="/images/arrow.png" className="w-10 h-10 mr-2" />

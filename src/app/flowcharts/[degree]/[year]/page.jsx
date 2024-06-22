@@ -120,7 +120,7 @@ export default function FlowchartsYear({ params }) {
 
   return (
     <main className="" style={{ backgroundColor: color + "20" }}>
-      <Header />
+      <Header navigator/>
 
       <h1
         className="text-2xl font-bold m-4 text-center  p-2 rounded"
