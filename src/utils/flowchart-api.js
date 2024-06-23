@@ -61,7 +61,20 @@ export async function getDegreeMapByDegree(degree) {
 }
 
 export async function getAllDegrees() {
-  let { data: degrees, error } = await supabase.from("degrees").select("*");
+  let { data: degree, error } = await supabase.from("degrees").select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return degree;
+}
+
+export async function getDegreeByName(name) {
+  let { data: degrees, error } = await supabase
+    .from("degrees")
+    .select("*")
+    .eq("name", name);
 
   if (error) {
     throw new Error(error.message);
