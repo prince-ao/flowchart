@@ -10,6 +10,7 @@ import ReactFlow, {
 } from "reactflow";
 import CourseBuilderBar from "./CourseBuilderBar";
 
+import Legend from "./Legend";
 /**
  * ViewableFlowchart Component
  *
@@ -215,6 +216,7 @@ const ViewableFlowchart = ({
         fitView
         fitViewOptions={{ nodes: defaultNodes }}
       >
+        <Legend/>
         <Panel position="top-right" className="">
         {hasCourseBuilder && <CourseBuilderBar setEdges={setEdges} setNodes={setNodes} />}
         </Panel>
