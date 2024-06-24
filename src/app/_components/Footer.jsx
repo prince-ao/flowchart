@@ -8,6 +8,10 @@ export default function Footer() {
         <a href="/contact" className="hover:text-white px-4 py-2">
           Contact
         </a>
+
+        <a href="/resources" className="hover:text-white px-4 py-2">
+          Resources
+        </a>
       </div>
       <div className="text-[white] font-bold mt-2">
         ⚠️ THIS IS INTENDED TO BE USED ONLY AS A GUIDE

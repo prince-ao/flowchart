@@ -11,7 +11,9 @@ import ReactFlow, {
 import {
   displayYear,
   getAllCourses,
+  getDegreeByName,
   getDegreeMapByDegreeYear,
+  getDegrees,
   getFlowchartEnv,
 } from "@/utils/flowchart-api";
 import { ViewEditableNode, ViewCoreqNode } from "@/app/_components/nodes";
@@ -43,6 +45,7 @@ export default function FlowchartsYear({ params }) {
   const [displayState, setDisplayState] = useState(DisplayState.LOADING);
   const [color, setColor] = useState("#1e90ff");
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const flowchartEnv = getFlowchartEnv();
 
   function handleNodeClick(e, n) {
@@ -113,161 +116,162 @@ export default function FlowchartsYear({ params }) {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       const courses = await getAllCourses();
+      const degree = await getDegreeByName(decodeURIComponent(params.degree));
       setCourses(courses);
+      setColor(degree[0].color);
+      setLoading(false);
     })();
-  });
+  }, []);
 
   return (
-    <main className="" style={{ backgroundColor: color + "20" }}>
-      <Header navigator/>
+    <main
+      className="flex flex-col min-h-screen"
+      style={{ backgroundColor: color + "20" }}
+    >
+      <Header />
 
-      <h1
-        className="text-2xl font-bold m-4 text-center  p-2 rounded"
-        style={{ backgroundColor: color }}
-      >
-        {displayYear(params.year)}
-      </h1>
-
-      <div className="border border-info p-4 m-5 rounded-md bg-white inline-flex ">
-        <img
-          src="/images/warning2.png"
-          className="w-6 h-6 mr-3 mt-2"
-          alt="Warning Icon"
-        />
-        <div>
-          <p className="justify-center " style={{ lineHeight: "2" }}>
-            It is recommended to view this flowchart on a laptop or desktop for
-            the best experience.
-            <br />
-            This flowchart is based on the official CS curriculum at CSI{" "}
-            {params.year} Catalog.
-            <br />
-            You can drag the flowchart using your mouse to view all of classes,
-            especially when you are on the phone! You can also click on any of
-            the classes to view the prerequisites.
-            <br /> The colors are for grouping purposes only. To view the
-            description of any of the classes on the flowchart, you can find a
-            list of all the classes below the flowchart where you can see the
-            description of each individual class.
-          </p>
+      {loading ? (
+        <div className="flex items-center justify-center flex-grow">
+          <span className="loading loading-spinner loading-lg"></span>
         </div>
-      </div>
-      <div className="border border-[red] p-4 m-5 rounded-md bg-white inline-flex ">
-        <img
-          src="/images/warning.png"
-          className="w-6 h-6 mr-3 "
-          alt="Warning Icon"
-        />
-        <div>
-          <p className="justify-center" style={{ lineHeight: "2" }}>
-            depending on your grade in MTH 123, you may take MTH 130 next, or
-            MTH 230 in place of MTH 231. You must earn a minimum “C” or higher
-            grade in CSC courses which are pre-requisites to other CSC course
-          </p>
-        </div>
-      </div>
+      ) : (
+        <>
+          <h1
+            className="text-2xl font-bold m-4 text-center  p-2 rounded"
+            style={{ backgroundColor: color }}
+          >
+            {decodeURIComponent(params.degree)} Prerequisites Flowchart{" "}
+            {displayYear(params.year)}
+          </h1>
 
-      <div>
-        <div className="border border-[red] p-4 m-5 rounded-md bg-white inline-flex ">
-          <div>
-            <p className="justify-center">
-              <b>~ </b>Based on your MTH 123 grade, you may take MTH 130 next or MTH
-              230 instead of MTH 231.  <br/> <br/>
-               <b>* </b>Complete 12-14 CSC elective credits: either three 400-level
-              electives or two 400-level and two 200-level
-              electives. You may substitute one additional
-              upper-level MTH course for one 400-level elective.
-              <br/> <br/>
-              <b>#</b> After MTH 232, complete two upper-level MTH courses (excluding
-              MTH 306) with MTH 232 or higher as a prerequisite. Consult your
-              advisor for recommendations.  <br/> <br/>
-              <b>** </b>Prerequisites are senior class standing, CSC 330, and ENG 151.
-              You must earn a minimum grade of “C” in CSC prerequisite courses.
-            </p>
+          <div className="border border-info p-4 m-5 rounded-md bg-white inline-flex ">
+            <img
+              src="/images/warning2.png"
+              className="w-6 h-6 mr-3 mt-2"
+              alt="Warning Icon"
+            />
+            <div>
+              <p className="justify-center " style={{ lineHeight: "2.5" }}>
+                It is recommended to view this flowchart on a laptop or desktop
+                for the best experience.
+                <br />
+                This flowchart is based on the official CS curriculum at CSI{" "}
+                {displayYear(params.year)} Catalog.
+                <br />
+                You can drag the flowchart using your mouse to view all of
+                classes, especially when you are on the phone! You can also
+                click on any of the classes to view the prerequisites.
+                <br /> The colors are for grouping purposes only. To view the
+                description of any of the classes on the flowchart, you can find
+                a list of all the classes below the flowchart where you can see
+                the description of each individual class.
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
+          <div className="border border-[red] p-4 mx-5 mb-5 rounded-md bg-white inline-flex ">
+            <img
+              src="/images/warning.png"
+              className="w-6 h-6 mr-3 "
+              alt="Warning Icon"
+            />
+            <div>
+              <p className="justify-center">
+                depending on your grade in MTH 123, you may take MTH 130 next,
+                or MTH 230 in place of MTH 231. You must earn a minimum “C” or
+                higher grade in CSC courses which are pre-requisites to other
+                CSC course
+              </p>
+            </div>
+          </div>
 
-      <div
-        className={`h-[75vh] border-4 rounded-lg shadow w-[90%] m-auto`}
-        style={{ borderColor: color }}
-      >
-        <a
-          href={`/flowchart/CSC_BS_Flowchart-${params.year}.pdf`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {" "}
-          Download map ⬇️{" "}
-        </a>
-        <YearViewableFlowchart
-          year={params.year}
-          degree={params.degree}
-          height="74.1vh"
-          hasCourseBuilder={true}
-        />
-      </div>
-      <div className="flex gap-4 mt-16">
-        <div
-          className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white"
-          style={{ borderColor: color }}
-        >
-          <h2 className="mb-8 text-xl font-bold">Required CS Courses</h2>
-          <div className="flex gap-3 flex-wrap">
-            {courses.length > 0 ? (
-              courses.map(
-                (course, i) =>
-                  course.category === "cs_required" && (
-                    <div
-                      className="tooltip bg-gray-200 p-2 rounded-full"
-                      data-tip={`${course.name}`}
-                      key={i}
-                    >
-                      <a
-                        href={`${course.url ?? "#"}`}
-                        target={course.url ? "_blank" : ""}
-                      >
-                        <p>{course.code}</p>
-                      </a>
-                    </div>
+          {/* <div className="border border-info p-4 m-5 rounded-md bg-white inline-block ">
+        <img src="/images/warning.png" className="w-6 h-6  mr-2" />
+      <div className="inline-block">
+        <span className="text-center"> depending on your grade in MTH 123, you may take MTH 130 next, or MTH 230 in place of MTH 231.
+          You must earn a minimum “C” or higher grade in CSC courses which are pre-requisites to other CSC course
+     </span> </div>
+    </div>
+      */}
+          <div
+            className={`h-[75vh] border-4 rounded-lg shadow m-5`}
+            style={{ borderColor: color }}
+          >
+            <YearViewableFlowchart
+              year={params.year}
+              degree={params.degree}
+              height="74.1vh"
+              hasCourseBuilder={true}
+            />
+          </div>
+          <div className="flex gap-4 mt-16 mx-5">
+            <div
+              className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white"
+              style={{ borderColor: color }}
+            >
+              <h2 className="mb-8 text-xl font-bold">
+                Computer Science Courses
+              </h2>
+              <div className="flex gap-3 flex-wrap">
+                {courses.length > 0 ? (
+                  courses.map(
+                    (course, i) =>
+                      course.category === "cs_required" && (
+                        <div
+                          className="tooltip bg-gray-200 p-2 rounded-full"
+                          data-tip={`${course.name}`}
+                          key={i}
+                        >
+                          <a
+                            href={`${course.url ?? "#"}`}
+                            target={course.url ? "_blank" : ""}
+                          >
+                            <p>{course.code}</p>
+                          </a>
+                        </div>
+                      )
                   )
-              )
-            ) : (
-              <p>No courses yet.</p>
-            )}
-          </div>
-        </div>
-        <div
-          className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white"
-          style={{ borderColor: color }}
-        >
-          <h2 className="mb-8 text-xl font-bold">Elective CS Courses</h2>
-          <div className="flex gap-3 flex-wrap">
-            {courses.length > 0 ? (
-              courses.map(
-                (course, i) =>
-                  course.category === "cs_elective" && (
-                    <div
-                      className="tooltip bg-gray-200 p-2 rounded-full"
-                      data-tip={`${course.name}`}
-                      key={i}
-                    >
-                      <a
-                        href={`${course.url ?? "#"}`}
-                        target={course.url ? "_blank" : ""}
-                      >
-                        <p>{course.code}</p>
-                      </a>
-                    </div>
+                ) : (
+                  <p>No courses yet.</p>
+                )}
+              </div>
+            </div>
+            <div
+              className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white"
+              style={{ borderColor: color }}
+            >
+              <h2 className="mb-8 text-xl font-bold">
+                Elective Computer Science Courses
+              </h2>
+              <div className="flex gap-3 flex-wrap">
+                {courses.length > 0 ? (
+                  courses.map(
+                    (course, i) =>
+                      course.category === "cs_elective" && (
+                        <div
+                          className="tooltip bg-gray-200 p-2 rounded-full"
+                          data-tip={`${course.name}`}
+                          key={i}
+                        >
+                          <a
+                            href={`${course.url ?? "#"}`}
+                            target={course.url ? "_blank" : ""}
+                          >
+                            <p>{course.code}</p>
+                          </a>
+                        </div>
+                      )
                   )
-              )
-            ) : (
-              <p>No courses yet.</p>
-            )}
+                ) : (
+                  <p>No courses yet.</p>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
+
       <Footer />
     </main>
   );

@@ -61,7 +61,20 @@ export async function getDegreeMapByDegree(degree) {
 }
 
 export async function getAllDegrees() {
-  let { data: degrees, error } = await supabase.from("degrees").select("*");
+  let { data: degree, error } = await supabase.from("degrees").select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return degree;
+}
+
+export async function getDegreeByName(name) {
+  let { data: degrees, error } = await supabase
+    .from("degrees")
+    .select("*")
+    .eq("name", name);
 
   if (error) {
     throw new Error(error.message);
@@ -118,6 +131,17 @@ export async function deleteFlowchart(flowchart_year) {
     .from(`${getFlowchartEnv()}`)
     .delete()
     .eq("flowchart_year", flowchart_year);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteCourseByCode(code) {
+  let { data, error } = await supabase
+    .from("courses")
+    .delete()
+    .eq("code", code);
 
   if (error) {
     throw new Error(error.message);
@@ -222,6 +246,7 @@ export function cleanNodes(nodes) {
           position: node.position,
           text: node.data.text,
           color: node.data.color,
+          width: node.width,
         }
       : {
           id: node.id,
@@ -245,6 +270,7 @@ export function dirtyNodes(nodes) {
           data: {
             text: node?.text,
             color: node?.color,
+            width: node?.width ?? 300,
           },
         }
       : {
