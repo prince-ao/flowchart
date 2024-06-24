@@ -1,27 +1,3 @@
-/**
- * CourseBuilderBar is a component that allows users to select courses and see their prerequisites and postrequisites.
- * 
- * Props:
- * - setNodes: Function to update the nodes in the parent component.
- * - setEdges: Function to update the edges in the parent component.
- * 
- * State:
- * - isOpen: Boolean indicating whether the Course Builder Bar is open.
- * - selectedNodes: Map of selected nodes. The keys are node IDs and the values are course codes.
- * - highlightedNodes: Set of IDs of nodes that should be highlighted.
- * - currentPage: Current page number in the pagination of courses.
- * - takenCourses: Set of course codes that the user has taken.
- * - itemsPerPage: Number of items per page in the pagination of courses.
- * 
- * The component uses the useNodes and useEdges hooks from reactflow to get the current nodes and edges.
- * 
- * The handleNodeSelect function is used to handle the selection and deselection of nodes. When a node is selected, it is added to the selectedNodes map and the takenCourses set. If the node has any postrequisites, they are added to the highlightedNodes set. When a node is deselected, it is removed from the selectedNodes map and the highlightedNodes set, and its postrequisites are also removed from the highlightedNodes set.
- * 
- * The useEffect hook is used to update the nodes and edges whenever the selectedNodes, highlightedNodes, or takenCourses state changes. The new nodes and edges are created with updated colors and opacities based on whether they are selected or highlighted.
- * 
- * The component renders a button to open and close the Course Builder Bar, and when the bar is open, it renders a list of courses with pagination. The courses that are selected or highlighted are styled differently. The user can select a course to see its postrequisites and deselect a course to remove its postrequisites from the highlighted courses.
- */
-
 import { useEffect, useState } from 'react';
 import { useNodes, useEdges } from 'reactflow';
 
@@ -36,18 +12,6 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
   const [takenCourses, setTakenCourses] = useState(new Set());
   const itemsPerPage = 12;
 
-
-  /*
-    * handleNodeSelect is a function that handles the selection and deselection of nodes.
-    * When a node is selected, it is added to the selectedNodes map and the takenCourses set.
-    * If the node has any postrequisites, they are added to the highlightedNodes set.
-    * When a node is deselected, it is removed from the selectedNodes map and the highlightedNodes set.
-    * Its postrequisites are also removed from the highlightedNodes set.
-    *
-    * @param {Object} node - The node that was selected or deselected.
-    * @returns {void}
-    *   
-    * */
   const handleNodeSelect = (node) => {
     setSelectedNodes((prevSelectedNodes) => {
       const newSelectedNodes = new Map(prevSelectedNodes);
@@ -60,11 +24,9 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
         setTakenCourses(prevTakenCourses => new Set([...prevTakenCourses, node.data.courseCode]));
       }
   
-      // Update highlighted nodes
       setHighlightedNodes((prevHighlightedNodes) => {
         const newHighlightedNodes = new Set(prevHighlightedNodes);
         if (isNodeDeselected) {
-          // Remove the node and its postrequisites from highlighted nodes
           newHighlightedNodes.delete(node.id);
           if (node.data.postrequisites) {
             node.data.postrequisites.forEach((id) => newHighlightedNodes.delete(id));
@@ -80,41 +42,46 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
   };
 
   useEffect(() => {
-    // Create new arrays of nodes and edges with updated colors
-  
-    const newNodes = nodes.map((node) => {
-      const newNode = { ...node, data: { ...node.data } };
-  
-      if (selectedNodes.size > 0) {
-        newNode.data.canTakeCourse = selectedNodes.has(node.id) || highlightedNodes.has(node.id);
-        newNode.data.futureCourse = highlightedNodes.has(node.id) && !takenCourses.has(node.data.courseCode);
-      } else {
-        delete newNode.data.canTakeCourse;
-        delete newNode.data.futureCourse;
+    // Initialize prerequisites map
+    const prerequisitesMap = new Map();
+    const nodesMap = new Map(nodes.map(node => [node.id, node]));
+    console.log(nodesMap);
+
+    nodes.forEach(node => {
+      if (node.data.prerequisites) {
+        node.data.prerequisites.forEach(prerequisiteId => {
+          if (!prerequisitesMap.has(prerequisiteId)) {
+            prerequisitesMap.set(prerequisiteId, new Set());
+          }
+          prerequisitesMap.get(prerequisiteId).add(node.id);
+        });
       }
-  
-      return newNode;
     });
   
-    const newEdges = edges.map((edge) => ({
-      ...edge,
-      style: {
-        ...edge.style,
-        opacity: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target) ? 1 : 0.5,
-      },
-      animated: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target),
-    }));
+    // Update prerequisites map based on selected nodes
+    selectedNodes.forEach((courseCode, nodeId) => {
+      console.log(nodeId)
+      if (nodesMap[nodeId].data.postrequisites) {
+        nodesMap[nodeId].data.postrequisites.forEach(postrequisiteId => {
+          const prereqs = prerequisitesMap.get(postrequisiteId);
+          if (prereqs) {
+            prereqs.delete(nodeId);
+            if (prereqs.size === 0) {
+              // All prerequisites for this postrequisite are met
+              highlightedNodes.add(postrequisiteId);
+            }
+          }
+        });
+      }
+    });
   
-    // Update the nodes and edges
-    setNodes(newNodes);
-    setEdges(newEdges);
-  }, [selectedNodes, highlightedNodes, takenCourses]);
+    // Update nodes and edges based on the new highlightedNodes set
+    // Similar to the existing useEffect logic
+  
+  }, [selectedNodes, nodes, edges]);
 
- // Calculate total pages
  const totalPages = Math.ceil(nodes.length / itemsPerPage);
- // Get current page items
  const currentPageItems = nodes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-// Get taken and future courses
 const takenCoursesArray = Array.from(takenCourses);
 const futureCourses = nodes.filter(node => node.data.futureCourse && !takenCourses.has(node.data.courseCode)).map(node => node.data.courseCode);
 
@@ -122,11 +89,11 @@ return (
   <>
     <button 
     onClick={() => setIsOpen(!isOpen)} 
-    className={` bg-blue-500 text-white p-2 rounded-full shadow-lg ${isOpen ? 'hidden' : ''}`}
+    className={`bg-blue-500 text-white p-2 rounded-full shadow-lg ${isOpen ? 'hidden' : ''}`}
   >
     Course Builder
   </button>
-<div className={` mx-auto h-[50vh] sm:h-[50vh] md:h-[50vh] lg:h-[60vh] xl:h-[75vh] bg-white shadow-lg rounded-md p-2 ${isOpen ? '' : 'hidden'} sm:max-w-md md:max-w-md lg:max-w-md overflow-y-scroll `}>  <>
+<div className={`mx-auto h-[50vh] sm:h-[50vh] md:h-[50vh] lg:h-[60vh] xl:h-[75vh] bg-white shadow-lg rounded-md p-2 ${isOpen ? '' : 'hidden'} sm:max-w-md md:max-w-md lg:max-w-md overflow-y-scroll `}>  
     <button onClick={() => setIsOpen(!isOpen)} >{isOpen ? 'X' : 'Open'}</button>
     <h2 className="text-lg text-center font-bold mb-2">Course Builder</h2>
       <div className="text-sm text-center mb-2 bg-blue-100 p-2 rounded-md shadow-md">
@@ -181,8 +148,7 @@ return (
           <p className='text-sm '>Classes you can take</p>
         </div>
       </div>      
-    </>
-  </div>
+    </div>
   </>
 );
 }
