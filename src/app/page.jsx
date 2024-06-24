@@ -36,7 +36,11 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-around w-[100%]">
-        <img src="flowchart.png" alt="flowchart" className="w-7/8 lg:w-1/3" />
+        <img
+          src="images/flowchart2.gif"
+          alt="flowchart"
+          className="w-7/8 lg:w-1/3"
+        />
         <div className="w-3/4 lg:w-1/3">
           <h3 className="text-bold text-2xl lg:text-4xl font-bold">
             View your course roadmap
@@ -49,7 +53,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col-reverse lg:flex-row items-center justify-center lg:justify-around w-[100%] mt-24">
+      {/* <div className="flex flex-col-reverse lg:flex-row items-center justify-center lg:justify-around w-[100%] mt-24">
         <div className="w-3/4 lg:w-1/3 mt-6 lg:mt-0">
           <h3 className="text-bold text-2xl lg:text-4xl font-bold">
             Interact with your course roadmap
@@ -62,10 +66,9 @@ export default function Home() {
           </p>
         </div>
         <img src="degree.png" alt="flowchart" className="w-7/8 lg:w-1/3" />
-      </div>
+      </div> */}
 
       <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-around w-[100%] mt-24">
-        <img src="flowchart.png" alt="flowchart" className="w-7/8 lg:w-1/3" />
         <div className="w-3/4 lg:w-1/3">
           <h3 className="text-bold text-2xl lg:text-4xl font-bold">
             Plan your academic journey
@@ -77,6 +80,11 @@ export default function Home() {
             graduation.
           </p>
         </div>
+        <img
+          src="images/flowchart3.png"
+          alt="flowchart"
+          className="w-7/8 lg:w-1/3"
+        />
       </div>
 
       <div className="mt-16">

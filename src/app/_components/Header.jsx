@@ -61,6 +61,11 @@ export default function Header({ navigator }) {
                     Contact
                   </a>
                 </li>
+                <li>
+                  <a href="/resources" className="p-[1rem]">
+                    Resources
+                  </a>
+                </li>
 
                 {degrees.map((degree, i) => (
                   <li key={i}>
@@ -133,6 +138,9 @@ export default function Header({ navigator }) {
                 </li>
                 <li>
                   <a href="/contact">Contact</a>
+                </li>
+                <li>
+                  <a href="/resources">Resources</a>
                 </li>
               </ul>
             </div>

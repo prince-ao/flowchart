@@ -25,7 +25,7 @@ export default function About() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <main className="flex flex-col min-h-screen">
       <Header navigator />
 
       <div className="bg-dotted-pattern bg-size-10 flex justify-center py-16">
@@ -91,6 +91,6 @@ export default function About() {
       </div>
 
       <Footer />
-    </div>
+    </main>
   );
 }
