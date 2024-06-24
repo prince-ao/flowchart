@@ -14,6 +14,8 @@ import {
   addDegree,
   deleteDegree,
   addCourse,
+  getAllCourses,
+  deleteCourseByCode,
 } from "@/utils/flowchart-api";
 import AdminSideBar from "@/app/_components/AdminSideBar";
 
@@ -48,6 +50,7 @@ function AdminHomeUpdate() {
     category: "cs_elective",
   });
   const [courseSuccess, setCourseSuccess] = useState(false);
+  const [courses, setCourses] = useState([]);
 
   const router = useRouter();
   const flowchartEnv = getFlowchartEnv();
@@ -108,6 +111,8 @@ function AdminHomeUpdate() {
         setDegreeLoading(false);
 
         await updateDegreeMaps(degrees[0].name);
+        const courses = await getAllCourses();
+        setCourses(courses);
 
         setIsLoading(false);
       } catch (e) {
@@ -500,9 +505,9 @@ function AdminHomeUpdate() {
                 </h2>
                 <div className="stats shadow stats-vertical md:stats-horizontal">
                   <form className="stat">
-                    <h2 className="text-xl font-bold text-center">
+                    <h3 className="text-xl font-bold text-center">
                       Add Course
-                    </h2>
+                    </h3>
                     <label className="mt-4 font-bold">Course Code:</label>
                     <input
                       name="code"
@@ -575,6 +580,8 @@ function AdminHomeUpdate() {
                           courseInfo.category
                         );
 
+                        setCourses([...courses, courseInfo]);
+
                         setCourseSuccess(true);
                         setCourseInfo({
                           code: "",
@@ -585,8 +592,6 @@ function AdminHomeUpdate() {
 
                         setTimeout(() => {
                           setCourseSuccess(false);
-
-                          updateDegree();
                         }, 3 * 1e3);
                       }}
                       type="button"
@@ -594,6 +599,30 @@ function AdminHomeUpdate() {
                       Add
                     </button>
                   </form>
+                  <div className="stat w-[30%]">
+                    <h3 className="text-xl font-bold text-center">Courses</h3>
+                    <div className="flex gap-5">
+                      {courses.map(({ name, code }, i) => (
+                        <div
+                          className="tooltip bg-gray-200 p-2 rounded-full flex justify-between h-fit w-[150px]"
+                          data-tip={`${name}`}
+                          key={i}
+                        >
+                          <p>{code}</p>
+                          <button
+                            onClick={async () => {
+                              deleteCourseByCode(code);
+                              setCourses(
+                                courses.filter((course) => course.code != code)
+                              );
+                            }}
+                          >
+                            ❌
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

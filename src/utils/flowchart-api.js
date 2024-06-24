@@ -137,6 +137,17 @@ export async function deleteFlowchart(flowchart_year) {
   }
 }
 
+export async function deleteCourseByCode(code) {
+  let { data, error } = await supabase
+    .from("courses")
+    .delete()
+    .eq("code", code);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function updateFlowchart(flowchart_data, year, degree) {
   const { data: degrees, d_error } = await supabase
     .from(`degrees`)
