@@ -6,7 +6,10 @@ export default function TextNode({ data, isConnectable }) {
     <>
       <div
         className="flex flex-col rounded border-2 items-center p-6"
-        style={{ borderColor: data.color }}
+        style={{
+          borderColor: data.color,
+          width: data.width,
+        }}
       >
         <NodeResizer isVisible={true} minWidth={180} minHeight={100} />
         <p>{data.text}</p>

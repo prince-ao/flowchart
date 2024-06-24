@@ -232,6 +232,11 @@ function CreateFlowchart() {
     [reactFlowInstance]
   );
 
+  const onResize = useCallback((event) => {
+    console.log("here");
+    // console.log("resize event" + event);
+  }, []);
+
   const nodeTypes = useMemo(
     () => ({
       single: EditableNode,
@@ -267,7 +272,9 @@ function CreateFlowchart() {
   }, []);
 
   useEffect(() => {
-    console.log();
+    // i don't have to update all the time... I only have to update once.
+    console.log(nodes);
+
     if (hasRendered.current) {
       localStorage.setItem("cache_nodes", JSON.stringify(nodes));
       localStorage.setItem("cache_edges", JSON.stringify(edges));
@@ -296,6 +303,7 @@ function CreateFlowchart() {
             onConnect={onConnect}
             onInit={setReactFlowInstance}
             onDrop={onDrop}
+            onResize={onResize}
             onDragOver={onDragOver}
             nodeTypes={nodeTypes}
             fitView

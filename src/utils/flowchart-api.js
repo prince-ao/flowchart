@@ -235,6 +235,7 @@ export function cleanNodes(nodes) {
           position: node.position,
           text: node.data.text,
           color: node.data.color,
+          width: node.width,
         }
       : {
           id: node.id,
@@ -258,6 +259,7 @@ export function dirtyNodes(nodes) {
           data: {
             text: node?.text,
             color: node?.color,
+            width: node?.width ?? 300,
           },
         }
       : {

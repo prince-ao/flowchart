@@ -254,58 +254,60 @@ function EditFlowchart() {
 
         const nodes = dirtyNodes(courses);
 
-        const edges = courses.flatMap((course) => [
-          ...course.postrequisites.map((post) => ({
-            id: "e" + course.id + "-" + post + "p",
-            source: course.id,
-            target: post,
-            type: "bezier",
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              width: 10,
-              height: 10,
-              color: "#000",
-            },
-            style: {
-              stroke: "#000",
-              strokeWidth: 3,
-            },
-            animated: true,
-          })),
-          ...course.corequisites
-            .map((co) => {
-              if (co.source) {
-                return {
-                  id: `e${co.id}-${course.id}c`,
+        const edges = courses.flatMap((course) =>
+          course.type !== "text"
+            ? [
+                ...course.postrequisites.map((post) => ({
+                  id: "e" + course.id + "-" + post + "p",
                   source: course.id,
-                  target: co.id,
-                  sourceHandle: "c",
-                  targetHandle: "d",
+                  target: post,
                   type: "bezier",
                   markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 10,
                     height: 10,
-                    color: "#f00",
-                  },
-                  markerStart: {
-                    type: MarkerType.ArrowClosed,
-                    width: 10,
-                    height: 10,
-                    color: "#f00",
+                    color: "#000",
                   },
                   style: {
-                    stroke: "#f00",
+                    stroke: "#000",
                     strokeWidth: 3,
                   },
                   animated: true,
-                };
-              }
-            })
-            .filter((edge) => edge !== undefined),
-        ]);
-
-        console.log(edges);
+                })),
+                ...course.corequisites
+                  .map((co) => {
+                    if (co.source) {
+                      return {
+                        id: `e${co.id}-${course.id}c`,
+                        source: course.id,
+                        target: co.id,
+                        sourceHandle: "c",
+                        targetHandle: "d",
+                        type: "bezier",
+                        markerEnd: {
+                          type: MarkerType.ArrowClosed,
+                          width: 10,
+                          height: 10,
+                          color: "#f00",
+                        },
+                        markerStart: {
+                          type: MarkerType.ArrowClosed,
+                          width: 10,
+                          height: 10,
+                          color: "#f00",
+                        },
+                        style: {
+                          stroke: "#f00",
+                          strokeWidth: 3,
+                        },
+                        animated: true,
+                      };
+                    }
+                  })
+                  .filter((edge) => edge !== undefined),
+              ]
+            : []
+        );
 
         setNodes(nodes);
         setEdges(edges);
@@ -315,15 +317,15 @@ function EditFlowchart() {
     })();
   }, []);
 
-  useEffect(() => {
-    console.log("teser1", nodes, edges);
-    if (hasRendered.current) {
-      localStorage.setItem("cache_nodes", JSON.stringify(nodes));
-      localStorage.setItem("cache_edges", JSON.stringify(edges));
-    } else {
-      hasRendered.current = true;
-    }
-  }, [nodes, edges]);
+  // useEffect(() => {
+  //   console.log("teser1", nodes, edges);
+  //   if (hasRendered.current) {
+  //     localStorage.setItem("cache_nodes", JSON.stringify(nodes));
+  //     localStorage.setItem("cache_edges", JSON.stringify(edges));
+  //   } else {
+  //     hasRendered.current = true;
+  //   }
+  // }, [nodes, edges]);
 
   function clearCache() {
     setNodes([]);

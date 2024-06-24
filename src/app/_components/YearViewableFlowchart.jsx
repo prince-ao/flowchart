@@ -16,7 +16,6 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import ViewTextNode from "./nodes/ViewTextNode";
 
-
 export default function YearViewableFlowchart({
   year,
   degree,
@@ -42,7 +41,6 @@ export default function YearViewableFlowchart({
 
         const courses = flowcharts[0][flowchartEnv][0].flowchart_json;
 
-        console.log(courses);
         const nodes = dirtyNodes(courses);
 
         const edges = courses.flatMap((course) =>
@@ -135,7 +133,6 @@ export default function YearViewableFlowchart({
             setEdges={setEdges}
             setNodes={setNodes}
           />
-          
         </ReactFlowProvider>
       )}
     </>
