@@ -7,7 +7,8 @@ export default function ViewEditableNode({ data, selected }) {
         className={`flex flex-col rounded border-2 border-black items-center p-6 w-48  
           ${selected ? "" : ""}
           ${data.canTakeCourse === undefined ? "" : data.canTakeCourse ? "bg-blue-200 glass" : "opacity-25"}
-          ${data.futureCourse === undefined ? "" : data.futureCourse ? "bg-green-200 shadow-2xl shadow-glow" : ""}`
+          ${data.futureCourse === undefined ? "" : data.futureCourse ? "bg-green-200 shadow-2xl shadow-glow" : ""}
+          ${data.missingRequirement === undefined ? "" : data.missingRequirement ? "bg-red-200 shadow-2xl" : ""}`
         }
       >
         <h1 className="font-bold text-xl text-center">{data.courseCode}</h1>

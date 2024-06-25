@@ -1,27 +1,3 @@
-/**
- * CourseBuilderBar is a component that allows users to select courses and see their prerequisites and postrequisites.
- * 
- * Props:
- * - setNodes: Function to update the nodes in the parent component.
- * - setEdges: Function to update the edges in the parent component.
- * 
- * State:
- * - isOpen: Boolean indicating whether the Course Builder Bar is open.
- * - selectedNodes: Map of selected nodes. The keys are node IDs and the values are course codes.
- * - highlightedNodes: Set of IDs of nodes that should be highlighted.
- * - currentPage: Current page number in the pagination of courses.
- * - takenCourses: Set of course codes that the user has taken.
- * - itemsPerPage: Number of items per page in the pagination of courses.
- * 
- * The component uses the useNodes and useEdges hooks from reactflow to get the current nodes and edges.
- * 
- * The handleNodeSelect function is used to handle the selection and deselection of nodes. When a node is selected, it is added to the selectedNodes map and the takenCourses set. If the node has any postrequisites, they are added to the highlightedNodes set. When a node is deselected, it is removed from the selectedNodes map and the highlightedNodes set, and its postrequisites are also removed from the highlightedNodes set.
- * 
- * The useEffect hook is used to update the nodes and edges whenever the selectedNodes, highlightedNodes, or takenCourses state changes. The new nodes and edges are created with updated colors and opacities based on whether they are selected or highlighted.
- * 
- * The component renders a button to open and close the Course Builder Bar, and when the bar is open, it renders a list of courses with pagination. The courses that are selected or highlighted are styled differently. The user can select a course to see its postrequisites and deselect a course to remove its postrequisites from the highlighted courses.
- */
-
 import { useEffect, useState } from 'react';
 import { useNodes, useEdges } from 'reactflow';
 
@@ -34,20 +10,10 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
   const [highlightedNodes, setHighlightedNodes] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [takenCourses, setTakenCourses] = useState(new Set());
+  const [futureCourses, setFutureCourses] = useState(new Set()); // [courseCode1, courseCode2, ...
+  const [nodePostrequisiteCounts, setNodePostrequisiteCounts] = useState(new Map());
   const itemsPerPage = 12;
 
-
-  /*
-    * handleNodeSelect is a function that handles the selection and deselection of nodes.
-    * When a node is selected, it is added to the selectedNodes map and the takenCourses set.
-    * If the node has any postrequisites, they are added to the highlightedNodes set.
-    * When a node is deselected, it is removed from the selectedNodes map and the highlightedNodes set.
-    * Its postrequisites are also removed from the highlightedNodes set.
-    *
-    * @param {Object} node - The node that was selected or deselected.
-    * @returns {void}
-    *   
-    * */
   const handleNodeSelect = (node) => {
     setSelectedNodes((prevSelectedNodes) => {
       const newSelectedNodes = new Map(prevSelectedNodes);
@@ -60,11 +26,25 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
         setTakenCourses(prevTakenCourses => new Set([...prevTakenCourses, node.data.courseCode]));
       }
   
-      // Update highlighted nodes
+      if (isNodeDeselected) {
+        // Remove the course from taken courses if the node is deselected
+        setTakenCourses(prevTakenCourses => {
+          const updatedTakenCourses = new Set(prevTakenCourses);
+          updatedTakenCourses.delete(node.data.courseCode);
+          return updatedTakenCourses;
+        });
+  
+        // Ensure the deselected course is not marked as a future course
+        setFutureCourses(prevFutureCourses => {
+          const updatedFutureCourses = new Set(prevFutureCourses);
+          updatedFutureCourses.delete(node.data.courseCode);
+          return updatedFutureCourses;
+        });
+      }
+  
       setHighlightedNodes((prevHighlightedNodes) => {
         const newHighlightedNodes = new Set(prevHighlightedNodes);
         if (isNodeDeselected) {
-          // Remove the node and its postrequisites from highlighted nodes
           newHighlightedNodes.delete(node.id);
           if (node.data.postrequisites) {
             node.data.postrequisites.forEach((id) => newHighlightedNodes.delete(id));
@@ -80,53 +60,94 @@ export default function CourseBuilderBar({setNodes = () => {}, setEdges = () => 
   };
 
   useEffect(() => {
-    // Create new arrays of nodes and edges with updated colors
+    const localNodePostrequisiteCounts = new Map();
+    nodes.forEach((node) => {
+      if (node.data.postrequisites) {
+        node.data.postrequisites.forEach((id) => {
+          const currentCount = localNodePostrequisiteCounts.get(id) || 0;
+          localNodePostrequisiteCounts.set(id, currentCount + 1);
+        });
+      }
+    });
   
+  
+    // Calculate prerequisites selected count outside of the nodes.map for optimization
+  
+    // Now map over nodes to update their state based on the pre-calculated values
     const newNodes = nodes.map((node) => {
       const newNode = { ...node, data: { ...node.data } };
-  
+      const stringId = node.id.toString();
+
       if (selectedNodes.size > 0) {
         newNode.data.canTakeCourse = selectedNodes.has(node.id) || highlightedNodes.has(node.id);
         newNode.data.futureCourse = highlightedNodes.has(node.id) && !takenCourses.has(node.data.courseCode);
+
+        
+        if(newNode.data.futureCourse) {
+            if(highlightedNodes.has(node.id) && node.data.missingRequirement) {
+              localNodePostrequisiteCounts.set(stringId, (localNodePostrequisiteCounts.get(node.id) || 0) - 1);
+            }
+            localNodePostrequisiteCounts.set(stringId, (localNodePostrequisiteCounts.get(node.id) || 0) - 1);
+        }
+
+        if (localNodePostrequisiteCounts.get(stringId) !== 0 && newNode.data.futureCourse) {
+          delete newNode.data.futureCourse;
+          newNode.data.missingRequirement = true;
+          console.log(`Node ${node.id} is missing a requirement.`)
+        } else {
+          delete newNode.data.missingRequirement;
+        }
+
       } else {
         delete newNode.data.canTakeCourse;
         delete newNode.data.futureCourse;
+        delete newNode.data.missingRequirement;
       }
-  
       return newNode;
     });
   
-    const newEdges = edges.map((edge) => ({
-      ...edge,
-      style: {
-        ...edge.style,
-        opacity: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target) ? 1 : 0.5,
-      },
-      animated: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target),
-    }));
+    // Update nodePostrequisiteCounts after processing all nodes  
+    let newEdges = edges
+    if(selectedNodes.size > 0) {
+      newEdges = edges.map((edge) => ({
+        ...edge,
+        style: {
+          ...edge.style,
+          opacity: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target) ? 1 : 0.5,
+        },
+        animated: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target),
+      }));
+    } else {
+       newEdges = edges.map((edge) => ({
+        ...edge,
+        style: {
+          ...edge.style,
+          opacity: highlightedNodes.has(edge.source) || highlightedNodes.has(edge.target) ? 1 : 0.5,
+        },
+        animated: true
+      }));
+    }
   
-    // Update the nodes and edges
     setNodes(newNodes);
     setEdges(newEdges);
-  }, [selectedNodes, highlightedNodes, takenCourses]);
+  }, [selectedNodes, highlightedNodes, takenCourses]); // Include nodes and edges in the dependency array to ensure updates are processed
 
- // Calculate total pages
+
  const totalPages = Math.ceil(nodes.length / itemsPerPage);
- // Get current page items
  const currentPageItems = nodes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-// Get taken and future courses
-const takenCoursesArray = Array.from(takenCourses);
-const futureCourses = nodes.filter(node => node.data.futureCourse && !takenCourses.has(node.data.courseCode)).map(node => node.data.courseCode);
+ const takenCoursesArray = Array.from(takenCourses);
+ const coursesToTake = nodes.filter(node => node.data.futureCourse && !takenCourses.has(node.data.courseCode)).map(node => node.data.courseCode);
+ const missingRequirement = nodes.filter(node => node.data.missingRequirement).map(node => node.data.courseCode);
 
 return (
   <>
     <button 
     onClick={() => setIsOpen(!isOpen)} 
-    className={` bg-blue-500 text-white p-2 rounded-full shadow-lg ${isOpen ? 'hidden' : ''}`}
+    className={`bg-blue-500 text-white p-2 rounded-full shadow-lg ${isOpen ? 'hidden' : ''}`}
   >
     Course Builder
   </button>
-<div className={` mx-auto h-[50vh] sm:h-[50vh] md:h-[50vh] lg:h-[60vh] xl:h-[75vh] bg-white shadow-lg rounded-md p-2 ${isOpen ? '' : 'hidden'} sm:max-w-md md:max-w-md lg:max-w-md overflow-y-scroll `}>  <>
+<div className={`mx-auto h-[50vh] sm:h-[50vh] md:h-[50vh] lg:h-[60vh] xl:h-[75vh] bg-white shadow-lg rounded-md p-2 ${isOpen ? '' : 'hidden'} sm:max-w-md md:max-w-md lg:max-w-md overflow-y-scroll `}>  
     <button onClick={() => setIsOpen(!isOpen)} >{isOpen ? 'X' : 'Open'}</button>
     <h2 className="text-lg text-center font-bold mb-2">Course Builder</h2>
       <div className="text-sm text-center mb-2 bg-blue-100 p-2 rounded-md shadow-md">
@@ -134,14 +155,10 @@ return (
         <p>Click on a class to see future courses you can take.</p>
         <p className="text-xs text-gray-500 mt-1">The selected class will be highlighted, and the future courses will be shown below.</p>
       </div>
-      <div className="text-sm text-center mb-2 bg-green-100 p-2 rounded-md shadow-md">
-        <p className="font-bold">Next courses to take:</p>
-        <p className="font-semibold text-blue-600">{futureCourses.length > 0 ? futureCourses.join(', ') : 'No courses selected'}</p>   
-        <p className="text-xs text-gray-500 mt-1">These are the courses that you can take</p>
-      </div>   
       <h3 className="text-md text-center font-bold mt-2">Classes</h3>
       <div className="grid grid-cols-2 gap-2 mt-2 sm:grid-cols-3 md:grid-cols-4">
-        {currentPageItems.map((node) => (
+      {currentPageItems.map((node) => (
+        node.data.courseCode && (
           <div key={node.id} className="card bordered shadow-md">
             <figure>
               <button
@@ -152,7 +169,8 @@ return (
               </button>
             </figure>
           </div>
-        ))}
+        )
+      ))}
       </div>
       <div className="flex justify-between mt-2">
         <button
@@ -170,19 +188,29 @@ return (
           Next
         </button>
       </div>
-      <h3 className="text-md text-center font-bold mt-2 mb-2">Key</h3>
-      <div className="flex justify-center space-x-4">
-        <div>
-          <div className="w-16 rounded h-4 bg-blue-500"> </div>
-          <p className='text-sm'>Classes you've taken</p>
+      <div className="text-sm text-center mt-4 bg-green-100 p-2 rounded-md shadow-md">
+      <p className="font-bold text-center">Next courses to take:</p>
+      <p className="font-semibold text-blue-600 text-center">{coursesToTake.length > 0 ? coursesToTake.join(', ') : 'No courses selected'}</p>   
+      <p className="text-xs text-gray-500 mt-1 text-center">These are the courses that you can take</p>
+      <p className="font-bold text-center mt-2">Missing Requirements:</p>
+      <p className="font-semibold text-red-600 text-center">{missingRequirement.length > 0 ? missingRequirement.join(', ') : 'No missing requirements'}</p>
+        </div>   
+      <h3 className="text-lg text-center font-bold mt-4 mb-4">Key</h3>
+      <div className="flex justify-center gap-8">
+        <div className="flex flex-col items-center gap-2">
+          <div className="badge badge-lg bg-blue-500"></div>
+          <p className='text-base text-center'>Classes you've taken</p>
         </div>
-        <div>
-          <div className="w-16 rounded h-4 bg-green-500"></div>
-          <p className='text-sm '>Classes you can take</p>
+        <div className="flex flex-col items-center gap-2">
+          <div className="badge badge-lg bg-green-500"></div>
+          <p className='text-base text-center'>Classes you can take</p>
         </div>
-      </div>      
-    </>
-  </div>
+        <div className="flex flex-col items-center gap-2">
+          <div className="badge badge-lg bg-red-500"></div>
+          <p className='text-base text-center'>Missing Pre-requisite</p>
+        </div>
+      </div>
+    </div>
   </>
 );
 }
