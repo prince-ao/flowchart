@@ -9,6 +9,7 @@ import {
 } from "@radix-ui/react-icons";
 import Header from "@/app/_components/Header";
 import { login, loginLocally, withAuth } from "../../../utils/authentication";
+import Link from "next/link";
 
 function AdminLogin() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -68,97 +69,94 @@ function AdminLogin() {
     });
   }
 
-  return ( 
+  return (
     <main className="bg-cover bg-center bg-primary">
-  <Header />
+      <Header />
       <div className="h-lvh flex justify-center items-center">
-       
-      <dialog id="error_modal" className="modal">
-        <div className="modal-box">
-          <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-          <h3 className="font-bold text-lg">Must be authenticated.</h3>
-        </div>
-      </dialog>
-      {loading ? (
-        <div className="absolute h-lvh w-lvw bg-black/50 z-20 flex items-center justify-center">
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      ) : (
-        <></>
-      )}
-      <div className="card w-96 bg-base-300 shadow-xl">
-        
-        <div className="card-body">
-          <h2 className="card-title mx-auto">
-            Admin Login</h2>
-          {authError && (
-            <div role="alert" className="alert alert-error">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="stroke-current shrink-0 h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span>
-                Unable to authenticate admin, please{" "}
-                <a
-                  href="/contact"
-                  className="text-gray-700 hover:text-gray-700/70 font-bold"
+        <dialog id="error_modal" className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <h3 className="font-bold text-lg">Must be authenticated.</h3>
+          </div>
+        </dialog>
+        {loading ? (
+          <div className="absolute h-lvh w-lvw bg-black/50 z-20 flex items-center justify-center">
+            <span className="loading loading-spinner loading-lg"></span>
+          </div>
+        ) : (
+          <></>
+        )}
+        <div className="card w-96 bg-base-300 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title mx-auto">Admin Login</h2>
+            {authError && (
+              <div role="alert" className="alert alert-error">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
                 >
-                  contact developers
-                </a>
-                .
-              </span>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>
+                  Unable to authenticate admin, please{" "}
+                  <Link
+                    href="/contact"
+                    className="text-gray-700 hover:text-gray-700/70 font-bold"
+                  >
+                    contact developers
+                  </Link>
+                  .
+                </span>
+              </div>
+            )}{" "}
+            {/* The /contact has developer contacts*/}
+            <label className="input input-bordered flex items-center gap-2">
+              <PersonIcon />
+              <input
+                type="text"
+                className="grow"
+                name="email"
+                placeholder="Email"
+                value={authValues.email}
+                onChange={handleAuthChange}
+              />
+            </label>
+            <label className="input input-bordered flex items-center gap-2">
+              <LockClosedIcon />
+              <input
+                type={`${passwordVisible ? "" : "password"}`}
+                className="grow"
+                placeholder="********"
+                name="password"
+                onChange={handleAuthChange}
+                value={authValues.password}
+              />
+              <button
+                onClick={function handleEyeClick() {
+                  setPasswordVisible(!passwordVisible);
+                }}
+              >
+                {!passwordVisible ? <EyeOpenIcon /> : <EyeClosedIcon />}
+              </button>
+            </label>
+            <div className="card-actions justify-start">
+              <button className="btn btn-primary" onClick={handleLogin}>
+                Login
+              </button>
             </div>
-          )}{" "}
-          {/* The /contact has developer contacts*/}
-          <label className="input input-bordered flex items-center gap-2">
-            <PersonIcon />
-            <input
-              type="text"
-              className="grow"
-              name="email"
-              placeholder="Email"
-              value={authValues.email}
-              onChange={handleAuthChange}
-            />
-          </label>
-          <label className="input input-bordered flex items-center gap-2">
-            <LockClosedIcon />
-            <input
-              type={`${passwordVisible ? "" : "password"}`}
-              className="grow"
-              placeholder="********"
-              name="password"
-              onChange={handleAuthChange}
-              value={authValues.password}
-            />
-            <button
-              onClick={function handleEyeClick() {
-                setPasswordVisible(!passwordVisible);
-              }}
-            >
-              {!passwordVisible ? <EyeOpenIcon /> : <EyeClosedIcon />}
-            </button>
-          </label>
-          <div className="card-actions justify-start">
-            <button className="btn btn-primary" onClick={handleLogin}>
-              Login
-            </button>
           </div>
         </div>
-      </div>
       </div>
     </main>
   );
