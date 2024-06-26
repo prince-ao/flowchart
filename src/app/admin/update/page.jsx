@@ -16,6 +16,7 @@ import {
   addCourse,
   getAllCourses,
   deleteCourseByCode,
+  getDegreeMapByDegreeYear,
 } from "@/utils/flowchart-api";
 import AdminSideBar from "@/app/_components/AdminSideBar";
 
@@ -38,6 +39,7 @@ function AdminHomeUpdate() {
   const [uploadError, setUploadError] = useState(false);
   const [selectEdit, setSelectEdit] = useState("");
   const [selectDelete, setSelectDelete] = useState("");
+  const [selectExport, setSelectExport] = useState("");
   const [selectDegreeDelete, setSelectDegreeDelete] = useState("");
   const [degreeLoading, setDegreeLoading] = useState(true);
   const [addDegreeState, setAddDegreeState] = useState("");
@@ -82,6 +84,7 @@ function AdminHomeUpdate() {
         setFlowchartYear("");
         setTimeout(() => {
           setSuccessUploadMessage("");
+          updateDegree();
         }, 2 * 1e3);
       } catch (err) {
         if (err.message.includes("duplicate key")) {
@@ -243,49 +246,100 @@ function AdminHomeUpdate() {
                   Manage Prerequisite Flowcharts
                 </h2>
                 <div className="stats shadow stats-vertical md:stats-horizontal">
-                  <div className="stat">
-                    <div className="text-xl font-bold text-center">
-                      Upload Prerequisite Flowcharts
+                  <div className="stats stats-vertical">
+                    <div className="stat">
+                      <div className="text-xl font-bold text-center mb-4">
+                        Upload Prerequisite Flowcharts
+                      </div>
+                      <input
+                        type="file"
+                        className={`file-input file-input-primary w-full mb-4 max-w-xs ${
+                          uploadError && "file-input-error"
+                        }`}
+                        onChange={(e) => setFile(e.target.files[0])}
+                      />
+                      <input
+                        type="text"
+                        className={`input input-primary w-full max-w-xs ${
+                          fileNameError && "input-error"
+                        }`}
+                        placeholder="Flowchart Year"
+                        onChange={(e) => setFlowchartYear(e.target.value)}
+                      />
+                      <p
+                        className={`text-xs mb-4 !mt-0 ${
+                          fileNameError ? "text-error" : ""
+                        }`}
+                      >
+                        must be in the format &#123;start year&#125;-&#123;end
+                        year&#125;
+                      </p>
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleFileUpload}
+                      >
+                        Upload
+                      </button>
+                      {successUploadMessage && (
+                        <div className="text-center text-success">
+                          {successUploadMessage}
+                        </div>
+                      )}
+                      {errorUploadMessage && (
+                        <div className="text-center text-error">
+                          {errorUploadMessage}
+                        </div>
+                      )}
                     </div>
-                    <input
-                      type="file"
-                      className={`file-input file-input-primary w-full mb-4 max-w-xs ${
-                        uploadError && "file-input-error"
-                      }`}
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
-                    <input
-                      type="text"
-                      className={`input input-primary w-full max-w-xs ${
-                        fileNameError && "input-error"
-                      }`}
-                      placeholder="Flowchart Year"
-                      onChange={(e) => setFlowchartYear(e.target.value)}
-                    />
-                    <p
-                      className={`text-xs mb-4 !mt-0 ${
-                        fileNameError ? "text-error" : ""
-                      }`}
-                    >
-                      must be in the format &#123;start year&#125;-&#123;end
-                      year&#125;
-                    </p>
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleFileUpload}
-                    >
-                      Upload
-                    </button>
-                    {successUploadMessage && (
-                      <div className="text-center text-success">
-                        {successUploadMessage}
+                    <div className="stat">
+                      <div className="text-xl font-bold text-center mb-4">
+                        Export Flowchart
                       </div>
-                    )}
-                    {errorUploadMessage && (
-                      <div className="text-center text-error">
-                        {errorUploadMessage}
-                      </div>
-                    )}
+                      <select
+                        className="select select-primary w-full max-w-xs mb-4"
+                        onChange={(e) => setSelectExport(e.target.value)}
+                      >
+                        <option disabled selected>
+                          Export a Flowchart
+                        </option>
+                        {flowcharts
+                          .map((flowchart) => flowchart.flowchart_year)
+                          .map((year, index) => (
+                            <option key={index} value={year}>
+                              {displayYear(year)}
+                            </option>
+                          ))}
+                      </select>
+                      <button
+                        disabled={selectExport === ""}
+                        className="btn btn-primary"
+                        onClick={async () => {
+                          const flowchart = await getDegreeMapByDegreeYear(
+                            degree,
+                            selectExport
+                          );
+
+                          const json =
+                            flowchart[0][flowchartEnv][0].flowchart_json;
+
+                          const jsonString = JSON.stringify(json);
+
+                          const blob = new Blob([jsonString], {
+                            type: "application/json",
+                          });
+
+                          const link = document.createElement("a");
+
+                          link.download = `flowchart-${selectExport}.json`;
+                          link.href = window.URL.createObjectURL(blob);
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                      >
+                        Export
+                      </button>
+                    </div>
                   </div>
                   <div className="stat">
                     <div className="text-xl font-bold text-center">
