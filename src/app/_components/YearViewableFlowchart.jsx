@@ -32,8 +32,8 @@ export default function YearViewableFlowchart({
   useEffect(() => {
     (async () => {
       try {
-        console.log("degree", degree);
-        console.log("year", year);
+        // console.log("degree", degree);
+        // console.log("year", year);
         const flowcharts = await getDegreeMapByDegreeYear(
           decodeURIComponent(degree),
           year
@@ -50,7 +50,7 @@ export default function YearViewableFlowchart({
                   id: "e" + course.id + "-" + post + "p",
                   source: course.id,
                   target: post,
-                  type: "bezier",
+                  type: "default",
                   markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 10,
@@ -71,7 +71,7 @@ export default function YearViewableFlowchart({
                       target: co.id,
                       sourceHandle: "c",
                       targetHandle: "d",
-                      type: "bezier",
+                      type: "default",
                       markerEnd: {
                         type: MarkerType.ArrowClosed,
                         width: 10,
@@ -96,7 +96,7 @@ export default function YearViewableFlowchart({
             : []
         );
 
-        console.log("dirtyStuff", nodes, edges);
+        // console.log("dirtyStuff", nodes, edges);
 
         setNodes(nodes);
         setEdges(edges);

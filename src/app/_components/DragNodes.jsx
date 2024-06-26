@@ -71,7 +71,7 @@ export default function DragNodes({ clearCache, year, degree, create }) {
     });
 
     const clean = cleanNodes(nodes);
-    console.log(clean);
+    // console.log(clean);
 
     try {
       if (create) {

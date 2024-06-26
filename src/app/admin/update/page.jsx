@@ -75,7 +75,7 @@ function AdminHomeUpdate() {
       try {
         const json = JSON.parse(reader.result);
 
-        console.log(degree);
+        // console.log(degree);
         await createNewFlowchart(json, flowchartYear, degree);
 
         setSuccessUploadMessage("Flowchart uploaded successfully.");
@@ -221,7 +221,7 @@ function AdminHomeUpdate() {
               ) : (
                 <>
                   {degrees.map((degree, i) => (
-                    <option key={i} value={degree.name}>
+                    <option key={i} value={degree.name ?? ""}>
                       {degree.name}
                     </option>
                   ))}
@@ -498,7 +498,7 @@ function AdminHomeUpdate() {
               </div>
             </div>
 
-            <div className="grid gap-8 grid-cols-1 mt-16">
+            <div className="grid gap-8 grid-cols-1 mt-16 w-[80%]  mx-auto">
               <div className="flex flex-col justify-center items-center">
                 <h2 className="text-2xl font-bold text-center mb-4">
                   Manage Courses
@@ -599,9 +599,11 @@ function AdminHomeUpdate() {
                       Add
                     </button>
                   </form>
-                  <div className="stat w-[30%]">
-                    <h3 className="text-xl font-bold text-center">Courses</h3>
-                    <div className="flex gap-5">
+                  <div className="stat justify-start">
+                    <h3 className="text-xl font-bold text-center h-fit">
+                      Courses
+                    </h3>
+                    <div className="flex gap-x-5 flex-wrap">
                       {courses.map(({ name, code }, i) => (
                         <div
                           className="tooltip bg-gray-200 p-2 rounded-full flex justify-between h-fit w-[150px]"

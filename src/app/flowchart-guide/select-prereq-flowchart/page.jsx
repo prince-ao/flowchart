@@ -41,7 +41,7 @@ export default function FlowchartGuide() {
       (async () => {
         try {
           const degreeMaps = await getDegreeMapByDegree(degree);
-          console.log(degreeMaps);
+          // console.log(degreeMaps);
           setDegreeMaps(degreeMaps);
         } catch (e) {
           console.log(e);

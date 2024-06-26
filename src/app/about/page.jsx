@@ -9,7 +9,7 @@ export default function About() {
     {
       image: "/images/developers/prince_addo.jpg",
       name: "Prince Addo",
-      title: "Creator, Contributor",
+      title: "Creator, Maintainer",
       special_link: "https://princeaddo.xyz",
     },
     {

@@ -104,11 +104,11 @@ export default function FlowchartsYear() {
       for (let edge of edges) {
         if (edge.source === node_id) {
           const child = nodes.find((node) => node.id === edge.target);
-          console.log("child", child);
+          // console.log("child", child);
 
           for (let parent_id of child.data.prerequisites) {
             const parent = nodes.find((node) => node.id === parent_id);
-            console.log("parent", parent);
+            // console.log("parent", parent);
             if (!parent.selected) return;
           }
 

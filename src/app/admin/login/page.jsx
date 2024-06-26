@@ -30,7 +30,7 @@ function AdminLogin() {
 
   useEffect(() => {
     const errorFromHome = localStorage.getItem("homeAuthFailed");
-    console.log(errorFromHome);
+    // console.log(errorFromHome);
 
     if (errorFromHome) {
       document.getElementById("error_modal").showModal();

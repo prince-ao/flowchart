@@ -113,7 +113,7 @@ export default function CourseBuilderBar({
         ) {
           delete newNode.data.futureCourse;
           newNode.data.missingRequirement = true;
-          console.log(`Node ${node.id} is missing a requirement.`);
+          // console.log(`Node ${node.id} is missing a requirement.`);
         } else {
           delete newNode.data.missingRequirement;
         }

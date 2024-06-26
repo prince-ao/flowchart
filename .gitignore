@@ -9,6 +9,7 @@ package-lock.json
 
 # prod
 /flowchart
+cicd.sh
 
 # testing
 /coverage
