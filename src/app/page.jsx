@@ -1,16 +1,26 @@
 "use client";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
   return (
     <main className="flex min-h-screen flex-col items-center text-black ">
       <Header navigator />
 
       <div className="hero min-h-[80vh] bg-dotted-pattern bg-size-10">
         <div className="hero-content flex-col lg:flex-row-reverse justify-around max-w-[100%]">
-          <img
-            src="/images/flowchart.gif"
+          <Image
+            alt="flowchart"
+            src={basePath + "/images/flowchart.gif"}
+            width={200}
+            height={200}
             className="w-1/2 lg:max-w-sm rounded-xl shadow-2xl z-0 border-4 border-primary lg:flex-shrink-0"
           />
           <div className="lg:flex-shrink flex flex-col lg:w-1/2">
@@ -26,19 +36,21 @@ export default function Home() {
               build your entire college journey. Visualize your courses, track
               your progress, and adjust your schedule with ease.
             </p>
-            <a href="/flowchart-guide/select-degree" className="mt-6 w-fit">
+            <Link href="/flowchart-guide/select-degree" className="mt-6 w-fit">
               <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
                 Get Started
               </button>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-around w-[100%]">
-        <img
-          src="images/flowchart2.gif"
-          alt="flowchart"
+        <Image
+          alt="flowchart 2"
+          src={basePath + "/images/flowchart2.gif"}
+          width={200}
+          height={200}
           className="w-7/8 lg:w-1/3"
         />
         <div className="w-3/4 lg:w-1/3">
@@ -80,19 +92,21 @@ export default function Home() {
             graduation.
           </p>
         </div>
-        <img
-          src="images/flowchart3.png"
+        <Image
+          src={basePath + "/images/flowchart3.png"}
           alt="flowchart"
+          width={200}
+          height={200}
           className="w-7/8 lg:w-1/3"
         />
       </div>
 
       <div className="mt-16">
-        <a href="/flowchart-guide/select-degree" className="mt-6">
+        <Link href="flowchart-guide/select-degree" className="mt-6">
           <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
             Get Started
           </button>
-        </a>
+        </Link>
       </div>
 
       <Footer />

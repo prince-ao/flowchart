@@ -26,6 +26,7 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  Suspense,
 } from "react";
 import ReactFlow, {
   Controls,
@@ -326,8 +327,16 @@ function CreateFlowchart() {
   );
 }
 
+function SuspenseCreateFlowchart() {
+  return (
+    <Suspense>
+      <CreateFlowchart />
+    </Suspense>
+  );
+}
+
 export default withAuth(
-  CreateFlowchart,
+  SuspenseCreateFlowchart,
   () => {},
   () => {
     localStorage.setItem("homeAuthFailed", "true");
