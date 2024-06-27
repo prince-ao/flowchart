@@ -3,27 +3,6 @@ import Footer from "../_components/Footer";
 import Header from "../_components/Header";
 
 export default function Contact() {
-  const developers = [
-    {
-      image: "/images/developers/prince_addo.jpg",
-      name: "Prince Addo",
-      title: "Creator, Contributor",
-      special_link: "https://princeaddo.xyz",
-    },
-    {
-      image: "/images/developers/adam_kostandy.jpg",
-      name: "Adam Kostandy",
-      title: "Creator, Contributor",
-      special_link: "",
-    },
-    {
-      image: "/images/developers/unaiza_nizami.jpg",
-      name: "Unaiza N Nizami",
-      title: "Creator, Contributor",
-      special_link: "",
-    },
-  ];
-
   return (
     <div className="flex flex-col min-h-screen">
       <Header navigator />

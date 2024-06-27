@@ -26,6 +26,7 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  Suspense,
 } from "react";
 import ReactFlow, {
   Controls,
@@ -99,7 +100,7 @@ function CreateFlowchart() {
           strokeWidth: 3,
         };
 
-        let type = "bezier";
+        let type = "default";
         let animated = true;
 
         setEdges((eds) =>
@@ -138,7 +139,7 @@ function CreateFlowchart() {
           strokeWidth: 3,
         };
 
-        let type = "bezier";
+        let type = "default";
         let animated = true;
 
         setEdges((eds) =>
@@ -232,11 +233,6 @@ function CreateFlowchart() {
     [reactFlowInstance]
   );
 
-  const onResize = useCallback((event) => {
-    console.log("here");
-    // console.log("resize event" + event);
-  }, []);
-
   const nodeTypes = useMemo(
     () => ({
       single: EditableNode,
@@ -273,7 +269,7 @@ function CreateFlowchart() {
 
   useEffect(() => {
     // i don't have to update all the time... I only have to update once.
-    console.log(nodes);
+    // console.log(nodes);
 
     if (hasRendered.current) {
       localStorage.setItem("cache_nodes", JSON.stringify(nodes));
@@ -303,7 +299,6 @@ function CreateFlowchart() {
             onConnect={onConnect}
             onInit={setReactFlowInstance}
             onDrop={onDrop}
-            onResize={onResize}
             onDragOver={onDragOver}
             nodeTypes={nodeTypes}
             fitView
@@ -326,8 +321,16 @@ function CreateFlowchart() {
   );
 }
 
+function SuspenseCreateFlowchart() {
+  return (
+    <Suspense>
+      <CreateFlowchart />
+    </Suspense>
+  );
+}
+
 export default withAuth(
-  CreateFlowchart,
+  SuspenseCreateFlowchart,
   () => {},
   () => {
     localStorage.setItem("homeAuthFailed", "true");

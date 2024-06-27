@@ -30,23 +30,23 @@ export default function About() {
             {loading ? (
               <span className="loading loading-spinner loading-lg"></span>
             ) : (
-              <div className="flex gap-3 flex-wrap">
+              <div className="flex gap-3 flex-wrap justify-center">
                 {courses.length > 0 ? (
                   courses.map(
                     (course, i) =>
                       course.category === "cs_required" && (
-                        <div
-                          className="tooltip bg-gray-200 p-2 rounded-full"
-                          data-tip={`${course.name}`}
+                        <a
+                          href={`${course.url ?? "#"}`}
+                          target={course.url ? "_blank" : ""}
                           key={i}
                         >
-                          <a
-                            href={`${course.url ?? "#"}`}
-                            target={course.url ? "_blank" : ""}
+                          <div
+                            className="tooltip bg-gray-200 p-2 rounded-full"
+                            data-tip={`${course.name}`}
                           >
                             <p>{course.code}</p>
-                          </a>
-                        </div>
+                          </div>
+                        </a>
                       )
                   )
                 ) : (
@@ -62,7 +62,7 @@ export default function About() {
             {loading ? (
               <span className="loading loading-spinner loading-lg"></span>
             ) : (
-              <div className="flex gap-3 flex-wrap">
+              <div className="flex gap-3 flex-wrap justify-center">
                 {courses.length > 0 ? (
                   courses.map(
                     (course, i) =>

@@ -33,7 +33,7 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
 
   useOnSelectionChange({
     onChange: ({ nodes, edges }) => {
-      console.log(nodes, edges);
+      // console.log(nodes, edges);
 
       if (nodes.length > 0) {
         setSelection({ panelType: "node", ...nodes[0] });
@@ -52,9 +52,9 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
   // Handle changes to input fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
+    // console.log(name, value);
     selection.data[name] = value;
-    console.log(selection);
+    // console.log(selection);
     setSelection({ ...selection });
   };
 
@@ -141,7 +141,7 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
               <button
                 className="btn btn-error text-white"
                 onClick={() => {
-                  console.log("selection", selection);
+                  // console.log("selection", selection);
                   const edgeId = selection.id;
                   const reactflowRegex1 = /^reactflow__edge-(\d+)c-(\d+)d$/;
                   const reactflowRegex2 = /^reactflow__edge-(\d+)b-(\d+)a$/;
@@ -174,7 +174,7 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
                     const targetNode = prevNodes.find(
                       (node) => node.id === targetId
                     );
-                    console.log("source", sourceNode, targetNode);
+                    // console.log("source", sourceNode, targetNode);
 
                     if (!sourceNode || !targetNode) {
                       throw new Error("Source or target node not found");

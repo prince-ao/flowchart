@@ -4,13 +4,17 @@ import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Header from "../../_components/Header";
-import { getDegrees } from "@/utils/flowchart-api";
+import { getDegrees } from "../../../utils/flowchart-api";
+import Link from "next/link";
+import Image from "next/image";
 
 const _size = 20;
 
 export default function FlowchartGuide() {
   const [degree, setDegree] = useState("");
   const [degrees, setDegrees] = useState([]);
+
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   const router = useRouter();
 
@@ -44,13 +48,13 @@ export default function FlowchartGuide() {
           <ol className="list-decimal list-inside mt-4">
             <li>
               Go to{" "}
-              <a
+              <Link
                 class="link"
                 href="https://degreeworks.cuny.edu/"
                 target="_blank"
               >
                 degreeworks
-              </a>
+              </Link>
             </li>
             <li>
               Look for <span className="font-bold">Major</span> in the first
@@ -101,18 +105,21 @@ export default function FlowchartGuide() {
               <InfoCircledIcon className="indicator-item badge badge-info p-0 h-6 w-6 cursor-pointer" />
             </button>
             {/* make a video */}
-            <img
-              src="/images/degreeworks-track.png"
+            <Image
+              height={200}
+              width={300}
+              alt="choosing a degree"
+              src={basePath + "/images/degreeworks-track.png"}
               className="w-[300px] h-[150px] lg:w-[600px] lg:h-[350px]"
             />
           </div>
-          <a
+          <Link
             className="link link-primary"
             href="https://degreeworks.cuny.edu/"
             target="_blank"
           >
             Click here to go to degreeworks
-          </a>
+          </Link>
           <select
             className="select select-bordered w-full max-w-xs mt-16"
             value={degree ? degree : "Select Computer Science Degree"}

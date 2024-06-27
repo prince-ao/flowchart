@@ -5,12 +5,18 @@ import {
 } from "../../utils/flowchart-api.js";
 import { useState, useEffect } from "react";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Header({ navigator }) {
   const [degrees, setDegrees] = useState([]);
   const [collapseOpen, setCollapseOpen] = useState({});
   const [largeCollapseOpen, setLargeCollapseOpen] = useState(false);
 
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+  const router = useRouter();
   const flowchartEnv = getFlowchartEnv();
 
   const handleCollapseToggle = (index) => {
@@ -47,24 +53,24 @@ export default function Header({ navigator }) {
               ></label>
               <ul className="menu p-4 w-60 min-h-full bg-primary text-white">
                 <li>
-                  <a href="/" className="p-[1rem]">
+                  <Link href="/" className="p-[1rem]">
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/about" className="p-[1rem]">
+                  <Link href="/about" className="p-[1rem]">
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/contact" className="p-[1rem]">
+                  <Link href="/contact" className="p-[1rem]">
                     Contact
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/resources" className="p-[1rem]">
+                  <Link href="/resources" className="p-[1rem]">
                     Resources
-                  </a>
+                  </Link>
                 </li>
 
                 {degrees.map((degree, i) => (
@@ -83,7 +89,17 @@ export default function Header({ navigator }) {
                               {degree[flowchartEnv].map((data, j) => (
                                 <li key={j}>
                                   <a
-                                    href={`/flowcharts/${degree.name}/${data.flowchart_year}`}
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "degree",
+                                        degree.name
+                                      );
+                                      localStorage.setItem(
+                                        "year",
+                                        data.flowchart_year
+                                      );
+                                      router.push(basePath + "/flowcharts");
+                                    }}
                                   >
                                     {displayYear(data.flowchart_year)}
                                   </a>
@@ -101,28 +117,30 @@ export default function Header({ navigator }) {
                   </li>
                 ))}
 
-                <a href="/flowchart-guide/select-degree" className="mt-6">
+                <Link href="/flowchart-guide/select-degree" className="mt-6">
                   <button className="btn btn-secondary btn-md">
                     Get Started
                   </button>
-                </a>
+                </Link>
               </ul>
             </div>
           </div>
-          <a href="/" className="flex">
-            <img
+          <Link href="/" className="flex">
+            <Image
+              height={200}
+              width={200}
               className=" w-[600px] md:w-[200px] ml-[100px] lg:ml-0"
-              src="/images/cslogo.png"
+              src={basePath + "/images/cslogo.png"}
               alt="college of staten island computer science department logo"
             />
-          </a>
+          </Link>
         </div>
         {navigator && (
           <>
             <div className="navbar-center hidden lg:flex ">
               <ul className="menu menu-horizontal px-1">
                 <li>
-                  <a href="/">Home</a>
+                  <Link href="/">Home</Link>
                 </li>
                 <li>
                   <details>
@@ -134,25 +152,25 @@ export default function Header({ navigator }) {
                   </details>
                 </li>
                 <li>
-                  <a href="/about">About</a>
+                  <Link href="/about">About</Link>
                 </li>
                 <li>
-                  <a href="/contact">Contact</a>
+                  <Link href="/contact">Contact</Link>
                 </li>
                 <li>
-                  <a href="/resources">Resources</a>
+                  <Link href="/resources">Resources</Link>
                 </li>
               </ul>
             </div>
             <div className="md:navbar-end">
-              <a
+              <Link
                 href="/flowchart-guide/select-degree"
                 className="hidden lg:block lg:me-6"
               >
                 <button className="btn btn-secondary btn-xs lg:btn-md">
                   Get Started
                 </button>
-              </a>
+              </Link>
             </div>
           </>
         )}
@@ -170,7 +188,11 @@ export default function Header({ navigator }) {
                       <li key={j}>
                         <a
                           className="hover:link"
-                          href={`/flowcharts/${degree.name}/${data.flowchart_year}`}
+                          onClick={() => {
+                            localStorage.setItem("degree", degree.name);
+                            localStorage.setItem("year", data.flowchart_year);
+                            router.push("/flowcharts");
+                          }}
                         >
                           {displayYear(data.flowchart_year)}
                         </a>

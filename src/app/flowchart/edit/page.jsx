@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  Suspense,
 } from "react";
 import ReactFlow, {
   Controls,
@@ -51,6 +52,7 @@ function EditFlowchart() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [year, setYear] = useState("");
   const [degree, setDegree] = useState("");
+  const [loading, setLoading] = useState(true);
 
   function idExists(id) {
     for (const node of nodes) {
@@ -85,7 +87,7 @@ function EditFlowchart() {
           strokeWidth: 3,
         };
 
-        let type = "bezier";
+        let type = "default";
         let animated = true;
 
         setEdges((eds) =>
@@ -124,7 +126,7 @@ function EditFlowchart() {
           strokeWidth: 3,
         };
 
-        let type = "bezier";
+        let type = "default";
         let animated = true;
 
         setEdges((eds) =>
@@ -172,50 +174,53 @@ function EditFlowchart() {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const onDrop = useCallback((event) => {
-    event.preventDefault();
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    const type = event.dataTransfer.getData("application/reactflow");
+      const type = event.dataTransfer.getData("application/reactflow");
 
-    // Check if the dropped element is valid
-    if (typeof type === "undefined" || !type) {
-      return;
-    }
+      // Check if the dropped element is valid
+      if (typeof type === "undefined" || !type) {
+        return;
+      }
 
-    // Get the position where the element was dropped
-    const position = reactFlowInstance.screenToFlowPosition({
-      x: event.clientX,
-      y: event.clientY,
-    });
+      // Get the position where the element was dropped
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
 
-    const id = getId();
+      const id = getId();
 
-    const newNode =
-      type === "text"
-        ? {
-            id: id,
-            type,
-            position,
-            data: {
-              text: "",
-              color: "#000",
-            },
-          }
-        : {
-            id: id,
-            type,
-            position,
-            data: {
-              courseCode: "CSC 101",
-              courseName: "Introduction to Computer Science",
-              postrequisites: [],
-              corequisites: [],
-            },
-          };
+      const newNode =
+        type === "text"
+          ? {
+              id: id,
+              type,
+              position,
+              data: {
+                text: "",
+                color: "#000",
+              },
+            }
+          : {
+              id: id,
+              type,
+              position,
+              data: {
+                courseCode: "CSC 101",
+                courseName: "Introduction to Computer Science",
+                postrequisites: [],
+                corequisites: [],
+              },
+            };
 
-    // Add the new node to the state
-    setNodes((nds) => nds.concat(newNode));
-  }, []);
+      // Add the new node to the state
+      setNodes((nds) => nds.concat(newNode));
+    },
+    [reactFlowInstance]
+  );
 
   const nodeTypes = useMemo(
     () => ({
@@ -249,6 +254,7 @@ function EditFlowchart() {
     // loadFromLocalStorage();
     (async () => {
       try {
+        setLoading(true);
         const degreeMap = await getDegreeMapByDegreeYear(degree, year);
         const courses = degreeMap[0][flowchartEnv][0].flowchart_json;
 
@@ -261,7 +267,7 @@ function EditFlowchart() {
                   id: "e" + course.id + "-" + post + "p",
                   source: course.id,
                   target: post,
-                  type: "bezier",
+                  type: "default",
                   markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 10,
@@ -283,7 +289,7 @@ function EditFlowchart() {
                         target: co.id,
                         sourceHandle: "c",
                         targetHandle: "d",
-                        type: "bezier",
+                        type: "default",
                         markerEnd: {
                           type: MarkerType.ArrowClosed,
                           width: 10,
@@ -311,6 +317,7 @@ function EditFlowchart() {
 
         setNodes(nodes);
         setEdges(edges);
+        setLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -334,40 +341,52 @@ function EditFlowchart() {
 
   return (
     <div className="flex flex-grow-1 h-100 w-100 md:flex-row flex-col ">
-      <ReactFlowProvider>
-        <div className="h-screen w-screen" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            nodeTypes={nodeTypes}
-            fitView
-          >
-            <Panel position="top-right">
-              <EditorPanel
-                setEdges={setEdges}
-                setNodes={setNodes}
-                edges={edges}
-                nodes={nodes}
-              />
-            </Panel>
-            <Background />
-            <Controls />
-          </ReactFlow>
-        </div>
-        <DragNodes clearCache={clearCache} year={year} degree={degree} />
-      </ReactFlowProvider>
+      {loading ? (
+        <div className="loading loading-spinner loading-lg text-center"></div>
+      ) : (
+        <ReactFlowProvider>
+          <div className="h-screen w-screen" ref={reactFlowWrapper}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onInit={(e) => setReactFlowInstance(e)}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              nodeTypes={nodeTypes}
+              fitView
+            >
+              <Panel position="top-right">
+                <EditorPanel
+                  setEdges={setEdges}
+                  setNodes={setNodes}
+                  edges={edges}
+                  nodes={nodes}
+                />
+              </Panel>
+              <Background />
+              <Controls />
+            </ReactFlow>
+          </div>
+          <DragNodes clearCache={clearCache} year={year} degree={degree} />
+        </ReactFlowProvider>
+      )}
     </div>
   );
 }
 
+function SuspenseEditFlowchart() {
+  return (
+    <Suspense>
+      <EditFlowchart />
+    </Suspense>
+  );
+}
+
 export default withAuth(
-  EditFlowchart,
+  SuspenseEditFlowchart,
   () => {},
   () => {
     localStorage.setItem("homeAuthFailed", "true");

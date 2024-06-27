@@ -7,8 +7,9 @@ import {
   displayYear,
   getDegreeMapByDegree,
   getFlowchartEnv,
-} from "@/utils/flowchart-api";
+} from "../../../utils/flowchart-api";
 import Header from "../../_components/Header";
+import Link from "next/link";
 
 const _color = "#6E01EF";
 const _size = 20;
@@ -19,6 +20,8 @@ export default function FlowchartGuide() {
   const [degree, setDegree] = useState("");
 
   const router = useRouter();
+
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   const flowchartEnv = getFlowchartEnv();
 
@@ -38,7 +41,7 @@ export default function FlowchartGuide() {
       (async () => {
         try {
           const degreeMaps = await getDegreeMapByDegree(degree);
-          console.log(degreeMaps);
+          // console.log(degreeMaps);
           setDegreeMaps(degreeMaps);
         } catch (e) {
           console.log(e);
@@ -69,13 +72,13 @@ export default function FlowchartGuide() {
           <ol className="list-decimal list-inside mt-4">
             <li>
               Go to{" "}
-              <a
+              <Link
                 class="link"
                 href="https://degreeworks.cuny.edu/"
                 target="_blank"
               >
                 degreeworks
-              </a>
+              </Link>
             </li>
             <li>
               Look for the section with your computer science major (typically
@@ -138,17 +141,20 @@ export default function FlowchartGuide() {
               muted
               playsInline
             >
-              <source src="/videos/finding-course.mp4" type="video/mp4" />
+              <source
+                src={basePath + "/videos/finding-course.mp4"}
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
           </div>
-          <a
+          <Link
             className="link link-primary"
             href="https://degreeworks.cuny.edu/"
             target="_blank"
           >
             Click here to go to degreeworks
-          </a>
+          </Link>
           <select
             className="select select-bordered w-full max-w-xs mt-16"
             value={selectedMap ? selectedMap : defaultMessage}
@@ -167,11 +173,16 @@ export default function FlowchartGuide() {
               ))}
           </select>
           {selectedMap && (
-            <a href={`/flowcharts/${degree}/${selectedMap}`}>
-              <button className="btn btn-primary mt-4">
-                Go to course year flowchart
-              </button>
-            </a>
+            <button
+              className="btn btn-primary mt-4"
+              onClick={() => {
+                localStorage.setItem("degree", degree);
+                localStorage.setItem("year", selectedMap);
+                router.push("/flowcharts");
+              }}
+            >
+              Go to course year flowchart
+            </button>
           )}
         </div>
       </div>

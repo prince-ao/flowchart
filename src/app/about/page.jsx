@@ -3,24 +3,26 @@ import Footer from "../_components/Footer";
 import Header from "../_components/Header";
 
 export default function About() {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
   const developers = [
     {
       image: "/images/developers/prince_addo.jpg",
       name: "Prince Addo",
-      title: "Creator, Contributor",
+      title: "Creator, Maintainer",
       special_link: "https://princeaddo.xyz",
     },
     {
       image: "/images/developers/adam_kostandy.jpg",
       name: "Adam Kostandy",
       title: "Creator, Contributor",
-      special_link: "",
+      special_link: "https://adamkostandy.netlify.app/",
     },
     {
       image: "/images/developers/unaiza_nizami.jpg",
       name: "Unaiza N Nizami",
       title: "Creator, Contributor",
-      special_link: "",
+      special_link: "https://github.com/Unaiza898",
     },
   ];
 
@@ -60,7 +62,7 @@ export default function About() {
             <div key={i} className="flex flex-col items-center">
               <a href={special_link} target={special_link && "_blank"}>
                 <img
-                  src={image}
+                  src={basePath + image}
                   alt="profile image"
                   className="w-[75px] h-[75px] rounded-full"
                 />
