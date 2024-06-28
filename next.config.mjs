@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
-  basePath: "/~unaiza/flowchart",
+  basePath: "/~flowchart",
   images: { unoptimized: true },
   distDir: "flowchart",
 };

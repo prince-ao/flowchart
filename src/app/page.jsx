@@ -51,7 +51,7 @@ export default function Home() {
           src={basePath + "/images/flowchart2.gif"}
           width={200}
           height={200}
-          className="w-7/8 lg:w-1/3"
+          className="w-7/8 lg:w-1/3 rounded-xl border-black border-4"
         />
         <div className="w-3/4 lg:w-1/3">
           <h3 className="text-bold text-2xl lg:text-4xl font-bold">
@@ -97,7 +97,7 @@ export default function Home() {
           alt="flowchart"
           width={200}
           height={200}
-          className="w-7/8 lg:w-1/3"
+          className="w-7/8 lg:w-1/3 rounded-xl border-black border-4"
         />
       </div>
 
