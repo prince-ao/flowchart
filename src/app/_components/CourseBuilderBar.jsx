@@ -9,171 +9,44 @@ export default function CourseBuilderBar({
   const edges = useEdges();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedNodes, setSelectedNodes] = useState(new Map());
-  const [highlightedNodes, setHighlightedNodes] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [takenCourses, setTakenCourses] = useState(new Set());
-  const [futureCourses, setFutureCourses] = useState(new Set()); // [courseCode1, courseCode2, ...
-  const [nodePostrequisiteCounts, setNodePostrequisiteCounts] = useState(
-    new Map()
-  );
   const itemsPerPage = 12;
 
-  // const handleNodeSelect = (node) => {
-  //   setSelectedNodes((prevSelectedNodes) => {
-  //     const newSelectedNodes = new Map(prevSelectedNodes);
+  function ghost() {
+    let none_taken = true;
 
-  //     let isNodeDeselected = false;
+    for (let g_node of nodes) {
+      if (g_node.data.taken) {
+        none_taken = false;
+        break;
+      }
+    }
 
-  //     if (newSelectedNodes.has(node.id)) {
-  //       newSelectedNodes.delete(node.id);
-  //       isNodeDeselected = true;
-  //     } else {
-  //       newSelectedNodes.set(node.id, node.data.courseCode);
-  //       setTakenCourses(
-  //         (prevTakenCourses) =>
-  //           new Set([...prevTakenCourses, node.data.courseCode])
-  //       );
-  //     }
-
-  //     if (isNodeDeselected) {
-  //       // Remove the course from taken courses if the node is deselected
-  //       setTakenCourses((prevTakenCourses) => {
-  //         const updatedTakenCourses = new Set(prevTakenCourses);
-  //         updatedTakenCourses.delete(node.data.courseCode);
-  //         return updatedTakenCourses;
-  //       });
-
-  //       // Ensure the deselected course is not marked as a future course
-  //       setFutureCourses((prevFutureCourses) => {
-  //         const updatedFutureCourses = new Set(prevFutureCourses);
-  //         updatedFutureCourses.delete(node.data.courseCode);
-  //         return updatedFutureCourses;
-  //       });
-  //     }
-
-  //     setHighlightedNodes((prevHighlightedNodes) => {
-  //       const newHighlightedNodes = new Set(prevHighlightedNodes);
-  //       if (isNodeDeselected) {
-  //         newHighlightedNodes.delete(node.id);
-  //         if (node.data.postrequisites) {
-  //           node.data.postrequisites.forEach((id) =>
-  //             newHighlightedNodes.delete(id)
-  //           );
-  //         }
-  //       } else if (node.data.postrequisites) {
-  //         node.data.postrequisites.forEach((id) => newHighlightedNodes.add(id));
-  //       }
-  //       return newHighlightedNodes;
-  //     });
-
-  //     return newSelectedNodes;
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   const localNodePostrequisiteCounts = new Map();
-  //   // in degree for every node
-  //   nodes.forEach((node) => {
-  //     if (node.data.postrequisites) {
-  //       node.data.postrequisites.forEach((id) => {
-  //         const currentCount = localNodePostrequisiteCounts.get(id) || 0;
-  //         localNodePostrequisiteCounts.set(id, currentCount + 1);
-  //       });
-  //     }
-  //   });
-
-  //   // Calculate prerequisites selected count outside of the nodes.map for optimization
-
-  //   // Now map over nodes to update their state based on the pre-calculated values
-  //   const newNodes = nodes.map((node) => {
-  //     const newNode = { ...node, data: { ...node.data } };
-  //     const stringId = node.id.toString();
-
-  //     if (selectedNodes.size > 0) {
-  //       newNode.data.canTakeCourse =
-  //         selectedNodes.has(node.id) || highlightedNodes.has(node.id);
-  //       newNode.data.futureCourse =
-  //         highlightedNodes.has(node.id) &&
-  //         !takenCourses.has(node.data.courseCode);
-
-  //       if (newNode.data.futureCourse) {
-  //         if (highlightedNodes.has(node.id) && node.data.missingRequirement) {
-  //           localNodePostrequisiteCounts.set(
-  //             stringId,
-  //             (localNodePostrequisiteCounts.get(node.id) || 0) - 1
-  //           );
-  //         }
-  //         localNodePostrequisiteCounts.set(
-  //           stringId,
-  //           (localNodePostrequisiteCounts.get(node.id) || 0) - 1
-  //         );
-  //       }
-
-  //       if (
-  //         localNodePostrequisiteCounts.get(stringId) !== 0 &&
-  //         newNode.data.futureCourse
-  //       ) {
-  //         delete newNode.data.futureCourse;
-  //         newNode.data.missingRequirement = true;
-  //         // console.log(`Node ${node.id} is missing a requirement.`);
-  //       } else {
-  //         delete newNode.data.missingRequirement;
-  //       }
-  //     } else {
-  //       delete newNode.data.canTakeCourse;
-  //       delete newNode.data.futureCourse;
-  //       delete newNode.data.missingRequirement;
-  //     }
-  //     return newNode;
-  //   });
-
-  //   // Update nodePostrequisiteCounts after processing all nodes
-  //   let newEdges = edges;
-  //   if (selectedNodes.size > 0) {
-  //     newEdges = edges.map((edge) => ({
-  //       ...edge,
-  //       style: {
-  //         ...edge.style,
-  //         opacity:
-  //           highlightedNodes.has(edge.source) ||
-  //           highlightedNodes.has(edge.target)
-  //             ? 1
-  //             : 0.5,
-  //       },
-  //       animated:
-  //         highlightedNodes.has(edge.source) ||
-  //         highlightedNodes.has(edge.target),
-  //     }));
-  //   } else {
-  //     newEdges = edges.map((edge) => ({
-  //       ...edge,
-  //       style: {
-  //         ...edge.style,
-  //         opacity:
-  //           highlightedNodes.has(edge.source) ||
-  //           highlightedNodes.has(edge.target)
-  //             ? 1
-  //             : 0.5,
-  //       },
-  //       animated: true,
-  //     }));
-  //   }
-
-  //   setNodes(newNodes);
-  //   setEdges(newEdges);
-  // }, [selectedNodes, highlightedNodes, takenCourses]); // Include nodes and edges in the dependency array to ensure updates are processed
+    if (!none_taken) {
+      for (let g_node of nodes) {
+        if (
+          !g_node.data.taken &&
+          !g_node.data.canTake &&
+          !g_node.data.missingRequirements
+        ) {
+          g_node.data.ghost = true;
+        } else {
+          g_node.data.ghost = false;
+        }
+      }
+    } else {
+      for (let g_node of nodes) {
+        g_node.data.ghost = false;
+      }
+    }
+  }
 
   function handleNodeSelect(node) {
-    // check if the node is being selected or deselected
-    // if it's being selected
-    // mark all it's children as selected green
-    // if child has an in that is not selected mark it red
-
     const beingSelected = !node.data.taken;
 
     if (beingSelected) {
       node.data.taken = true;
+      node.data.canTake = false;
 
       for (let id of node.data.postrequisites) {
         let canTake = true;
@@ -181,32 +54,109 @@ export default function CourseBuilderBar({
           if (
             sub_node.data.postrequisites &&
             sub_node.data.postrequisites.includes(id) &&
-            sub_node.id != node.id
+            sub_node.id !== node.id &&
+            !sub_node.data.taken
           ) {
             canTake = false;
             break;
           }
         }
 
+        const edit_node = nodes.find((node) => node.id === id);
         if (canTake) {
-          const node = nodes.find((node) => node.id === id);
-          node.data.canTake = true;
+          edit_node.data.missingRequirements = false;
+          edit_node.data.canTake = true;
+          if (edit_node.data.corequisites) {
+            for (let coreq of edit_node.data.corequisites) {
+              const co_node = nodes.find((node) => node.id === coreq.id);
+              co_node.data.missingRequirements = false;
+              co_node.data.canTake = true;
+            }
+          }
+        } else {
+          edit_node.data.missingRequirements = true;
+
+          if (edit_node.data.corequisites) {
+            for (let coreq of edit_node.data.corequisites) {
+              const co_node = nodes.find((node) => node.id === coreq.id);
+              co_node.data.missingRequirements = true;
+            }
+          }
         }
       }
     } else {
-      // node.data.taken = false;
-      // (function turnOff(postrequisites) {
-      //   for (let id of postrequisites) {
-      //     const node = nodes.find((node) => (node.id = id));
-      //     node.data.taken = false;
-      //     node.data.canTake = false;
-      //     // if (node.data.postrequisites) {
-      //     //   turnOff(node.data.postrequisites);
-      //     // }
-      //   }
-      // })(node.data.postrequisites);
+      node.data.taken = false;
+
+      for (let g_node of nodes) {
+        if (
+          g_node.data.postrequisites &&
+          g_node.data.taken &&
+          g_node.data.postrequisites.includes(node.id)
+        ) {
+          node.data.canTake = true;
+        }
+      }
+
+      function setAsMissingRequirements(node) {
+        for (let g_node of nodes) {
+          if (
+            g_node.data.postrequisites &&
+            g_node.data.taken &&
+            g_node.data.postrequisites.includes(node.id)
+          ) {
+            node.data.missingRequirements = true;
+
+            if (node.data.corequisites) {
+              for (let coreq of node.data.corequisites) {
+                const co_node = nodes.find((node) => node.id === coreq.id);
+
+                co_node.data.missingRequirements = true;
+              }
+            }
+          }
+        }
+      }
+
+      function turnOff(postrequisites) {
+        for (let id of postrequisites) {
+          const node = nodes.find((node) => node.id === id);
+
+          if (node.data.taken) {
+            node.data.taken = false;
+            node.data.canTake = false;
+            setAsMissingRequirements(node);
+
+            turnOff(node.data.postrequisites);
+          } else if (node.data.canTake) {
+            node.data.canTake = false;
+
+            if (node.data.corequisites) {
+              for (let coreq of node.data.corequisites) {
+                const co_node = nodes.find((node) => node.id === coreq.id);
+
+                co_node.data.canTake = false;
+              }
+            }
+
+            setAsMissingRequirements(node);
+          } else if (node.data.missingRequirements) {
+            node.data.missingRequirements = false;
+
+            if (node.data.corequisites) {
+              for (let coreq of node.data.corequisites) {
+                const co_node = nodes.find((node) => node.id === coreq.id);
+
+                co_node.data.missingRequirements = false;
+              }
+            }
+          }
+        }
+      }
+
+      turnOff(node.data.postrequisites);
     }
 
+    ghost();
     setNodes(nodes);
   }
 
@@ -215,16 +165,6 @@ export default function CourseBuilderBar({
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  const takenCoursesArray = Array.from(takenCourses);
-  const coursesToTake = nodes
-    .filter(
-      (node) =>
-        node.data.futureCourse && !takenCourses.has(node.data.courseCode)
-    )
-    .map((node) => node.data.courseCode);
-  const missingRequirement = nodes
-    .filter((node) => node.data.missingRequirement)
-    .map((node) => node.data.courseCode);
 
   return (
     <>
@@ -316,26 +256,31 @@ export default function CourseBuilderBar({
           <p className="text-xs text-gray-500 mt-1 text-center">
             These are the courses that you can take
           </p>
-          <p className="font-bold text-center mt-2">Missing Requirements:</p>
+          <p className="font-bold text-center mt-2">
+            Courses missing requirements:
+          </p>
           <p className="font-semibold text-red-600 text-center">
-            {missingRequirement.length > 0
-              ? missingRequirement.join(", ")
-              : "No missing requirements"}
+            {nodes.filter((node) => node.data.missingRequirements).length > 0
+              ? nodes
+                  .filter((node) => node.data.missingRequirements)
+                  .map((node) => node.data.courseCode)
+                  .join(" | ")
+              : "No courses missing requirements"}
           </p>
         </div>
         <h3 className="text-lg text-center font-bold mt-4 mb-4">Key</h3>
-        <div className="flex justify-center gap-8">
+        <div className="flex justify-center gap-8 pb-20">
           <div className="flex flex-col items-center gap-2">
             <div className="badge badge-lg bg-blue-500"></div>
-            <p className="text-base text-center">Classes you&apos;ve taken</p>
+            <p className="text-xs text-center">Classes you&apos;ve taken</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="badge badge-lg bg-green-500"></div>
-            <p className="text-base text-center">Classes you can take</p>
+            <p className="text-xs text-center">Classes you can take</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="badge badge-lg bg-red-500"></div>
-            <p className="text-base text-center">Missing Pre-requisite</p>
+            <p className="text-xs text-center">Classes missing pre-requisite</p>
           </div>
         </div>
       </div>

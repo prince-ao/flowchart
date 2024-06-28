@@ -6,9 +6,10 @@ export default function ViewEditableNode({ data, selected }) {
       <div
         className={`flex flex-col rounded border-2 border-black items-center p-6 w-48  
         ${data.ghost ? "opacity-25" : ""}
-          ${!data.taken ? "" : "!bg-blue-200 glass shadow-2xl"}
+${!data.missingRequirements ? "" : "bg-red-200 shadow-2xl"}
           ${!data.canTake ? "" : "bg-green-200 shadow-2xl"}
-          ${!data.missingRequirement ? "" : "bg-red-200 shadow-2xl"}`}
+          ${!data.taken ? "" : "bg-blue-200 glass shadow-2xl"}
+          `}
       >
         <h1 className="font-bold text-xl text-center">{data.courseCode}</h1>
         <h2 className="text-center">{data.courseName}</h2>
