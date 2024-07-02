@@ -203,7 +203,7 @@ export async function deleteDegree(degree) {
     .eq("name", degree);
 
   if (error) {
-    throw new Error(error.message);
+    throw error;
   }
 }
 
@@ -213,7 +213,7 @@ export async function getAllCourses() {
     .select("code, name, category, url");
 
   if (error) {
-    throw error;
+    throw new Error(error);
   }
 
   return classes;

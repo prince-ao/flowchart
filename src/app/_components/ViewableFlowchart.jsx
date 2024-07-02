@@ -216,9 +216,13 @@ const ViewableFlowchart = ({
         fitView
         fitViewOptions={{ nodes: defaultNodes }}
       >
-        <Legend/>
+        <Panel position="top-left">
+          <Legend />
+        </Panel>
         <Panel position="top-right" className="">
-        {hasCourseBuilder && <CourseBuilderBar setEdges={setEdges} setNodes={setNodes} />}
+          {hasCourseBuilder && (
+            <CourseBuilderBar setEdges={setEdges} setNodes={setNodes} />
+          )}
         </Panel>
 
         <Background color={backgroundGridColor} gap={backgroundGap} />

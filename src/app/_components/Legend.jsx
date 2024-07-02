@@ -2,7 +2,7 @@ export default function Legend({}) {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   return (
-    <div className="absolute left w-[200px] h-50 text-center  text-xs border-2 border-black bg-white">
+    <div className="absolute left w-[200px] h-50 text-center  text-xs border-2 border-black !bg-white">
       <b>LEGEND</b>
       <div className=" inline-flex items-center">
         <img src={basePath + "/images/arrow.png"} className="w-10 h-10 mr-2" />
