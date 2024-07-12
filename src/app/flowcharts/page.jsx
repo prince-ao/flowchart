@@ -135,6 +135,40 @@ export default function FlowchartsYear() {
     setNodes([...nodes]);
   }
 
+  function isColorDark(color) {
+    function hexToRgb(hex) {
+      hex = hex.replace(/^#/, "");
+      let bigint = parseInt(hex, 16);
+      let r = (bigint >> 16) & 255;
+      let g = (bigint >> 8) & 255;
+      let b = bigint & 255;
+      return [r, g, b];
+    }
+
+    function luminance(r, g, b) {
+      let a = [r, g, b].map(function (v) {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    let rgb;
+
+    if (color.startsWith("#")) {
+      rgb = hexToRgb(color);
+    } else if (color.startsWith("rgb")) {
+      rgb = color.match(/\d+/g).map(Number);
+    } else {
+      false;
+    }
+
+    const [r, g, b] = rgb;
+    const lum = luminance(r, g, b);
+
+    return lum < 0.5;
+  }
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -171,7 +205,10 @@ export default function FlowchartsYear() {
         <>
           <h1
             className="text-2xl font-bold m-4 text-center  p-2 rounded"
-            style={{ backgroundColor: color }}
+            style={{
+              backgroundColor: color,
+              color: isColorDark(color) ? "white" : "black",
+            }}
           >
             {params_degree} Prerequisites Flowchart {displayYear(params_year)}
           </h1>
