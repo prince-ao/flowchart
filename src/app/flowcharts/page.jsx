@@ -23,6 +23,8 @@ import ViewableFlowchart from "@/app/_components/ViewableFlowchart";
 import YearViewableFlowchart from "@/app/_components/YearViewableFlowchart";
 import Header from "@/app/_components/Header";
 import Footer from "@/app/_components/Footer";
+import useDeviceSize from "@/app/_components/useDeviceSize";
+
 const nodeColor = (node) => {
   switch (node.type) {
     case "input":
@@ -63,7 +65,7 @@ export default function FlowchartsYear() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const flowchartEnv = getFlowchartEnv();
-  const [isPhone, setIsPhone] = useState(false);
+  const { isPhone } = useDeviceSize();
   const params_degree =
     typeof window !== "undefined" ? window.localStorage.getItem("degree") : "";
   const params_year =
@@ -189,18 +191,6 @@ export default function FlowchartsYear() {
       setCourses(courses);
       setColor(degree[0].color);
       setLoading(false);
-
-      const mediaQuery = window.matchMedia("(max-width: 768px)");
-      const handleMediaQueryChange = (event) => {
-        setIsPhone(event.matches);
-      };
-
-      handleMediaQueryChange(mediaQuery);
-      mediaQuery.addEventListener("change", handleMediaQueryChange);
-
-      return () => {
-        mediaQuery.removeEventListener("change", handleMediaQueryChange);
-      };
     })();
   }, []);
 

@@ -4,9 +4,11 @@ import Footer from "./_components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useDeviceSize from "@/app/_components/useDeviceSize";
 
 export default function Home() {
   const router = useRouter();
+  const { isPhone, isTablet } = useDeviceSize();
 
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -16,13 +18,22 @@ export default function Home() {
 
       <div className="hero min-h-[80vh] bg-dotted-pattern bg-size-10">
         <div className="hero-content flex-col lg:flex-row-reverse justify-around max-w-[100%]">
-          <Image
+          <div className="lg:flex-shrink-0 shadow-2xl z-0">
+            <iframe
+              width={isPhone ? "280" : isTablet ? "560" : "840"}
+              height={isPhone ? "157" : isTablet ? "315" : "472"}
+              src="https://www.youtube.com/embed/HUMyTnrs_m0?autoplay=1&mute=1&loop=1&playlist=HUMyTnrs_m0"
+              className="rounded-xl"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+          {/* <Image
             alt="flowchart"
             src={basePath + "/images/flowchart.gif"}
             width={200}
             height={200}
-            className="w-1/2 lg:max-w-sm rounded-xl shadow-2xl z-0 border-4 border-primary lg:flex-shrink-0"
-          />
+          /> */}
           <div className="lg:flex-shrink flex flex-col lg:w-1/2">
             <h1 className="text-3xl text-center lg:text-left lg:text-5xl xl:text-6xl font-bold">
               Plan your college journey from{" "}
