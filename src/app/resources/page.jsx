@@ -24,9 +24,9 @@ export default function About() {
         <h2 className="text-3xl font-bold">Resources</h2>
 
         <h2 className="ms-5 text-2xl mt-16 mb-4 font-bold">Courses</h2>
-        <div className="flex gap-4 mx-5">
+        <div className="flex gap-4 lg:mx-5 flex-col lg:flex-row">
           <div className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white border-black">
-            <h2 className="mb-8 text-xl font-bold">
+            <h2 className="text-center mb-8 text-xl font-bold">
               Required Computer Science Courses
               <span className="text-gray-500 text-md">*</span>
             </h2>
@@ -59,7 +59,7 @@ export default function About() {
             )}
           </div>
           <div className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white border-black">
-            <h2 className="mb-8 text-xl font-bold">
+            <h2 className="text-center mb-8 text-xl font-bold">
               Elective Computer Science Courses
             </h2>
             {loading ? (

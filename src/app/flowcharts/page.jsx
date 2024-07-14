@@ -15,6 +15,7 @@ import {
   getDegreeMapByDegreeYear,
   getDegrees,
   getFlowchartEnv,
+  yearComponents,
 } from "../../utils/flowchart-api";
 import { ViewEditableNode, ViewCoreqNode } from "@/app/_components/nodes";
 import "reactflow/dist/style.css";
@@ -62,6 +63,7 @@ export default function FlowchartsYear() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const flowchartEnv = getFlowchartEnv();
+  const [isPhone, setIsPhone] = useState(false);
   const params_degree =
     typeof window !== "undefined" ? window.localStorage.getItem("degree") : "";
   const params_year =
@@ -187,6 +189,18 @@ export default function FlowchartsYear() {
       setCourses(courses);
       setColor(degree[0].color);
       setLoading(false);
+
+      const mediaQuery = window.matchMedia("(max-width: 768px)");
+      const handleMediaQueryChange = (event) => {
+        setIsPhone(event.matches);
+      };
+
+      handleMediaQueryChange(mediaQuery);
+      mediaQuery.addEventListener("change", handleMediaQueryChange);
+
+      return () => {
+        mediaQuery.removeEventListener("change", handleMediaQueryChange);
+      };
     })();
   }, []);
 
@@ -210,30 +224,25 @@ export default function FlowchartsYear() {
               color: isColorDark(color) ? "white" : "black",
             }}
           >
-            {params_degree} Prerequisites Flowchart {displayYear(params_year)}
+            {params_degree} Prerequisites Flowchart{" "}
+            <span className="italic">
+              Fall {yearComponents(params_year)[0]} - Spring{" "}
+              {yearComponents(params_year)[1]}
+            </span>
           </h1>
 
-          <div className="border border-info p-4 m-5 rounded-md bg-white inline-flex ">
+          <div className="border border-info p-4 m-5 rounded-md bg-white inline-flex lg:hidden">
             <img
               src={basePath + "/images/warning2.png"}
               className="w-6 h-6 mr-3 mt-2"
               alt="Warning Icon"
             />
             <div>
-              <p className="justify-center " style={{ lineHeight: "2.5" }}>
+              <p className="justify-center">
                 It is recommended to view this flowchart on a laptop or desktop
                 for the best experience.
                 <br />
-                This flowchart is based on the official CS curriculum at CSI{" "}
-                {displayYear(params_year)} Catalog.
-                <br />
-                You can drag the flowchart using your mouse to view all of
-                classes, especially when you are on the phone! You can also
-                click on any of the classes to view the prerequisites.
-                <br /> The colors are for grouping purposes only. To view the
-                description of any of the classes on the flowchart, you can find
-                a list of all the classes below the flowchart where you can see
-                the description of each individual class.
+                To use the course builder you must use a laptop or a desktop
               </p>
             </div>
           </div>
@@ -261,7 +270,7 @@ export default function FlowchartsYear() {
               year={params_year}
               degree={params_degree}
               height="74.1vh"
-              hasCourseBuilder={true}
+              hasCourseBuilder={!isPhone}
             />
           </div>
         </>

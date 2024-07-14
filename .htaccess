@@ -1,0 +1,9 @@
+rewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^www\.cs\.csi\.cuny\.edu$
+RewriteCond %{REQUEST_URI} ^/~flowchart/flowcharts/$
+RewriteRule ^.*$ /~flowchart [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^www\.cs\.csi\.cuny\.edu$
+RewriteCond %{REQUEST_URI} ^/~flowchart/admin/$
+RewriteRule ^ - [F,L]

@@ -98,7 +98,7 @@ export default function Header({ navigator }) {
                                         "year",
                                         data.flowchart_year
                                       );
-                                      router.push(basePath + "/flowcharts");
+                                      router.push("/flowcharts");
                                     }}
                                   >
                                     {displayYear(data.flowchart_year)}

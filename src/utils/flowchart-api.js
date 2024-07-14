@@ -293,3 +293,7 @@ export function displayYear(year) {
   }
   return year.split("-").join(" - ");
 }
+
+export function yearComponents(year) {
+  return year.split("-");
+}
