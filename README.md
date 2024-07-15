@@ -11,6 +11,15 @@ A flowchart is a graph that is meant to make it simple for a student to plan the
 - TailwindCSS
 - DaisyUI
 
+## Features
+
+[Youtube](https://www.youtube.com/watch?v=HUMyTnrs_m0&ab_channel=AdamKostandy)
+
+## Roadmap
+
+- Add support for math courses on the resources page
+- Integrate pdf version of the flowchart
+
 ## Running locally
 
 1. Install packages
@@ -27,14 +36,9 @@ npm i
 npm run dev
 ```
 
-## Features
+## Contributing
 
-[Youtube](https://www.youtube.com/watch?v=HUMyTnrs_m0&ab_channel=AdamKostandy)
-
-## Roadmap
-
-- Add support for math courses on the resources page
-- Integrate pdf version of the flowchart
+Checkout [CONTRIBUTING.md](https://github.com/prince-ao/flowchart-csi/blob/main/CONTRIBUTING.md)
 
 ## Documentation
 
