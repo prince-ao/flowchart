@@ -76,7 +76,7 @@ export default function About() {
 
           <div className="flex flex-col items-center">
             <a
-              href="https://github.com/Unaiza898/flowchart-csi"
+              href="https://github.com/prince-ao/flowchart-csi/blob/main/CONTRIBUTING.md"
               target="_blank"
               className="md:w-[150px] md:h-[150px] w-[75px] h-[75px] flex items-center justify-center"
             >
@@ -85,7 +85,7 @@ export default function About() {
             <p className="font-bold">You?</p>
             <a
               className="link"
-              href="https://github.com/Unaiza898/flowchart-csi"
+              href="https://github.com/prince-ao/flowchart-csi/blob/main/CONTRIBUTING.md"
               target="_blank"
             >
               learn how to contribute
