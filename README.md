@@ -1,66 +1,41 @@
-# FlowChart CSI
+# CSI CS FlowChart
 
-A brief description of what this project does and who it's for
+## Introduction
 
+A flowchart is a graph that is meant to make it simple for a student to plan their application journey. This web application is a digital extension of that idea; it allows students to explore and interact with their flowcharts in an accessible manner. This project, built for the computer science department and by students in the department, originated from the [initial version](https://flowchart-csi.vercel.app/) created by [Andrea Habib](https://github.com/AndreaHabib) with the help of Kristi Nielson-Brescia. Recognizing some accessibility issues, the department decided to rewrite and enhance the application to better serve the needs of our students and faculty.
 
-## Installation
+## Tech stack
 
-Install my-project with npm
+- Next.js
+- Supabase
+- TailwindCSS
+- DaisyUI
+
+## Running locally
+
+1. Install packages
 
 ```bash
-  npm install my-project
-  cd my-project
-```
-    
-## Tech Stack
-
-**Client:** React, Redux, TailwindCSS
-
-**Server:** Node, Express
-
-
-## Usage/Examples
-
-```javascript
-import Component from 'my-project'
-
-function App() {
-  return <Component />
-}
+npm i
 ```
 
+2. Contact maintainers for .env.local file
+
+3. Run application
+
+```bash
+npm run dev
+```
 
 ## Features
 
-- Light/dark mode toggle
-- Live previews
-- Fullscreen mode
-- Cross platform
-
-
-## FAQ
-
-#### Question 1
-
-Answer 1
-
-#### Question 2
-
-Answer 2
-
+[Youtube](https://www.youtube.com/watch?v=HUMyTnrs_m0&ab_channel=AdamKostandy)
 
 ## Roadmap
 
-- Additional browser support
-
-- Add more integrations
-
+- Add support for math courses on the resources page
+- Integrate pdf version of the flowchart
 
 ## Documentation
 
-[Documentation](https://linktodocumentation)
-
-
-## Demo
-
-Insert gif or link to demo
+coming soon...
