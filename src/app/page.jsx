@@ -4,9 +4,11 @@ import Footer from "./_components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useDeviceSize from "@/app/_components/useDeviceSize";
 
 export default function Home() {
   const router = useRouter();
+  const { isPhone, isTablet } = useDeviceSize();
 
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -16,15 +18,24 @@ export default function Home() {
 
       <div className="hero min-h-[80vh] bg-dotted-pattern bg-size-10">
         <div className="hero-content flex-col lg:flex-row-reverse justify-around max-w-[100%]">
-          <Image
+          <div className="lg:flex-shrink-0 shadow-2xl z-0">
+            <iframe
+              width={isPhone ? "280" : isTablet ? "560" : "840"}
+              height={isPhone ? "157" : isTablet ? "315" : "472"}
+              src="https://www.youtube.com/embed/HUMyTnrs_m0?autoplay=1&mute=1&loop=1&playlist=HUMyTnrs_m0"
+              className="rounded-xl"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+          {/* <Image
             alt="flowchart"
             src={basePath + "/images/flowchart.gif"}
             width={200}
             height={200}
-            className="w-1/2 lg:max-w-sm rounded-xl shadow-2xl z-0 border-4 border-primary lg:flex-shrink-0"
-          />
+          /> */}
           <div className="lg:flex-shrink flex flex-col lg:w-1/2">
-            <h1 className="text-2xl text-center lg:text-left lg:text-5xl xl:text-6xl font-bold">
+            <h1 className="text-3xl text-center lg:text-left lg:text-5xl xl:text-6xl font-bold">
               Plan your college journey from{" "}
               <span className="relative inline-block">
                 <div className="bg-secondary absolute bottom-1 lg:bottom-0 left-0 -z-10 h-2 lg:h-4 w-full"></div>
@@ -36,8 +47,11 @@ export default function Home() {
               build your entire college journey. Visualize your courses, track
               your progress, and adjust your schedule with ease.
             </p>
-            <Link href="/flowchart-guide/select-degree" className="mt-6 w-fit">
-              <button className="btn btn-secondary lg:!btn-lg self-center lg:self-start">
+            <Link
+              href="/flowchart-guide/select-degree"
+              className="mt-6 w-fit self-center lg:self-start"
+            >
+              <button className="btn btn-secondary lg:!btn-lg  self-center lg:self-start">
                 Get Started
               </button>
             </Link>
@@ -53,8 +67,8 @@ export default function Home() {
           height={200}
           className="w-7/8 lg:w-1/3 rounded-xl border-black border-4"
         />
-        <div className="w-3/4 lg:w-1/3">
-          <h3 className="text-bold text-2xl lg:text-4xl font-bold">
+        <div className="w-3/4 lg:w-1/3 mt-6 lg:mt-0">
+          <h3 className="text-bold text-2xl lg:text-4xl font-bold text-center lg:text-left">
             View your course roadmap
           </h3>
           <p className="text-bold text-xs lg:text-lg mt-1 lg:mt-4">
@@ -82,10 +96,10 @@ export default function Home() {
 
       <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-around w-[100%] mt-24">
         <div className="w-3/4 lg:w-1/3">
-          <h3 className="text-bold text-2xl lg:text-4xl font-bold">
+          <h3 className="text-bold text-2xl lg:text-4xl font-bold text-center lg:text-left">
             Plan your academic journey
           </h3>
-          <p className="text-bold text-xs lg:text-lg mt-1 lg:mt-4">
+          <p className="text-bold text-xs lg:text-lg mt-1 lg:mt-4 mb-6 lg:mb-0">
             Take charge of your education with our comprehensive planning tools.
             Design a personalized academic plan that fits your goals and
             timeline, ensuring you meet all the necessary requirements for

@@ -15,6 +15,7 @@ import {
   getDegreeMapByDegreeYear,
   getDegrees,
   getFlowchartEnv,
+  yearComponents,
 } from "../../utils/flowchart-api";
 import { ViewEditableNode, ViewCoreqNode } from "@/app/_components/nodes";
 import "reactflow/dist/style.css";
@@ -22,6 +23,8 @@ import ViewableFlowchart from "@/app/_components/ViewableFlowchart";
 import YearViewableFlowchart from "@/app/_components/YearViewableFlowchart";
 import Header from "@/app/_components/Header";
 import Footer from "@/app/_components/Footer";
+import useDeviceSize from "@/app/_components/useDeviceSize";
+
 const nodeColor = (node) => {
   switch (node.type) {
     case "input":
@@ -62,6 +65,7 @@ export default function FlowchartsYear() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const flowchartEnv = getFlowchartEnv();
+  const { isPhone } = useDeviceSize();
   const params_degree =
     typeof window !== "undefined" ? window.localStorage.getItem("degree") : "";
   const params_year =
@@ -135,6 +139,40 @@ export default function FlowchartsYear() {
     setNodes([...nodes]);
   }
 
+  function isColorDark(color) {
+    function hexToRgb(hex) {
+      hex = hex.replace(/^#/, "");
+      let bigint = parseInt(hex, 16);
+      let r = (bigint >> 16) & 255;
+      let g = (bigint >> 8) & 255;
+      let b = bigint & 255;
+      return [r, g, b];
+    }
+
+    function luminance(r, g, b) {
+      let a = [r, g, b].map(function (v) {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    let rgb;
+
+    if (color.startsWith("#")) {
+      rgb = hexToRgb(color);
+    } else if (color.startsWith("rgb")) {
+      rgb = color.match(/\d+/g).map(Number);
+    } else {
+      false;
+    }
+
+    const [r, g, b] = rgb;
+    const lum = luminance(r, g, b);
+
+    return lum < 0.5;
+  }
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -171,32 +209,30 @@ export default function FlowchartsYear() {
         <>
           <h1
             className="text-2xl font-bold m-4 text-center  p-2 rounded"
-            style={{ backgroundColor: color }}
+            style={{
+              backgroundColor: color,
+              color: isColorDark(color) ? "white" : "black",
+            }}
           >
-            {params_degree} Prerequisites Flowchart {displayYear(params_year)}
+            {params_degree} Prerequisites Flowchart{" "}
+            <span className="italic">
+              Fall {yearComponents(params_year)[0]} - Spring{" "}
+              {yearComponents(params_year)[1]}
+            </span>
           </h1>
 
-          <div className="border border-info p-4 m-5 rounded-md bg-white inline-flex ">
+          <div className="border border-info p-4 m-5 rounded-md bg-white inline-flex lg:hidden">
             <img
               src={basePath + "/images/warning2.png"}
               className="w-6 h-6 mr-3 mt-2"
               alt="Warning Icon"
             />
             <div>
-              <p className="justify-center " style={{ lineHeight: "2.5" }}>
+              <p className="justify-center">
                 It is recommended to view this flowchart on a laptop or desktop
                 for the best experience.
                 <br />
-                This flowchart is based on the official CS curriculum at CSI{" "}
-                {displayYear(params_year)} Catalog.
-                <br />
-                You can drag the flowchart using your mouse to view all of
-                classes, especially when you are on the phone! You can also
-                click on any of the classes to view the prerequisites.
-                <br /> The colors are for grouping purposes only. To view the
-                description of any of the classes on the flowchart, you can find
-                a list of all the classes below the flowchart where you can see
-                the description of each individual class.
+                To use the course builder you must use a laptop or a desktop
               </p>
             </div>
           </div>
@@ -224,7 +260,7 @@ export default function FlowchartsYear() {
               year={params_year}
               degree={params_degree}
               height="74.1vh"
-              hasCourseBuilder={true}
+              hasCourseBuilder={!isPhone}
             />
           </div>
         </>

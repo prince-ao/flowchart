@@ -52,7 +52,7 @@ import { withAuth } from "@/utils/authentication";
 // Initial state for nodes and edges
 const initialNodes = [];
 const initialEdges = [];
-const MAX_NODES = 200;
+const MAX_NODES = 100000000000; // increase if a lot of collisions
 
 function CreateFlowchart() {
   const reactFlowWrapper = useRef(null);
@@ -79,6 +79,7 @@ function CreateFlowchart() {
     while (idExists(randomNumber)) {
       randomNumber = Math.floor(Math.random() * MAX_NODES) + 1;
     }
+    console.log(randomNumber);
     return `${randomNumber}`;
   }
 

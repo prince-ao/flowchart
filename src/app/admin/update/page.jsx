@@ -17,8 +17,13 @@ import {
   getAllCourses,
   deleteCourseByCode,
   getDegreeMapByDegreeYear,
+  getDegreeMapByDegree,
+  deleteFlowchart,
 } from "@/utils/flowchart-api";
 import AdminSideBar from "@/app/_components/AdminSideBar";
+
+// problem in order to delete a degree you have to delete all of the flowcharts related to that degree
+// verify with the admin whether they want to delete all of the flowcharts with the admin page
 
 function AdminHomeUpdate() {
   const [isAuth, setIsAuth] = useState(false);
@@ -53,6 +58,7 @@ function AdminHomeUpdate() {
   });
   const [courseSuccess, setCourseSuccess] = useState(false);
   const [courses, setCourses] = useState([]);
+  const [modelType, setModalType] = useState("");
 
   const router = useRouter();
   const flowchartEnv = getFlowchartEnv();
@@ -148,14 +154,16 @@ function AdminHomeUpdate() {
   async function updateDegree() {
     setDegreeLoading(true);
     setIsLoading(true);
-    const degrees = await getDegrees();
-    setDegrees(degrees);
-    if (degrees.length) setDegree(degrees[0].name);
-    setDegreeLoading(false);
+    setTimeout(async () => {
+      const degrees = await getDegrees();
+      setDegrees(degrees);
+      if (degrees.length) setDegree(degrees[0].name);
+      setDegreeLoading(false);
 
-    await updateDegreeMaps(degrees[0].name);
+      await updateDegreeMaps(degrees[0].name);
 
-    setIsLoading(false);
+      setIsLoading(false);
+    }, 3 * 1e3);
   }
 
   function handleCourseChange(e) {
@@ -174,21 +182,49 @@ function AdminHomeUpdate() {
             </button>
           </form>
           <p className="py-4">
-            ⚠️ Are you sure you want to delete{" "}
-            <span className="font-bold">
-              {selectDelete} | {degree}
-            </span>
+            {modelType === "delete_flowchart" ? (
+              <>
+                ⚠️ Are you sure you want to delete{" "}
+                <span className="font-bold">
+                  {selectDelete} | {degree}
+                </span>
+              </>
+            ) : modelType === "delete_degree" ? (
+              <>
+                ⚠️ By deleting{" "}
+                <span className="font-bold">{selectDegreeDelete}</span> you will
+                be deleting all it&apos;s flowcharts. Are you sure you want to
+                do that?
+              </>
+            ) : (
+              <></>
+            )}
           </p>
           <div className="modal-action justify-start">
             <form method="dialog" className="flex gap-4">
               <button
                 className="btn btn-error"
                 onClick={async () => {
-                  try {
-                    deleteDegreeMap(selectDelete, degree);
-                    router.push("/admin/home");
-                  } catch (e) {
-                    console.log(e);
+                  if (modelType === "delete_flowchart") {
+                    try {
+                      deleteDegreeMap(selectDelete, degree);
+                      router.push("/admin/home");
+                    } catch (e) {
+                      console.log(e);
+                    }
+                  } else if (modelType === "delete_degree") {
+                    setIsLoading(true);
+                    setDegreeLoading(true);
+                    const flowcharts = await getDegreeMapByDegree(
+                      selectDegreeDelete
+                    );
+
+                    for (let flowchart of flowcharts[0][flowchartEnv]) {
+                      await deleteFlowchart(flowchart.flowchart_year);
+                    }
+
+                    await deleteDegree(selectDegreeDelete);
+                    updateDegree();
                   }
                 }}
               >
@@ -430,6 +466,7 @@ function AdminHomeUpdate() {
                       disabled={selectDelete === ""}
                       className="btn btn-primary"
                       onClick={() => {
+                        setModalType("delete_flowchart");
                         document.getElementById("delete_modal").showModal();
                       }}
                     >
@@ -464,14 +501,11 @@ function AdminHomeUpdate() {
                       }
 
                       addDegree(degree_name, degree_color);
-                      setAddDegreeState("success");
+                      // setAddDegreeState("success");
 
                       setDegreeName("");
 
-                      setTimeout(() => {
-                        setAddDegreeState("");
-                        updateDegree();
-                      }, 3 * 1e3);
+                      updateDegree();
                     }}
                   >
                     <h2 className="text-xl font-bold text-center">
@@ -536,13 +570,21 @@ function AdminHomeUpdate() {
                     <button
                       disabled={selectDegreeDelete === ""}
                       className="btn btn-primary"
-                      onClick={() => {
-                        deleteDegree(selectDegreeDelete);
-                        setDegreeDeleteSuccess(true);
-                        setTimeout(() => {
-                          setDegreeDeleteSuccess(false);
+                      onClick={async () => {
+                        try {
+                          await deleteDegree(selectDegreeDelete);
+                          // setDegreeDeleteSuccess(true);
                           updateDegree();
-                        }, 3 * 1e3);
+                          // setTimeout(() => {
+                          //   setDegreeDeleteSuccess(false);
+                          // }, 3 * 1e3);
+                        } catch (e) {
+                          console.log(e);
+                          if (e.code === "23503") {
+                            setModalType("delete_degree");
+                            document.getElementById("delete_modal").showModal();
+                          }
+                        }
                       }}
                     >
                       Delete

@@ -278,11 +278,11 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
                       <span className="text-gray-500">No postrequisites</span>
                     )}
                     {selection.data.postrequisites.map((postreq) => (
-                      <span
-                        key={postreq}
-                        className="badge badge-primary cursor-pointer"
-                      >
-                        {postreq}
+                      <span key={postreq} className="badge badge-primary py-4">
+                        {
+                          nodes.find((node) => node.id === postreq)?.data
+                            .courseCode
+                        }
                       </span>
                     ))}
                   </div>
@@ -292,11 +292,11 @@ export default function EditorPanel({ setEdges, edges, setNodes, nodes }) {
                       <span className="text-gray-500">No corequisites</span>
                     )}
                     {selection.data.corequisites.map((coreq) => (
-                      <span
-                        key={coreq.id}
-                        className="badge badge-primary cursor-pointer"
-                      >
-                        {coreq.id}
+                      <span key={coreq.id} className="badge badge-primary py-4">
+                        {
+                          nodes.find((node) => node.id === coreq.id)?.data
+                            .courseCode
+                        }
                       </span>
                     ))}
                   </div>

@@ -104,9 +104,9 @@ export default function FlowchartGuide() {
           <button>close</button>
         </form>
       </dialog>
-      <div className="min-h-screen-header flex justify-center">
+      <div className="min-h-screen-header flex justify-center items-center">
         <div className="p-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 flex flex-col items-center">
-          <h2 className="mb-8 text-2xl font-bold text-center">
+          <h2 className="mb-8 text-xl lg:text-2xl font-bold text-center">
             Select Computer Science Prerequisite Flowchart
           </h2>
           <div className="indicator">
@@ -135,7 +135,7 @@ export default function FlowchartGuide() {
             {/* make the video responsive */}
             <video
               ref={videoRef}
-              className="w-[300px] h-[150px] lg:w-[600px] lg:h-[350px]"
+              className="w-[330px] h-[230px] lg:w-[600px] lg:h-[350px] shadow-lg"
               autoPlay
               loop
               muted
@@ -149,7 +149,7 @@ export default function FlowchartGuide() {
             </video>
           </div>
           <Link
-            className="link link-primary"
+            className="link text-blue-600 mt-8 text-lg lg:text-xl text-center"
             href="https://degreeworks.cuny.edu/"
             target="_blank"
           >

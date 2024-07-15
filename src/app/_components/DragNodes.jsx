@@ -169,7 +169,7 @@ export default function DragNodes({ clearCache, year, degree, create }) {
       )}
       <div className="flex gap-3">
         <button className="btn btn-success" onClick={saveToSupabase}>
-          {create ? "Create" : "Edit"}
+          {create ? "Create" : "Save"}
         </button>
         <button className="btn btn-error" onClick={cancelCreation}>
           Cancel
