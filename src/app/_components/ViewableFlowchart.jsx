@@ -213,8 +213,8 @@ const ViewableFlowchart = ({
         onNodeClick={onNodeClick}
         minZoom={0.05}
         maxZoom={1.5}
-        fitView
-        fitViewOptions={{ nodes: defaultNodes }}
+        defaultViewport={{ x: 100, y: -100, zoom: 0.5 }}
+        fitView={false}
       >
         <Panel position="top-left">
           <Legend />
