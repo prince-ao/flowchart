@@ -64,6 +64,7 @@ export default function FlowchartsYear() {
   const [color, setColor] = useState("#1e90ff");
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [flowchart, setFlowchart] = useState();
   const flowchartEnv = getFlowchartEnv();
   const { isPhone } = useDeviceSize();
   const params_degree =
@@ -188,6 +189,13 @@ export default function FlowchartsYear() {
       // );
       const courses = await getAllCourses();
       const degree = await getDegreeByName(params_degree);
+      const flowchart = await getDegreeMapByDegreeYear(
+        params_degree,
+        params_year
+      );
+
+      console.log(flowchart);
+      setFlowchart(flowchart[0][flowchartEnv][0]);
       setCourses(courses);
       setColor(degree[0].color);
       setLoading(false);
@@ -262,6 +270,44 @@ export default function FlowchartsYear() {
               height="74.1vh"
               hasCourseBuilder={!isPhone}
             />
+          </div>
+
+          <div>
+            {flowchart.catalog_flowchart || flowchart.pathway_checklist ? (
+              <>
+                <h2 className="font-bold text-center text-3xl mb-4 mt-8">
+                  Tools for Planning
+                </h2>
+                <div className="flex justify-center gap-10">
+                  {flowchart ? (
+                    <>
+                      {flowchart.catalog_flowchart ? (
+                        <a href={flowchart.catalog_flowchart} target="_blank">
+                          <button className="btn btn-info">
+                            Prerequisite Flowchart Major Catalog
+                          </button>
+                        </a>
+                      ) : (
+                        <></>
+                      )}
+                      {flowchart.pathway_checklist ? (
+                        <a href={flowchart.pathway_checklist} target="_blank">
+                          <button className="btn btn-info">
+                            Pathway Checklist
+                          </button>
+                        </a>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
         </>
       )}
