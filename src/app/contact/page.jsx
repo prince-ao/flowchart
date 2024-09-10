@@ -31,6 +31,15 @@ export default function Contact() {
             </div>
             <div>
               <h3 className="text-xl lg:text-2xl font-bold mb-2 md:mb-4 mt-12 md:mt-0">
+                Contact Kristi Nielson-Brescia
+              </h3>
+              <p className="font-bold italic">Computer Science Department Advisor</p>
+              <p>2800 Victory Blvd, 1N-215</p>
+              <p>Staten Island, New York 10314</p>
+              <p>Phone: 718.982-2850</p>
+            </div>
+            <div>
+              <h3 className="text-xl lg:text-2xl font-bold mb-2 md:mb-4 mt-12 md:mt-0">
                 Contact Developers
               </h3>
               <a

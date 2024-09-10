@@ -11,18 +11,36 @@ export default function About() {
       name: "Prince Addo",
       title: "Creator, Maintainer",
       special_link: "https://princeaddo.xyz",
+      graduation_year: "2024",
     },
     {
       image: "/images/developers/adam_kostandy.jpg",
       name: "Adam Kostandy",
       title: "Creator, Contributor",
       special_link: "https://adamkostandy.netlify.app/",
+      graduation_year: "2024",
     },
     {
       image: "/images/developers/unaiza_nizami.jpg",
       name: "Unaiza N Nizami",
       title: "Creator, Contributor",
       special_link: "https://github.com/Unaiza898",
+      graduation_year: "2024",
+    },
+  ];
+
+  const founders = [
+    {
+      image: "/images/founders/andrea.jpg",
+      name: "Andrea Habib",
+      title: "Creator of the initial version of flowchart",
+      special_link: "",
+    },
+    {
+      image: "/images/founders/kristi.jpg",
+      name: "Kristi Nielson-Brescia",
+      title: "Computer Science Department Advisor",
+      special_link: "",
     },
   ];
 
@@ -60,7 +78,7 @@ export default function About() {
       <div className="mt-8 px-8 flex-grow">
         <h3 className="text-3xl md:text-4xl font-bold">Developers</h3>
         <div className="flex gap-6 flex-wrap mt-4 justify-center md:justify-start">
-          {developers.map(({ name, image, title, special_link }, i) => (
+          {developers.map(({ name, image, title, special_link, graduation_year }, i) => (
             <div key={i} className="flex flex-col items-center">
               <a href={special_link} target={special_link && "_blank"}>
                 <img
@@ -71,6 +89,7 @@ export default function About() {
               </a>
               <p className="font-bold">{name}</p>
               <p>{title}</p>
+              <p>CS grad of {graduation_year}</p>
             </div>
           ))}
 
@@ -91,6 +110,20 @@ export default function About() {
               learn how to contribute
             </a>
           </div>
+        </div>
+        <h3 className="text-3xl md:text-4xl font-bold mt-8">Founders</h3>
+        <div className="flex gap-6 flex-wrap mt-4 justify-center md:justify-start">
+          {founders.map(({ name, image, title, special_link }, i) => (
+            <div key={i} className="flex flex-col items-center">
+              <img
+                src={basePath + image}
+                alt="profile image"
+                className="md:w-[150px] md:h-[150px] w-[75px] h-[75px] rounded-full"
+              />
+              <p className="font-bold">{name}</p>
+              <p>{title}</p>
+            </div>
+          ))}
         </div>
       </div>
 

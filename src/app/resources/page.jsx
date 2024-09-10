@@ -61,6 +61,7 @@ export default function About() {
           <div className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white border-black">
             <h2 className="text-center mb-8 text-xl font-bold">
               Elective Computer Science Courses
+            <span className="text-gray-500 text-md">**</span>
             </h2>
             {loading ? (
               <span className="loading loading-spinner loading-lg"></span>
@@ -104,7 +105,7 @@ export default function About() {
         </h2>
 
         <h2 className="ms-5 text-2xl mt-16">
-          💼 <span className="font-bold">Internship gitbook</span>:{" "}
+          💼 <span className="font-bold">Internship Handbook</span>:{" "}
           <a
             href="https://csi-cs-department.gitbook.io/internship-handbook"
             target="_blank"
@@ -117,8 +118,8 @@ export default function About() {
         <p className="mt-16 text-gray-500">
           * courses are only required if you&apos;re taking BS Computer Science
         </p>
+        <p className="text-gray-500">** electives vary from semester to semester</p>
       </div>
-
       <Footer />
     </main>
   );

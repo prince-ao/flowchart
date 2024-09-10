@@ -22,7 +22,7 @@ export default function Home() {
             <iframe
               width={isPhone ? "280" : isTablet ? "560" : "840"}
               height={isPhone ? "157" : isTablet ? "315" : "472"}
-              src="https://www.youtube.com/embed/HUMyTnrs_m0?autoplay=1&mute=1&loop=1&playlist=HUMyTnrs_m0"
+              src="https://www.youtube.com/embed/jUIJdJhPkqw?si=ZF2VPo48W9pg34j?autoplay=1&mute=1&loop=1"
               className="rounded-xl"
               frameborder="0"
               allowfullscreen
