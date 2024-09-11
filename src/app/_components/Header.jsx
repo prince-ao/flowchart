@@ -72,7 +72,16 @@ export default function Header({ navigator }) {
                     Resources
                   </Link>
                 </li>
-
+                <li>
+                  <a
+                    href="http://www.cs.csi.cuny.edu/content/Sample_cs_4_yr_degree-career-map.pdf"
+                    className="p-[1rem] text-yellow-300 font-bold"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Sample CS 4 Yr Degree Career Map
+                  </a>
+                </li>
                 {degrees.map((degree, i) => (
                   <li key={i}>
                     <div
@@ -159,6 +168,16 @@ export default function Header({ navigator }) {
                 </li>
                 <li>
                   <Link href="/resources">Resources</Link>
+                </li>
+                <li>
+                  <a
+                    href="http://www.cs.csi.cuny.edu/content/Sample_cs_4_yr_degree-career-map.pdf"
+                    className="text-yellow-300 font-bold"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    🌟 Degree Career Map 🌟
+                  </a>
                 </li>
               </ul>
             </div>
