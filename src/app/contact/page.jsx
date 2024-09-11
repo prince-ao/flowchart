@@ -34,9 +34,9 @@ export default function Contact() {
                 Contact Kristi Nielson-Brescia
               </h3>
               <p className="font-bold italic">Computer Science Department Advisor</p>
-              <p>2800 Victory Blvd, 1N-215</p>
+              <p>2800 Victory Blvd, 1N-209</p>
               <p>Staten Island, New York 10314</p>
-              <p>Phone: 718.982-2850</p>
+              <p>Email: kristi.brescia@csi.cuny.edu</p>
             </div>
             <div>
               <h3 className="text-xl lg:text-2xl font-bold mb-2 md:mb-4 mt-12 md:mt-0">

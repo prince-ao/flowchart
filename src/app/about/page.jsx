@@ -35,12 +35,14 @@ export default function About() {
       name: "Andrea Habib",
       title: "Creator of the initial version of flowchart",
       special_link: "",
+      graduation_year: "2023",
     },
     {
       image: "/images/founders/kristi.jpg",
       name: "Kristi Nielson-Brescia",
       title: "Computer Science Department Advisor",
       special_link: "",
+      graduation_year: ""
     },
   ];
 
@@ -89,7 +91,7 @@ export default function About() {
               </a>
               <p className="font-bold">{name}</p>
               <p>{title}</p>
-              <p>CS grad of {graduation_year}</p>
+              <p>Class of {graduation_year}</p>
             </div>
           ))}
 
@@ -113,7 +115,7 @@ export default function About() {
         </div>
         <h3 className="text-3xl md:text-4xl font-bold mt-8">Founders</h3>
         <div className="flex gap-6 flex-wrap mt-4 justify-center md:justify-start">
-          {founders.map(({ name, image, title, special_link }, i) => (
+          {founders.map(({ name, image, title, special_link, graduation_year }, i) => (
             <div key={i} className="flex flex-col items-center">
               <img
                 src={basePath + image}
@@ -122,6 +124,7 @@ export default function About() {
               />
               <p className="font-bold">{name}</p>
               <p>{title}</p>
+              {/* <p> {"Cs class" && graduation_year}</p> */}
             </div>
           ))}
         </div>
