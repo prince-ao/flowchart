@@ -75,7 +75,7 @@ export default function Header({ navigator }) {
                 <li>
                   <a
                     href="http://www.cs.csi.cuny.edu/content/Sample_cs_4_yr_degree-career-map.pdf"
-                    className="p-[1rem] text-yellow-300 font-bold"
+                    className="p-[1rem] text-yellow-300 font-bold focus:text-yellow-300 active:text-yellow-300"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

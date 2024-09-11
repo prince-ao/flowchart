@@ -34,6 +34,7 @@ export default function About() {
       image: "/images/founders/andrea.jpg",
       name: "Andrea Habib",
       title: "Creator of the initial version of flowchart",
+      isStudent: true,
       special_link: "",
       graduation_year: "2023",
     },
@@ -41,6 +42,7 @@ export default function About() {
       image: "/images/founders/kristi.jpg",
       name: "Kristi Nielson-Brescia",
       title: "Computer Science Department Advisor",
+      isStudent: false,
       special_link: "",
       graduation_year: ""
     },
@@ -124,7 +126,7 @@ export default function About() {
               />
               <p className="font-bold">{name}</p>
               <p>{title}</p>
-              {/* <p> {"Cs class" && graduation_year}</p> */}
+              {graduation_year && <p>Class of {graduation_year}</p>}
             </div>
           ))}
         </div>
