@@ -26,10 +26,10 @@ export default function About() {
         <h2 className="ms-5 text-2xl mt-16 mb-4 font-bold">Courses</h2>
         <div className="flex gap-4 lg:mx-5 flex-col lg:flex-row">
           <div className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white border-black">
-            <h2 className="text-center mb-8 text-xl font-bold">
+            <h2 className="text-center mb-1 text-xl font-bold">
               Required Computer Science Courses
-              <span className="text-gray-500 text-md">*</span>
             </h2>
+            <p className="mb-7"> * courses are only required if you&apos;re taking BS Computer Science * </p>
             {loading ? (
               <span className="loading loading-spinner loading-lg"></span>
             ) : (
@@ -59,9 +59,10 @@ export default function About() {
             )}
           </div>
           <div className="grow-[1] flex flex-col items-center border-[5px] rounded py-6 bg-white border-black">
-            <h2 className="text-center mb-8 text-xl font-bold">
+            <h2 className="text-center mb-1 text-xl font-bold">
               Elective Computer Science Courses
             </h2>
+            <p className="mb-7"> * elective courses vary from semester to semester* </p>
             {loading ? (
               <span className="loading loading-spinner loading-lg"></span>
             ) : (
@@ -103,8 +104,14 @@ export default function About() {
           </a>
         </h2>
 
+        <h3 className="ms-5 text-xl mt-4">
+          Based on feedback from employers, alumni, and faculty, the Computer Science department
+          designed a career-readiness pathway that will help you prepare for internships and jobs.
+          The combination of your <span className="italic underline">degree</span>, <span className="italic underline">relevant experience</span>, and <span className=" italic underline ">ability to market yourself </span> will help you stand out to employers.
+        </h3>
+
         <h2 className="ms-5 text-2xl mt-16">
-          💼 <span className="font-bold">Internship gitbook</span>:{" "}
+          💼 <span className="font-bold">Internship Handbook</span>:{" "}
           <a
             href="https://csi-cs-department.gitbook.io/internship-handbook"
             target="_blank"
@@ -113,12 +120,14 @@ export default function About() {
             click here
           </a>
         </h2>
+        
+        <h3 className="ms-5 text-xl mt-4">
+        Who is this handbook for? 🤨
+        For any student who wants to get an internship in the tech field! That could be interning anything like software engineering, web development and app development! This handbook is useful for everyone, even freshmen (first-year students), the earlier the better!
+        In order to be competitive with the many other CS majors applying for internships, we highly recommend you complete the following modules in this handbook, at your pace.
+        </h3>
 
-        <p className="mt-16 text-gray-500">
-          * courses are only required if you&apos;re taking BS Computer Science
-        </p>
       </div>
-
       <Footer />
     </main>
   );

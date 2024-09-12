@@ -24,7 +24,7 @@ import YearViewableFlowchart from "@/app/_components/YearViewableFlowchart";
 import Header from "@/app/_components/Header";
 import Footer from "@/app/_components/Footer";
 import useDeviceSize from "@/app/_components/useDeviceSize";
-
+import Link from "next/link";
 const nodeColor = (node) => {
   switch (node.type) {
     case "input":
@@ -265,6 +265,40 @@ export default function FlowchartsYear() {
           </div>
         </>
       )}
+
+      <h2 className="text-2xl font-bold m-4 text-center  p-2 rounded">
+        Resources
+      </h2>
+      <div className="flex justify-around m-5">
+        <a
+          href="https://degreeworks.cuny.edu/Dashboard_si/dashboard"
+          target="_blank"
+        >
+          <button style={{backgroundColor: color + "50"}} className="btn ">Degree Works</button>
+        </a>
+        <a
+          href="http://www.cs.csi.cuny.edu/content/CSC_BS_Pathways_checklist_2021-22-major-catalog.pdf"
+          target="_blank"
+        >
+          <button style={{backgroundColor: color + "50"}} className="btn">Pathways Checklist</button>
+        </a>
+        <a
+          href="http://www.cs.csi.cuny.edu/content/Sample_cs_4_yr_degree-career-map.pdf"
+          target="_blank"
+        >
+          <button style={{backgroundColor: color + "50"}} className="btn">Degree/Career Map</button>
+        </a>
+        <a
+          href="https://drive.google.com/file/d/1TJcRvkwxBQTW5z38E1H0XHHXFASUT93L/view?usp=sharing"
+          target="_blank"
+        >
+          <button style={{backgroundColor: color + "50"}} className="btn">Degree Pathways</button>
+        </a>
+        <Link href="/resources">
+          <button style={{backgroundColor: color + "50"}} className="btn">More Resources</button>
+        </Link>
+      </div>
+
 
       <Footer />
     </main>
