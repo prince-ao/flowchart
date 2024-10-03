@@ -171,7 +171,7 @@ export default function Header({ navigator }) {
                 </li>
                 <li className="relative group">
                 <a
-                  href="https://csi-cuny.campus.eab.com/pal/TYU-XOs5O9"
+                  href="http://www.cs.csi.cuny.edu/content/Sample_cs_4_yr_degree-career-map.pdf"
                   className="text-yellow-300 font-bold"
                   target="_blank"
                   rel="noopener noreferrer"
