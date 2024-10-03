@@ -160,6 +160,20 @@ export default function CourseBuilderBar({
     setNodes(nodes);
   }
 
+  function handleClean() {
+    const resetNodes = nodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        taken: false,
+        canTake: false,
+        missingRequirements: false,
+        ghost: false,
+      },
+    }));
+    setNodes(resetNodes);
+  }
+
   const totalPages = Math.ceil(nodes.length / itemsPerPage);
   const currentPageItems = nodes.slice(
     (currentPage - 1) * itemsPerPage,
@@ -234,6 +248,12 @@ export default function CourseBuilderBar({
             onClick={() => setCurrentPage((prevPage) => prevPage - 1)}
           >
             Previous
+          </button>
+          <button
+            className="btn btn-danger text-xs"
+            onClick={handleClean}
+          >
+            Clear Selection
           </button>
           <button
             className="btn btn-secondary text-xs"

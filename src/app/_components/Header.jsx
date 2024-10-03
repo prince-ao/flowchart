@@ -117,7 +117,7 @@ export default function Header({ navigator }) {
                             </>
                           ) : (
                             <p className="italic">
-                              No prerequisite flowchart yet
+                              In progress
                             </p>
                           )}
                         </ul>
@@ -169,16 +169,22 @@ export default function Header({ navigator }) {
                 <li>
                   <Link href="/resources">Resources</Link>
                 </li>
-                <li>
-                  <a
-                    href="http://www.cs.csi.cuny.edu/content/Sample_cs_4_yr_degree-career-map.pdf"
-                    className="text-yellow-300 font-bold"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    🌟 Degree Career Map 🌟
-                  </a>
-                </li>
+                <li className="relative group">
+                <a
+                  href="https://csi-cuny.campus.eab.com/pal/TYU-XOs5O9"
+                  className="text-yellow-300 font-bold"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  🌟 Career-Infused Degree Map 🌟
+                </a>
+                <span className="absolute left-1/2 transform -translate-x-1/2 top-full mt-8 w-max px-4 py-3 text-lg text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                  Check out career-readiness
+                  <br />
+                  activities for each semester!
+                  <span className="absolute left-1/2 transform -translate-x-1/2 -top-2 w-3 h-3 bg-gray-800 rotate-45"></span>
+                </span>
+              </li>
               </ul>
             </div>
             <div className="md:navbar-end">
@@ -219,7 +225,7 @@ export default function Header({ navigator }) {
                     ))}
                   </>
                 ) : (
-                  <p className="italic">No prerequisite flowchart yet</p>
+                  <p className="italic">In progress</p>
                 )}
               </ul>
             </div>
